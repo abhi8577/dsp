@@ -28,7 +28,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 					findByMobileNumber, null);	
 		}
 		consumer.setCreatedTime(LocalDateTime.now());
-		
+		consumer.setRoleId(1L);
 		Consumer save = consumerRepository.save(consumer);
 		
 		
