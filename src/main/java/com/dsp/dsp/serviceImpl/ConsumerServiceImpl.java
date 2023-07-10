@@ -19,7 +19,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 	
 	@Override
 	public Response save(Consumer consumer) {
-		// TODO Auto-generated method stub
 		
 		Consumer findByMobileNumber = consumerRepository.findByMobileNumber(consumer.getMobileNumber());
 		
