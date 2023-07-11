@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "DISCOM_USER")
 public class DiscomUser {
@@ -22,6 +24,7 @@ public class DiscomUser {
 	@Column(name = "USERID")
 	private String userId;
 
+	@JsonIgnore
 	@Column(name = "PASSWORD")
 	private String password;
 
@@ -66,6 +69,10 @@ public class DiscomUser {
 
 	@Column(name = "IS_ACTIVE")
 	private Boolean isActive;
+	
+	@Column(name="ROLE_ID")
+	private Long roleId;
+	
 
 	public DiscomUser() {
 		super();
@@ -215,4 +222,14 @@ public class DiscomUser {
 	public void setAccessLevel(String accessLevel) {
 		this.accessLevel = accessLevel;
 	}
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+	
+	
 }

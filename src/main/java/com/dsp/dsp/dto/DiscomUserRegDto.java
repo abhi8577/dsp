@@ -48,6 +48,9 @@ public class DiscomUserRegDto {
 	
 	
     private String accessLevel;
+    
+   
+	private Long roleId;
 
 
 	public DiscomUserRegDto() {
@@ -203,6 +206,16 @@ public class DiscomUserRegDto {
 
 	public void setAccessLevel(String accessLevel) {
 		this.accessLevel = accessLevel;
+	}
+
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
 	}
     
     
