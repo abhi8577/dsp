@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.dsp.dsp.dto.ConsumerRegDto;
+import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.repository.ConsumerRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
+import com.dsp.dsp.util.Utility;
+import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
@@ -71,8 +74,9 @@ public class ConsumerServiceImpl implements ConsumerService {
 				return Response.response("Consumer Mobile Number Already Exist", HttpStatus.OK, findByMobileNumber, null);
 	
 			}
-			Encoder encoder = Base64.getEncoder();
-			String encodePass = encoder.encodeToString(password.getBytes());
+			
+			String encodePass = Utility.getEncodeData(password);
+			
 			Consumer consumer=new Consumer();
 			consumer.setAddress(address);
 			consumer.setEmail(email);
@@ -93,6 +97,47 @@ public class ConsumerServiceImpl implements ConsumerService {
 		}	
 		
 			
+	}
+
+	@Override
+	public Response getLoginDetails(CredentialsDto credentialsDto) {
+		
+		try {
+			String id = credentialsDto.getId();
+			String password = credentialsDto.getPassword();
+			
+			if(id==null || id.isEmpty()) {
+				return Response.response("Id should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+			}
+			
+			if(password==null || password.isEmpty()) {	
+				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+			}
+			
+			Consumer findByMobileNumber = consumerRepository.findByMobileNumber(id);
+			
+			if(findByMobileNumber==null) {
+				return Response.response("Consumer not found", HttpStatus.NOT_FOUND, null, null);
+
+			}
+			String decryptData = Utility.getDecryptData(findByMobileNumber.getPassword());
+			
+			if(decryptData.equals(password)) {
+			return Response.response("Login successfully", HttpStatus.OK, findByMobileNumber, null);
+			}
+			else {
+				return Response.response("Invalid credentials", HttpStatus.NOT_FOUND, null, null);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		}
+		
+		
 	}
 
 }

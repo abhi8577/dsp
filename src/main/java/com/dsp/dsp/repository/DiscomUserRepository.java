@@ -9,6 +9,6 @@ import com.dsp.dsp.model.DiscomUser;
 @Repository
 public interface DiscomUserRepository extends JpaRepository<DiscomUser, Long> {
 	
-	DiscomUser findByUserId(String mobileNumber);
+	DiscomUser findByUserId(String userId);
 
 }

@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
+import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.DiscomUser;
 import com.dsp.dsp.repository.DiscomUserRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
+import com.dsp.dsp.util.Utility;
 
 @Service
 public class DiscomUserServiceImpl implements DiscomUserService{
@@ -45,7 +48,12 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			Long substationId = discomUserRegDto.getSubstationId();
 			String userId = discomUserRegDto.getUserId();
 			String userName = discomUserRegDto.getUserName();
+			Long roleId = discomUserRegDto.getRoleId();
 			
+			if(roleId==null) {
+				return Response.response("Role id should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+			}
 			if(userId==null || userId.isEmpty()) {
 
 				return Response.response("User id should not be null", HttpStatus.BAD_REQUEST, null, null);
@@ -103,7 +111,7 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			discomUser.setSubstationId(substationId);
 			discomUser.setUserId(userId);
 			discomUser.setUserName(trimUserName);
-			
+			discomUser.setRoleId(roleId);
 		DiscomUser save = discomUserRepository.save(discomUser);
 
 			return Response.response("Discom user data saved", HttpStatus.OK, save, null);
@@ -114,5 +122,47 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 		}
 	}
+
+	@Override
+	public Response getLoginDetails(CredentialsDto credentialsDto) {
+		
+		try {
+			String id = credentialsDto.getId();
+			String password = credentialsDto.getPassword();
+			
+			if(id==null || id.isEmpty()) {
+				return Response.response("Id should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+			}
+			
+			if(password==null || password.isEmpty()) {	
+				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+			}
+			
+			 DiscomUser findByUserId = discomUserRepository.findByUserId(id);
+			
+			if(findByUserId==null) {
+				return Response.response("Discom user not found", HttpStatus.NOT_FOUND, null, null);
+
+			}
+			String decryptData = Utility.getDecryptData(findByUserId.getPassword());
+			
+			if(decryptData.equals(password)) {
+			return Response.response("Login successfully", HttpStatus.OK, findByUserId, null);
+			}
+			else {
+				return Response.response("Invalid credentials", HttpStatus.NOT_FOUND, null, null);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		}
+		
+		
+	}
+
 
 }

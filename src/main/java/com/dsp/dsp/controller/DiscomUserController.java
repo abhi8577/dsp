@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
@@ -20,6 +21,12 @@ public class DiscomUserController {
 	@PostMapping("/discom_registration")
 	public Response registration(@RequestBody DiscomUserRegDto discomUserRegDto) {
 		return discomUserService.save(discomUserRegDto);
+		
+	}
+	
+	@PostMapping("/discom_login")
+	public Response login(@RequestBody CredentialsDto credentialsDto) {
+		return discomUserService.getLoginDetails(credentialsDto);
 		
 	}
 	
