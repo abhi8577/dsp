@@ -19,13 +19,13 @@ public class Response {
 	}
 
 
-	public Response(String message, HttpStatus status, Object object, String error) {
-		super();
-		this.message = message;
-		this.status = status.value();
-		this.object = object;
-		this.error = error;
-	}
+//	public Response(String message, HttpStatus status, Object object, String error) {
+//		super();
+//		this.message = message;
+//		this.status = status.value();
+//		this.object = object;
+//		this.error = error;
+//	}
 
 
 	public static Response response(String message, HttpStatus status, Object object, String error){

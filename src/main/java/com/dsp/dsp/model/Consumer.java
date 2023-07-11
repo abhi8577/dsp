@@ -4,14 +4,19 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "CONSUMER")
 public class Consumer {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="ID")
 	private Long id;
 	
@@ -27,6 +32,7 @@ public class Consumer {
 	@Column(name="ADDRESS")
 	private  String address;
 	 
+	@JsonIgnore
 	@Column(name="PASSWORD")
 	private String password;
 	
@@ -37,7 +43,7 @@ public class Consumer {
 	private Boolean isActive;
 	
 	@Column(name="CREATED_TIME")
-	private LocalDateTime createdTime;
+	private String createdTime;
 
 	public Consumer() {
 		super();
@@ -108,11 +114,11 @@ public class Consumer {
 		this.isActive = isActive;
 	}
 
-	public LocalDateTime getCreatedTime() {
+	public String getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(LocalDateTime createdTime) {
+	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
 	}
 	

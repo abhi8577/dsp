@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dsp.dsp.dto.ConsumerRegDto;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
@@ -18,8 +19,8 @@ public class ConsumerController {
 	private ConsumerService consumerService;
 	
 	@PostMapping(name = "/consumer_registration")
-	public Response registration(@RequestBody Consumer consumer) {
-		return consumerService.save(consumer);
+	public Response registration(@RequestBody ConsumerRegDto consumerRegDto) {
+		return consumerService.save(consumerRegDto);
 		
 	}
 }
