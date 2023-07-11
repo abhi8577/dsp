@@ -11,13 +11,13 @@ import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
 
 @RestController
-@RequestMapping(name = "/consumer")
+@RequestMapping("/consumer")
 public class ConsumerController {
 
 	@Autowired
 	private ConsumerService consumerService;
 	
-	@PostMapping(name = "/consumer_registration")
+	@PostMapping("/consumer_registration")
 	public Response registration(@RequestBody ConsumerRegDto consumerRegDto) {
 		return consumerService.save(consumerRegDto);
 		
