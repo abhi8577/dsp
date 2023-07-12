@@ -22,17 +22,17 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Autowired
 	DiscomUserRepository discomUserRepository;
-	
+
 	@Override
 	public Response save(DiscomUserRegDto discomUserRegDto) {
-	try {
-			
+		try {
+
 			if (discomUserRegDto == null) {
- 
-	      return Response.response("User request should not be null", HttpStatus.BAD_REQUEST, null, null);
-			
+
+				return Response.response("User request should not be null", HttpStatus.BAD_REQUEST, null, null);
+
 			}
-			
+
 			String accessLevel = discomUserRegDto.getAccessLevel();
 			Long circleId = discomUserRegDto.getCircleId();
 			Long dcId = discomUserRegDto.getDcId();
@@ -49,7 +49,7 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			String userId = discomUserRegDto.getUserId();
 			String userName = discomUserRegDto.getUserName();
 			Long roleId = discomUserRegDto.getRoleId();
-			
+
 			if(roleId==null) {
 				return Response.response("Role id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
@@ -58,38 +58,38 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 				return Response.response("User id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
-				}
-			
+			}
+
 			if(mobileNo==null || mobileNo.isEmpty()) {
 				return Response.response("Mobile number should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
-			
+
 			if(password==null || password.isEmpty()) {	
 				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
-	
+
 			}
-			
+
 			if(userName==null || userName.isEmpty()) {
 
-		return Response.response("User name should not be null", HttpStatus.BAD_REQUEST, null, null);
+				return Response.response("User name should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}	
-			
-			
-			
+
+
+
 			if(accessLevel==null || accessLevel.isEmpty()) {
 				return Response.response("Access level should not be null", HttpStatus.BAD_REQUEST, null, null);
-		
+
 			}
-			
+
 			String trimUserName = userName.replaceAll("\\s+", " ").trim().toUpperCase();
-		
-		 DiscomUser findByUserId = discomUserRepository.findByUserId(userId);
-			
+
+			DiscomUser findByUserId = discomUserRepository.findByUserId(userId);
+
 			if(findByUserId!=null) {	
 				return Response.response("User id already exist", HttpStatus.OK, findByUserId, null);
-	
+
 			}
 			Encoder encoder = Base64.getEncoder();
 			String encodePass = encoder.encodeToString(password.getBytes());
@@ -112,7 +112,7 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			discomUser.setUserId(userId);
 			discomUser.setUserName(trimUserName);
 			discomUser.setRoleId(roleId);
-		DiscomUser save = discomUserRepository.save(discomUser);
+			DiscomUser save = discomUserRepository.save(discomUser);
 
 			return Response.response("Discom user data saved", HttpStatus.OK, save, null);
 
@@ -125,31 +125,31 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Override
 	public Response getLoginDetails(CredentialsDto credentialsDto) {
-		
+
 		try {
 			String id = credentialsDto.getId();
 			String password = credentialsDto.getPassword();
-			
+
 			if(id==null || id.isEmpty()) {
 				return Response.response("Id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
-			
+
 			if(password==null || password.isEmpty()) {	
 				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
-			
-			 DiscomUser findByUserId = discomUserRepository.findByUserId(id);
-			
+
+			DiscomUser findByUserId = discomUserRepository.findByUserId(id);
+
 			if(findByUserId==null) {
 				return Response.response("Discom user not found", HttpStatus.NOT_FOUND, null, null);
 
 			}
 			String decryptData = Utility.getDecryptData(findByUserId.getPassword());
-			
+
 			if(decryptData.equals(password)) {
-			return Response.response("Login successfully", HttpStatus.OK, findByUserId, null);
+				return Response.response("Login successfully", HttpStatus.OK, findByUserId, null);
 			}
 			else {
 				return Response.response("Invalid credentials", HttpStatus.NOT_FOUND, null, null);
@@ -160,8 +160,8 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
 		}
-		
-		
+
+
 	}
 
 
