@@ -100,6 +100,9 @@ public class ConsumerApplication {
     private String reraPermissionFilePath;
     
     
+    @Column(name = "GROUP_PERMISSION_FILE_PATH")
+    private String grouppermissionFilePath;
+    
     @Column(name = "REGISTRY_FILE_PATH")
     private String registryFilePath;
     
@@ -121,6 +124,8 @@ public class ConsumerApplication {
     
     @Column(name="IS_ACTIVE")
    	private Boolean isActive;
+    
+    
     
 
 	public ConsumerApplication() {
@@ -478,6 +483,18 @@ public class ConsumerApplication {
 		this.isActive = isActive;
 	}
 
+
+	public String getGrouppermissionFilePath() {
+		return grouppermissionFilePath;
+	}
+
+
+	public void setGrouppermissionFilePath(String grouppermissionFilePath) {
+		this.grouppermissionFilePath = grouppermissionFilePath;
+	}
+
+
+	
 	
     
    

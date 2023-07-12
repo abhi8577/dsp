@@ -8,11 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dsp.dsp.model.ApplyType;
+import com.dsp.dsp.model.Dc;
+import com.dsp.dsp.model.District;
 import com.dsp.dsp.model.LandAreaUnit;
 import com.dsp.dsp.model.LoadRequested;
 import com.dsp.dsp.model.NatureOfWork;
 import com.dsp.dsp.model.SchemeType;
 import com.dsp.dsp.model.SupplyVoltage;
+import com.dsp.dsp.repository.ApplyTypeRepository;
+import com.dsp.dsp.repository.DcRepository;
+import com.dsp.dsp.repository.DistrictRepository;
 import com.dsp.dsp.repository.LandAreaUnitRepository;
 import com.dsp.dsp.repository.LoadRequestedRepository;
 import com.dsp.dsp.repository.NatureOfWorkRepository;
@@ -38,6 +44,15 @@ public class MasterController {
 
 	@Autowired
 	LandAreaUnitRepository LandAreaUnitRepository;
+	
+	@Autowired
+	DistrictRepository districtRepository;
+	
+	@Autowired
+	DcRepository dcRepository;
+	
+	@Autowired
+	ApplyTypeRepository applyTypeRepository;
 	
 	@GetMapping("/get_all_nature_of_work")
 	public Response getAllNatureOfWork() {
@@ -114,6 +129,58 @@ public class MasterController {
 			public Response getAllLandAreaUnit() {
 				try {
 				 List<LandAreaUnit> findAll = LandAreaUnitRepository.findAll();
+					
+					if(findAll.isEmpty()) {
+						return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
+					}
+					return Response.response("Data  found", HttpStatus.OK, findAll, null);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+				}
+	}
+			
+			
+			@GetMapping("/get_all_district")
+			public Response getAllDistrict() {
+				try {
+				List<District> findAll = districtRepository.findAll();
+					
+					if(findAll.isEmpty()) {
+						return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
+					}
+					return Response.response("Data  found", HttpStatus.OK, findAll, null);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+				}
+	}
+			
+			
+			
+			
+			@GetMapping("/get_all_dc")
+			public Response getAllDc() {
+				try {
+				List<Dc> findAll = dcRepository.findAll();
+					
+					if(findAll.isEmpty()) {
+						return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
+					}
+					return Response.response("Data  found", HttpStatus.OK, findAll, null);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+				}
+	}
+			
+			@GetMapping("/get_all_apply_type")
+			public Response getAllApplyType() {
+				try {
+				 List<ApplyType> findAll = applyTypeRepository.findAll();
 					
 					if(findAll.isEmpty()) {
 						return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
