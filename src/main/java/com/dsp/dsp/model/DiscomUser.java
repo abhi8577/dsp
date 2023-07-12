@@ -15,8 +15,8 @@ public class DiscomUser {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "ID")
-	private Long id;
+	@Column(name = "SR_NO")
+	private Long srNo;
 
 	@Column(name = "USER_NAME")
 	private String userName;
@@ -79,13 +79,19 @@ public class DiscomUser {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Long getId() {
-		return id;
+	
+
+	public Long getSrNo() {
+		return srNo;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+
+
+	public void setSrNo(Long srNo) {
+		this.srNo = srNo;
 	}
+
+
 
 	public String getUserName() {
 		return userName;

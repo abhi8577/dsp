@@ -16,8 +16,8 @@ public class Consumer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="ID")
-	private Long id;
+	@Column(name="CONSUMER_ID")
+	private Long consumerId;
 	
 	@Column(name="CONSUMER_NAME")
 	private String consumerName;
@@ -49,13 +49,17 @@ public class Consumer {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Long getId() {
-		return id;
+
+	public Long getConsumerId() {
+		return consumerId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	
+	public void setConsumerId(Long consumerId) {
+		this.consumerId = consumerId;
 	}
+
+
 
 	public String getConsumerName() {
 		return consumerName;
