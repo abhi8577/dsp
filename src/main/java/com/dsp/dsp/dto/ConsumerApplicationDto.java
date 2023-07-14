@@ -20,6 +20,8 @@ public class ConsumerApplicationDto {
 
     private Long lt;
     
+    private Long ptr;
+    
     private Long schemeTypeId;
     
     private Long consumerId;
@@ -57,6 +59,10 @@ public class ConsumerApplicationDto {
     private String khasra;
     
     private String khatoni;
+    
+    private Boolean checkedGSTfile;
+    
+    private Boolean checkedWorkLocation;
      
 //    private MultipartFile TAndCPpermissionFile;
 //     
@@ -277,6 +283,30 @@ public class ConsumerApplicationDto {
 
 	public void setKhatoni(String khatoni) {
 		this.khatoni = khatoni;
+	}
+
+	public Boolean getCheckedGSTfile() {
+		return checkedGSTfile;
+	}
+
+	public void setCheckedGSTfile(Boolean checkedGSTfile) {
+		this.checkedGSTfile = checkedGSTfile;
+	}
+
+	public Boolean getCheckedWorkLocation() {
+		return checkedWorkLocation;
+	}
+
+	public void setCheckedWorkLocation(Boolean checkedWorkLocation) {
+		this.checkedWorkLocation = checkedWorkLocation;
+	}
+
+	public Long getPtr() {
+		return ptr;
+	}
+
+	public void setPtr(Long ptr) {
+		this.ptr = ptr;
 	}
 
 	

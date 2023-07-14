@@ -1,9 +1,11 @@
 package com.dsp.dsp.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.dsp.dsp.response.Response;
 
 public interface ConsumerApplicationService {
 	
-	Response submit();
+	Response submit(String consumerApplicationDto, MultipartFile tAndCPpermissionFile, MultipartFile reraPermissionFile, MultipartFile grouppermissionFile, MultipartFile registryFile, MultipartFile nOCfile, MultipartFile administrativeFile, MultipartFile gstFile, MultipartFile khasraKhatoniFile);
 
 }

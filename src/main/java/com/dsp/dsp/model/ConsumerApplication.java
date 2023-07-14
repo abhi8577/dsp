@@ -13,8 +13,11 @@ public class ConsumerApplication {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="SR_NO")
+	private Long sr_No;
+	
 	@Column(name="CONSUMER_APPLICATION_ID")
-	private Long consumerApplicationId;
+	private String consumerApplicationId;
 	
 	@Column(name="NATURE_OF_WORK_ID")
 	private Long natureOfWorkId;
@@ -33,6 +36,9 @@ public class ConsumerApplication {
 
     @Column(name = "LT")
     private Long lt;
+    
+    @Column(name = "PTR")
+    private Long ptr;
     
     @Column(name = "SCHEME_TYPE_ID")
     private Long schemeTypeId;
@@ -134,12 +140,12 @@ public class ConsumerApplication {
 	}
 
 
-	public Long getConsumerApplicationId() {
+	public String getConsumerApplicationId() {
 		return consumerApplicationId;
 	}
 
 
-	public void setConsumerApplicationId(Long consumerApplicationId) {
+	public void setConsumerApplicationId(String consumerApplicationId) {
 		this.consumerApplicationId = consumerApplicationId;
 	}
 
@@ -491,6 +497,16 @@ public class ConsumerApplication {
 
 	public void setGrouppermissionFilePath(String grouppermissionFilePath) {
 		this.grouppermissionFilePath = grouppermissionFilePath;
+	}
+
+
+	public Long getPtr() {
+		return ptr;
+	}
+
+
+	public void setPtr(Long ptr) {
+		this.ptr = ptr;
 	}
 
 

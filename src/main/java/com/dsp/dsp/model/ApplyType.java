@@ -11,27 +11,28 @@ import javax.persistence.Table;
 public class ApplyType {
 	
 	@Id
-	@Column(name="DOCUMENT_TYPE_ID")
-	private Long documentTypeId;
+	@Column(name="APPLY_TYPE_ID")
+	private Long applyTypeId;
 	
-	@Column(name="DOCUMENT_TYPE_NAME")
-	private String documentTypeName;
+	@Column(name="APPLY_TYPE_NAME")
+	private String applyTypeName;
 
-	public Long getDocumentTypeId() {
-		return documentTypeId;
+	public Long getApplyTypeId() {
+		return applyTypeId;
 	}
 
-	public void setDocumentTypeId(Long documentTypeId) {
-		this.documentTypeId = documentTypeId;
+	public void setApplyTypeId(Long applyTypeId) {
+		this.applyTypeId = applyTypeId;
 	}
 
-	public String getDocumentTypeName() {
-		return documentTypeName;
+	public String getApplyTypeName() {
+		return applyTypeName;
 	}
 
-	public void setDocumentTypeName(String documentTypeName) {
-		this.documentTypeName = documentTypeName;
+	public void setApplyTypeName(String applyTypeName) {
+		this.applyTypeName = applyTypeName;
 	}
+
 	
 	
 	
