@@ -20,7 +20,7 @@ public class ConsumerApplicationController {
 	ConsumerApplicationService consumerApplicationService;
 	
 	@PostMapping("/submit")
-	public Response consumerApplicationForm(@RequestPart String consumerApplicationDto,
+	public Response consumerApplicationFormSubmit(@RequestPart String consumerApplicationDto,
 			@RequestPart(value="TAndCPpermissionFile",required = false) MultipartFile TAndCPpermissionFile,
 			@RequestPart(value="reraPermissionFile",required = false) MultipartFile reraPermissionFile,
 			@RequestPart(value="grouppermissionFile",required = false) MultipartFile grouppermissionFile,
@@ -32,5 +32,20 @@ public class ConsumerApplicationController {
 		
 
 		return consumerApplicationService.submit(consumerApplicationDto,TAndCPpermissionFile,reraPermissionFile,grouppermissionFile,registryFile,NOCfile,administrativeFile,gstFile,khasraKhatoniFile);
+}
+	
+	@PostMapping("/update")
+	public Response consumerApplicationFormUpdate(@RequestPart String consumerApplicationDto,
+			@RequestPart(value="TAndCPpermissionFile",required = false) MultipartFile TAndCPpermissionFile,
+			@RequestPart(value="reraPermissionFile",required = false) MultipartFile reraPermissionFile,
+			@RequestPart(value="grouppermissionFile",required = false) MultipartFile grouppermissionFile,
+			@RequestPart(value="registryFile",required = false) MultipartFile registryFile ,
+			@RequestPart(value="NOCfile",required = false) MultipartFile NOCfile,
+			@RequestPart(value="administrativeFile",required = false) MultipartFile administrativeFile,
+			@RequestPart(value="gstFile",required = false) MultipartFile gstFile,
+			@RequestPart(value="khasraKhatoniFile",required = false) MultipartFile khasraKhatoniFile ) {
+		
+
+		return consumerApplicationService.update(consumerApplicationDto,TAndCPpermissionFile,reraPermissionFile,grouppermissionFile,registryFile,NOCfile,administrativeFile,gstFile,khasraKhatoniFile);
 }
 }

@@ -1,8 +1,6 @@
 package com.dsp.dsp.dto;
 
-import javax.persistence.Column;
 
-import org.springframework.web.multipart.MultipartFile;
 
 public class ConsumerApplicationDto {
 	
@@ -10,6 +8,8 @@ public class ConsumerApplicationDto {
 	
 	private Long natureOfWorkId;
 	
+	private String consumerApplicationId;
+
     private Long dtr;
 
     private Long ht11KV;
@@ -307,6 +307,14 @@ public class ConsumerApplicationDto {
 
 	public void setPtr(Long ptr) {
 		this.ptr = ptr;
+	}
+
+	public String getConsumerApplicationId() {
+		return consumerApplicationId;
+	}
+
+	public void setConsumerApplicationId(String consumerApplicationId) {
+		this.consumerApplicationId = consumerApplicationId;
 	}
 
 	

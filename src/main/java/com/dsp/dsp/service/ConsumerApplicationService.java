@@ -8,4 +8,7 @@ public interface ConsumerApplicationService {
 	
 	Response submit(String consumerApplicationDto, MultipartFile tAndCPpermissionFile, MultipartFile reraPermissionFile, MultipartFile grouppermissionFile, MultipartFile registryFile, MultipartFile nOCfile, MultipartFile administrativeFile, MultipartFile gstFile, MultipartFile khasraKhatoniFile);
 
+	
+	Response update(String consumerApplicationDto, MultipartFile tAndCPpermissionFile, MultipartFile reraPermissionFile, MultipartFile grouppermissionFile, MultipartFile registryFile, MultipartFile nOCfile, MultipartFile administrativeFile, MultipartFile gstFile, MultipartFile khasraKhatoniFile);
+
 }

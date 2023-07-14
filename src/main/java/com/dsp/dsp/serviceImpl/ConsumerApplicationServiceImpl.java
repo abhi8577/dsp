@@ -2,15 +2,9 @@ package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
 
-import javax.annotation.processing.FilerException;
-
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
-import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ConsumerApplicationDto;
@@ -20,7 +14,6 @@ import com.dsp.dsp.repository.ConsumerApplicationRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -39,153 +32,80 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		
 		try {
 			if(consumerApplicationDto!=null) {
+				
+				 ObjectMapper objectMapper = new ObjectMapper();
+
+				ConsumerApplicationDto consumerApplicationDtoParse = objectMapper.readValue(consumerApplicationDto, ConsumerApplicationDto.class);
+ 
+				Long natureOfWorkId = consumerApplicationDtoParse.getNatureOfWorkId();
+				
+				Response checkValidation = checkValidation(consumerApplicationDtoParse,gstFile);
 			
-			 ObjectMapper objectMapper = new ObjectMapper();
-			    ConsumerApplicationDto consumerApplicationDtoParse = objectMapper.readValue(consumerApplicationDto, ConsumerApplicationDto.class);
-			    Long natureOfWorkId = consumerApplicationDtoParse.getNatureOfWorkId();
+				if(checkValidation==null) {
+					ConsumerApplication consumerApplication = new ConsumerApplication();
+					Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
+					
+					String createApplicationIdBySchemeType = createApplicationIdBySchemeType(schemeTypeId);
 
-			    if(natureOfWorkId==null) {
-					return Response.response("Nature of work id should not be null", HttpStatus.BAD_REQUEST, natureOfWorkId, null);
-	
-			    }
-			    if(natureOfWorkId>6) {
-					return Response.response("Nature of work id incorrect", HttpStatus.BAD_REQUEST, natureOfWorkId, null);
-			    }
-			    
-			    Long consumerId = consumerApplicationDtoParse.getConsumerId();
-			    if(consumerId==null) {
-					return Response.response("Consumer id should not be null", HttpStatus.BAD_REQUEST, consumerId, null);
-			    }
-			    
-			    Long districtId = consumerApplicationDtoParse.getDistrictId();
+					if(createApplicationIdBySchemeType==null) {
+						return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);	
+					}	
+					
+					if(natureOfWorkId.equals(1L)) {
+		
+						
+					       return setLineShiftingGov(consumerApplicationDtoParse,consumerApplication,createApplicationIdBySchemeType,administrativeFile,gstFile);
+						  	    	
+						    }
+						    
+			              if(natureOfWorkId.equals(2L)) {
+						    	
+			            return	setLineShiftingNonGov	(consumerApplicationDtoParse,consumerApplication,createApplicationIdBySchemeType,gstFile);
+						    	
+						    }
+			              
+			              if(natureOfWorkId.equals(3L)) {
+						    	
+						   return setNewServiceConnection(consumerApplicationDtoParse,consumerApplication,createApplicationIdBySchemeType,gstFile);
+						    	
+						    }
+						    
+			              if(natureOfWorkId.equals(4L)) {
+						    	
+						    return	setColonyElectrificationLegal(consumerApplicationDtoParse,consumerApplication,createApplicationIdBySchemeType,gstFile,tAndCPpermissionFile,reraPermissionFile,groupPermissionFile);
+						    	
+						    }
+			              
+			              if(natureOfWorkId.equals(5L)) {
+			  			    return	setColonyElectrificationIllegal(consumerApplicationDtoParse,consumerApplication,createApplicationIdBySchemeType,gstFile,registryFile,nOCfile,groupPermissionFile);
+				
 
-			    if(districtId==null) {
-					return Response.response("District id should not be null", HttpStatus.BAD_REQUEST, districtId, null);
-			    }
-			    
-			    Long pincode = consumerApplicationDtoParse.getPincode();
-			    
-			    if(pincode==null) {
-					return Response.response("Pin code should not be null", HttpStatus.BAD_REQUEST, districtId, null);
-			    }
-			    
-			    Boolean checkedWorkLocation = consumerApplicationDtoParse.getCheckedWorkLocation();
-			    
-			    if(checkedWorkLocation==null) {
-					return Response.response("Checked box for work location is null", HttpStatus.BAD_REQUEST, null, null);
+						    }
+			              
+			              if(natureOfWorkId.equals(6L)) {
+			    			    return	setOYT(consumerApplicationDtoParse,consumerApplication,createApplicationIdBySchemeType,gstFile,khasraKhatoniFile);    	
+						    }
+			            
+				}
+				else {
+					return checkValidation;
+				}
 
-			    }
-			    
-			    String workLocationAddr = consumerApplicationDtoParse.getWorkLocationAddr();
-			    
-			    if(checkedWorkLocation.equals(false) && workLocationAddr!=null ) {
-					return Response.response("You are doing wrong because you did not check the condition for work location address details and you are insert details", HttpStatus.BAD_REQUEST, workLocationAddr, null);
-
-			    }
-			    
-			    if(checkedWorkLocation.equals(true) && workLocationAddr==null ) {
-							return Response.response("Work location address should not be null", HttpStatus.BAD_REQUEST, null, null);
-
-					    }
-			    
-			    String descriptionOfWork = consumerApplicationDtoParse.getDescriptionOfWork();
-			   
-			    if( descriptionOfWork==null ) {
-					return Response.response("Short descripton of work should not be null", HttpStatus.BAD_REQUEST, descriptionOfWork, null);
-	
-			    }    
-			  
-			    String guardianName = consumerApplicationDtoParse.getGuardianName();
-			    if(guardianName==null ) {
-					return Response.response("Guardian name should not be null", HttpStatus.BAD_REQUEST, guardianName, null);
-	
-			    }
-			    Boolean checkedGSTfile = consumerApplicationDtoParse.getCheckedGSTfile();
-			    if(checkedGSTfile==null) {
-					return Response.response("Checked box for GST is null", HttpStatus.BAD_REQUEST, null, null);
-	
-			    }
-			    String gstNo = consumerApplicationDtoParse.getGstNo();
-			   
-			   
-                 if( checkedGSTfile.equals(true) && gstFile==null  ) {
-					return Response.response("GST file should not be null", HttpStatus.BAD_REQUEST, null, null);
-			    }  
-			    
-                 if( checkedGSTfile.equals(true) && gstNo==null  ||  checkedGSTfile.equals(true) && gstNo.isEmpty()) {
- 					return Response.response("GST number should not be null", HttpStatus.BAD_REQUEST, null, null);
- 			    }  
- 			    
-			    
-			    if(checkedGSTfile.equals(false) && gstFile!=null  || checkedGSTfile.equals(false) && gstNo!=null ||  checkedGSTfile.equals(false) && !gstNo.isEmpty()) {
-					return Response.response("You are doing wrong because you did not check the condition for GST details and you are insert details", HttpStatus.BAD_REQUEST, null, null);
-	
-			    }  
-			    String address = consumerApplicationDtoParse.getAddress();
-			    if( address==null) {
-					return Response.response("Address should not be null", HttpStatus.BAD_REQUEST, address, null);
-	
-			    }  
-//			
-			 
-			    
-			    if(natureOfWorkId.equals(1L)) {
-		       return setLineShiftingGov(consumerApplicationDtoParse,administrativeFile,gstFile);
-			  	    	
-			    }
-			    
-              if(natureOfWorkId.equals(2L)) {
-			    	
-            return	setLineShiftingNonGov	(consumerApplicationDtoParse,gstFile);
-			    	
-			    }
-              
-              if(natureOfWorkId.equals(3L)) {
-			    	
-			   return setNewServiceConnection(consumerApplicationDtoParse,gstFile);
-			    	
-			    }
-			    
-              if(natureOfWorkId.equals(4L)) {
-			    	
-			    return	setColonyElectrificationLegal(consumerApplicationDtoParse,gstFile,tAndCPpermissionFile,reraPermissionFile,groupPermissionFile);
-			    	
-			    }
-              
-              if(natureOfWorkId.equals(5L)) {
-  			    return	setColonyElectrificationIllegal(consumerApplicationDtoParse,gstFile,registryFile,nOCfile,groupPermissionFile);
-	
-			    	
-			    	
-			    }
-              
-              if(natureOfWorkId.equals(6L)) {
-    			    return	setOYT(consumerApplicationDtoParse,gstFile,khasraKhatoniFile);
-	
-            	 
-			    	
-			    }
-            
 		} 
+			return Response.response("consumerApplicationDto should be not null", HttpStatus.BAD_REQUEST, null, null);
+
 	}
 		catch (Exception e) {
 			e.printStackTrace();
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
 		}
-		return Response.response("consumerApplicationDto should be not null", HttpStatus.BAD_REQUEST, null, null);
 	        
 		
 	}
 
-	
-
-
-
-private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDtoParse, MultipartFile administrativeFile, MultipartFile gstFile) throws Exception {
+private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDtoParse, ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile administrativeFile, MultipartFile gstFile) throws Exception {
 		
-        ConsumerApplication consumerApplication=new ConsumerApplication();
-
           try {
         	  
         	 Long ht11kv = consumerApplicationDtoParse.getHt11KV();
@@ -194,22 +114,6 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
           	Long dtr = consumerApplicationDtoParse.getDtr();
           	Long lt = consumerApplicationDtoParse.getLt();
           	Long ptr = consumerApplicationDtoParse.getPtr();
-        	  
-        	  Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
-        	  
-        	  if(schemeTypeId==null) {
-					return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  String consumerApplicationId = checkSchemeType(schemeTypeId);
-        	  
-        	  if(consumerApplicationId==null) {
-					return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  else {
-        		  consumerApplication.setConsumerApplicationId(consumerApplicationId); 
-        	  }
         	  
         	  if(administrativeFile==null ) {
 					return Response.response("Administrative File should not be null", HttpStatus.BAD_REQUEST, null, null);
@@ -237,7 +141,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 				 else {
 					 return gstUploadFile;
 				 }
-			  
+			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
 			consumerApplication.setHt11KV(consumerApplicationDtoParse.getHt11KV());
 			consumerApplication.setHt132KV(consumerApplicationDtoParse.getHt132KV());
@@ -266,10 +170,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		
 	}
 	
-
-
-	private Response setLineShiftingNonGov(ConsumerApplicationDto consumerApplicationDtoParse, MultipartFile gstFile) throws Exception {
-        ConsumerApplication consumerApplication=new ConsumerApplication();
+	private Response setLineShiftingNonGov(ConsumerApplicationDto consumerApplicationDtoParse, ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile) throws Exception {
         try {
        
         String ivrsNo = consumerApplicationDtoParse.getIvrsNo();
@@ -279,23 +180,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
     	Long dtr = consumerApplicationDtoParse.getDtr();
     	Long lt = consumerApplicationDtoParse.getLt();
     	Long ptr = consumerApplicationDtoParse.getPtr();
-    	
-    	Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
-  	  
-  	  if(schemeTypeId==null) {
-				return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
-
-  	  }
-  	  String consumerApplicationId = checkSchemeType(schemeTypeId);
-  	  
-  	  if(consumerApplicationId==null) {
-				return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);
-
-  	  }
-  	  else {
-  		  consumerApplication.setConsumerApplicationId(consumerApplicationId); 
-  	  }
-    	
+ 
     	if(ivrsNo==null ) {
 			return Response.response("Ivrs number should not be null", HttpStatus.BAD_REQUEST, ivrsNo, null);
     	}
@@ -303,8 +188,6 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
     	if(ht11kv==null && ht132kv==null && ht33kv==null && dtr==null && lt==null && ptr==null) {
 			return Response.response("Supply voltage should not be null", HttpStatus.BAD_REQUEST, null, null);
     	}
-    	
-    
     	
         Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 		 if(gstUploadFile.getStatus()==200){
@@ -314,7 +197,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		 else {
 			 return gstUploadFile;
 		 }
-		 
+	consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
     consumerApplication.setIvrsNo(ivrsNo);
 	consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
 	consumerApplication.setHt11KV(consumerApplicationDtoParse.getHt11KV());
@@ -344,29 +227,10 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		
 	}
 
-
-	
-	private Response setNewServiceConnection(ConsumerApplicationDto consumerApplicationDtoParse, MultipartFile gstFile) throws Exception {
-		  ConsumerApplication consumerApplication=new ConsumerApplication();
+	private Response setNewServiceConnection(ConsumerApplicationDto consumerApplicationDtoParse, ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile) throws Exception {
 
           try {
-        	  
-              Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
-        	  
-        	  if(schemeTypeId==null) {
-					return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
-        	  }
-        	  String consumerApplicationId = checkSchemeType(schemeTypeId);
-        	  
-        	  if(consumerApplicationId==null) {
-					return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  else {
-        		  consumerApplication.setConsumerApplicationId(consumerApplicationId); 
-        	  }
-        	  
         	  Long loadRequested = consumerApplicationDtoParse.getLoadRequested();	  
         	  if(loadRequested==null) {
       			return Response.response("Load requested should not be null", HttpStatus.BAD_REQUEST, loadRequested, null);
@@ -390,8 +254,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
       			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
 	  
       	  }
-        	  
-        	  
+        	    
 				Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 				 if(gstUploadFile.getStatus()==200){
 				FileUploadPathDto fileUploadPathDto=	 (FileUploadPathDto) gstUploadFile.getObject();
@@ -400,7 +263,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 				 else {
 					 return gstUploadFile;
 				 }
-			  
+				 consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
 			consumerApplication.setLoadRequested(loadRequested);
 			consumerApplication.setLoadUnitId(loadUnitId);
@@ -429,31 +292,11 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		
 	}
 
-	
 	private Response setColonyElectrificationLegal(ConsumerApplicationDto consumerApplicationDtoParse,
-			MultipartFile gstFile,MultipartFile tAndCPpermissionFile,MultipartFile reraFile, MultipartFile groupPermissionFile) throws Exception {
+			ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile,MultipartFile tAndCPpermissionFile,MultipartFile reraFile, MultipartFile groupPermissionFile) throws Exception {
 		
-		
-		  ConsumerApplication consumerApplication=new ConsumerApplication();
 
           try {
-        	  
-              Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
-        	  
-        	  if(schemeTypeId==null) {
-					return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  String consumerApplicationId = checkSchemeType(schemeTypeId);
-        	  
-        	  if(consumerApplicationId==null) {
-					return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  else {
-        		  consumerApplication.setConsumerApplicationId(consumerApplicationId); 
-        	  }
-        	  
         	  Long loadRequested = consumerApplicationDtoParse.getLoadRequested();	  
         	  if(loadRequested==null) {
       			return Response.response("Load requested should not be null", HttpStatus.BAD_REQUEST, loadRequested, null);
@@ -468,7 +311,6 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
         	  String landArea = consumerApplicationDtoParse.getLandArea();
         	  if(landArea==null) {
         			return Response.response("Land area should not be null", HttpStatus.BAD_REQUEST, landArea, null);
-	  
         	  }
         	  
         	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();
@@ -545,6 +387,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 					 return gstUploadFile;
 				 }
 			  
+			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);	
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
 			consumerApplication.setLoadRequested(loadRequested);
 			consumerApplication.setLoadUnitId(loadUnitId);
@@ -571,31 +414,12 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		}
 		
 	}
-
 	
 	private Response setColonyElectrificationIllegal(ConsumerApplicationDto consumerApplicationDtoParse,
-			MultipartFile gstFile,MultipartFile registryFile,MultipartFile nOCfile, MultipartFile groupPermissionFile) throws Exception {
+			ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile,MultipartFile registryFile,MultipartFile nOCfile, MultipartFile groupPermissionFile) throws Exception {
 		
 		
-		  ConsumerApplication consumerApplication=new ConsumerApplication();
-
           try {
-        	  
-              Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
-        	  
-        	  if(schemeTypeId==null) {
-					return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  String consumerApplicationId = checkSchemeType(schemeTypeId);
-        	  
-        	  if(consumerApplicationId==null) {
-					return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);
-
-        	  }
-        	  else {
-        		  consumerApplication.setConsumerApplicationId(consumerApplicationId); 
-        	  }
         	  
         	  Long loadRequested = consumerApplicationDtoParse.getLoadRequested();	  
         	  if(loadRequested==null) {
@@ -687,7 +511,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 				 else {
 					 return gstUploadFile;
 				 }
-			  
+			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
 			consumerApplication.setLoadRequested(loadRequested);
 			consumerApplication.setLoadUnitId(loadUnitId);
@@ -717,14 +541,10 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 
 	
 	private Response setOYT(ConsumerApplicationDto consumerApplicationDtoParse,
-			MultipartFile gstFile,MultipartFile khasraKhatoniFile) throws Exception {
+			ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile,MultipartFile khasraKhatoniFile) throws Exception {
 		
-		
-		  ConsumerApplication consumerApplication=new ConsumerApplication();
-
           try {
-        	  
-        	  
+
         	   String khasra = consumerApplicationDtoParse.getKhasra();	  
         	  if(khasra==null) {
       			return Response.response("Khasra should not be null", HttpStatus.BAD_REQUEST, khasra, null);
@@ -749,15 +569,12 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 	  
       	  }
         	  
-        	  
-        	  
+
         	  if(khasraKhatoniFile==null) {
         	return Response.response("Khasra-Khatoni file should not be null", HttpStatus.BAD_REQUEST, null, null);
   
         	  }
-        	  
-        	 
-        	  
+
         	  Response khasraKhatoniUploadFile = Utility.uploadFile(khasraKhatoniFile, "KHASRA-KHATONI_FILE");
 				 if(khasraKhatoniUploadFile.getStatus()==200){
 				FileUploadPathDto fileUploadPathDto=	 (FileUploadPathDto) khasraKhatoniUploadFile.getObject();
@@ -776,17 +593,10 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 				 else {
 					 return gstUploadFile;
 				 }
-				 String consumerApplicationId = checkSchemeType(3L);
-				 if(consumerApplicationId==null) {
-			return Response.response("Scheme type id incorrect", HttpStatus.BAD_REQUEST, null, null);
-
-				 }
-				 else {
-					 consumerApplication.setConsumerApplicationId(consumerApplicationId);	 
-				 }
+			 consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
-		//	consumerApplication.setSchemeTypeId(consumerApplicationDtoParse.getSchemeTypeId());
-		//	consumerApplication.setConsumerId(consumerApplicationDtoParse.getConsumerId());
+			consumerApplication.setSchemeTypeId(consumerApplicationDtoParse.getSchemeTypeId());
+			consumerApplication.setConsumerId(consumerApplicationDtoParse.getConsumerId());
 			consumerApplication.setGuardianName(consumerApplicationDtoParse.getGuardianName());
 			consumerApplication.setKhasra(consumerApplicationDtoParse.getKhasra());
 			consumerApplication.setKhatoni(consumerApplicationDtoParse.getKhatoni());
@@ -811,16 +621,8 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private String checkSchemeType(Long schemeTypeId) {
+
+	private String createApplicationIdBySchemeType(Long schemeTypeId) {
 		String localDateTime = LocalDateTime.now().toString();//2023-07-11T10:31:28.279
 		String localDateTimeReplace = localDateTime.replaceAll("\\-|\\:|[a-zA-z]|\\.", "");
 		String substringDateTime = localDateTimeReplace.substring(0,localDateTimeReplace.length()-3);
@@ -845,4 +647,189 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
        }
 		
 	}
+	
+	public Response  checkValidation(ConsumerApplicationDto consumerApplicationDtoParse, MultipartFile gstFile) throws Exception{
+		
+		    try {
+		    	
+		    	Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();					 
+				if(schemeTypeId==null) {
+					return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+				}
+		    	
+				Long natureOfWorkId = consumerApplicationDtoParse.getNatureOfWorkId();
+
+				if(natureOfWorkId==null) {
+					return Response.response("Nature of work id should not be null", HttpStatus.BAD_REQUEST, natureOfWorkId, null);
+
+				}
+				if(natureOfWorkId>6) {
+					return Response.response("Nature of work id incorrect", HttpStatus.BAD_REQUEST, natureOfWorkId, null);
+				}
+				
+				Long consumerId = consumerApplicationDtoParse.getConsumerId();
+				if(consumerId==null) {
+					return Response.response("Consumer id should not be null", HttpStatus.BAD_REQUEST, consumerId, null);
+				}
+				
+				Long districtId = consumerApplicationDtoParse.getDistrictId();
+
+				if(districtId==null) {
+					return Response.response("District id should not be null", HttpStatus.BAD_REQUEST, districtId, null);
+				}
+				
+				Long pincode = consumerApplicationDtoParse.getPincode();
+				
+				if(pincode==null) {
+					return Response.response("Pin code should not be null", HttpStatus.BAD_REQUEST, districtId, null);
+				}
+				
+				Boolean checkedWorkLocation = consumerApplicationDtoParse.getCheckedWorkLocation();
+				
+				if(checkedWorkLocation==null) {
+					return Response.response("Checked box for work location is null", HttpStatus.BAD_REQUEST, null, null);
+
+				}
+				
+				String workLocationAddr = consumerApplicationDtoParse.getWorkLocationAddr();
+				
+				if(checkedWorkLocation.equals(false) && workLocationAddr!=null ) {
+					return Response.response("You are doing wrong because you did not check the condition for work location address details and you are insert details", HttpStatus.BAD_REQUEST, workLocationAddr, null);
+
+				}
+				
+				if(checkedWorkLocation.equals(true) && workLocationAddr==null ) {
+							return Response.response("Work location address should not be null", HttpStatus.BAD_REQUEST, null, null);
+
+					    }
+				
+				String descriptionOfWork = consumerApplicationDtoParse.getDescriptionOfWork();
+   
+				if( descriptionOfWork==null ) {
+					return Response.response("Short descripton of work should not be null", HttpStatus.BAD_REQUEST, descriptionOfWork, null);
+
+				}    
+  
+				String guardianName = consumerApplicationDtoParse.getGuardianName();
+				if(guardianName==null ) {
+					return Response.response("Guardian name should not be null", HttpStatus.BAD_REQUEST, guardianName, null);
+
+				}
+				Boolean checkedGSTfile = consumerApplicationDtoParse.getCheckedGSTfile();
+				if(checkedGSTfile==null) {
+					return Response.response("Checked box for GST is null", HttpStatus.BAD_REQUEST, null, null);
+
+				}
+				String gstNo = consumerApplicationDtoParse.getGstNo();
+   
+   
+        if( checkedGSTfile.equals(true) && gstFile==null  ) {
+					return Response.response("GST file should not be null", HttpStatus.BAD_REQUEST, null, null);
+				}  
+				
+        if( checkedGSTfile.equals(true) && gstNo==null  ||  checkedGSTfile.equals(true) && gstNo.isEmpty()) {
+					return Response.response("GST number should not be null", HttpStatus.BAD_REQUEST, null, null);
+				}  
+				
+				
+				if(checkedGSTfile.equals(false) && gstFile!=null  || checkedGSTfile.equals(false) && gstNo!=null ||  checkedGSTfile.equals(false) && !gstNo.isEmpty()) {
+					return Response.response("You are doing wrong because you did not check the condition for GST details and you are insert details", HttpStatus.BAD_REQUEST, null, null);
+
+				}  
+				String address = consumerApplicationDtoParse.getAddress();
+				if( address==null) {
+					return Response.response("Address should not be null", HttpStatus.BAD_REQUEST, address, null);
+
+				}
+				return null;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+
+		
+	}
+	
+
+	@Override
+	@org.springframework.transaction.annotation.Transactional
+	public Response update(String consumerApplicationDto, MultipartFile tAndCPpermissionFile,
+			MultipartFile reraPermissionFile, MultipartFile groupPermissionFile, MultipartFile registryFile,
+			MultipartFile nOCfile, MultipartFile administrativeFile, MultipartFile gstFile,
+			MultipartFile khasraKhatoniFile) {
+		
+		try {
+			if(consumerApplicationDto!=null) {
+				
+				 ObjectMapper objectMapper = new ObjectMapper();
+
+				ConsumerApplicationDto consumerApplicationDtoParse = objectMapper.readValue(consumerApplicationDto, ConsumerApplicationDto.class);
+ 
+				Long natureOfWorkId = consumerApplicationDtoParse.getNatureOfWorkId();
+				
+				Response checkValidation = checkValidation(consumerApplicationDtoParse,gstFile);
+			
+				if(checkValidation==null) {					
+					Long consumerId = consumerApplicationDtoParse.getConsumerId();
+					String consumerApplicationId = consumerApplicationDtoParse.getConsumerApplicationId();
+
+					if(consumerApplicationId==null) {
+						return Response.response("Consumer application id should not be null", HttpStatus.BAD_REQUEST, consumerApplicationId, null);
+					}
+					ConsumerApplication consumerApplication = consumerApplicationRepository.getConsumerApplicationByConsumerIdAndConsumerApplicationNumber(consumerId,consumerApplicationId);
+					
+				      if(consumerApplication==null) {
+							return Response.response("Data not found for this application id", HttpStatus.NOT_FOUND, consumerApplicationId, null);
+				      }
+					
+					if(natureOfWorkId.equals(1L)) {
+							
+					       return setLineShiftingGov(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,administrativeFile,gstFile);
+						  	    	
+						    }
+						    
+			              if(natureOfWorkId.equals(2L)) {
+						    	
+			            return	setLineShiftingNonGov	(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,gstFile);
+						    	
+						    }
+			              
+			              if(natureOfWorkId.equals(3L)) {
+						    	
+						   return setNewServiceConnection(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,gstFile);
+						    	
+						    }
+						    
+			              if(natureOfWorkId.equals(4L)) {
+						    	
+						    return	setColonyElectrificationLegal(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,gstFile,tAndCPpermissionFile,reraPermissionFile,groupPermissionFile);
+						    	
+						    }
+			              
+			              if(natureOfWorkId.equals(5L)) {
+			  			    return	setColonyElectrificationIllegal(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,gstFile,registryFile,nOCfile,groupPermissionFile);
+				
+						    }
+			              
+			              if(natureOfWorkId.equals(6L)) {
+			    			    return	setOYT(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,gstFile,khasraKhatoniFile);    	
+						    }				
+				}
+				else {
+					return checkValidation;
+				}
+
+		} 
+			return Response.response("consumerApplicationDto should be not null", HttpStatus.BAD_REQUEST, null, null);
+
+
+	}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}
+	}
+
 }
