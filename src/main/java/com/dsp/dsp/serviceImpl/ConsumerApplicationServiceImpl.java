@@ -198,11 +198,9 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
         			return Response.response("Land area should not be null", HttpStatus.BAD_REQUEST, landArea, null);
         	  }
         	  
-        	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();
-        	  
+        	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();        	  
         	  if(landAreaUnitId==null) {
-      			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
-	  
+      			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);	  
       	  } 
 				Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 				 if(gstUploadFile.getStatus()==200){
@@ -257,8 +255,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
         			return Response.response("Land area should not be null", HttpStatus.BAD_REQUEST, landArea, null);
         	  }
         	  
-        	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();
-        	  
+        	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();        	  
         	  if(landAreaUnitId==null) {
       			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
       	  }
@@ -359,8 +356,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
         	  if(loadRequested==null) {
       			return Response.response("Load requested should not be null", HttpStatus.BAD_REQUEST, loadRequested, null);  
         	  }
-        	  Long loadUnitId = consumerApplicationDtoParse.getLoadUnitId();
-        	  
+        	  Long loadUnitId = consumerApplicationDtoParse.getLoadUnitId();      	  
         	  if(loadUnitId==null) {
         			return Response.response("Load unit id should not be null", HttpStatus.BAD_REQUEST, loadUnitId, null);
         	  }
@@ -370,16 +366,13 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
         			return Response.response("Land area should not be null", HttpStatus.BAD_REQUEST, landArea, null);  
         	  }
         	  
-        	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();
-        	  
+        	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();        	  
         	  if(landAreaUnitId==null) {
-      			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
-	  
+      			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);	  
       	  }
         	  String noOfPlots = consumerApplicationDtoParse.getNoOfPlots();
         	  if(noOfPlots==null) {
-        			return Response.response("Number of plots should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
-  	  
+        			return Response.response("Number of plots should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);  	  
         	  }
         	  Long applyTypeId = consumerApplicationDtoParse.getApplyTypeId();
         	  
@@ -397,8 +390,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
               	  }
         	  
         	  if(applyTypeId.equals(2L) && groupPermissionFile==null) {
-                	return Response.response("Group permission file file should not be null", HttpStatus.BAD_REQUEST, null, null);
-  
+                	return Response.response("Group permission file file should not be null", HttpStatus.BAD_REQUEST, null, null); 
         	  }
         	  
         	  Response registryUploadFile = Utility.uploadFile(registryFile, "REGISTRY_FILE");
@@ -427,8 +419,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
  				  }
  				 else {
  					 return groupUploadFile;
- 				 } 
-        		  
+ 				 }        		  
         	  }
         	  
 				Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
@@ -460,8 +451,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
-		} catch (Exception  e) {
-			
+		} catch (Exception  e) {			
 			throw e;
 		}		
 	}
@@ -475,27 +465,23 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
       			return Response.response("Khasra should not be null", HttpStatus.BAD_REQUEST, khasra, null);
 	  
         	  }
-        	  String khatoni = consumerApplicationDtoParse.getKhatoni();
-        	  
+        	  String khatoni = consumerApplicationDtoParse.getKhatoni();        	  
         	  if(khatoni==null) {
         			return Response.response("Khatoni should not be null", HttpStatus.BAD_REQUEST, khatoni, null);
         	  }
 			 
         	  String landArea = consumerApplicationDtoParse.getLandArea();
         	  if(landArea==null) {
-        			return Response.response("Land area should not be null", HttpStatus.BAD_REQUEST, landArea, null);
-	  
+        			return Response.response("Land area should not be null", HttpStatus.BAD_REQUEST, landArea, null);	  
         	  } 	  
         	  Long landAreaUnitId = consumerApplicationDtoParse.getLandAreaUnitId();
         	  
         	  if(landAreaUnitId==null) {
-      			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
-	  
+      			return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);	  
       	  }	  
 
         	  if(khasraKhatoniFile==null) {
-        	return Response.response("Khasra-Khatoni file should not be null", HttpStatus.BAD_REQUEST, null, null);
-  
+        	return Response.response("Khasra-Khatoni file should not be null", HttpStatus.BAD_REQUEST, null, null);  
         	  }
 
         	  Response khasraKhatoniUploadFile = Utility.uploadFile(khasraKhatoniFile, "KHASRA-KHATONI_FILE");
@@ -505,8 +491,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 				  }
 				 else {
 					 return khasraKhatoniUploadFile;
-				 }
-        	  
+				 }        	  
 				Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 				 if(gstUploadFile.getStatus()==200){
 				FileUploadPathDto fileUploadPathDto=	 (FileUploadPathDto) gstUploadFile.getObject();
@@ -536,11 +521,9 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
-		} catch (Exception  e) {
-			
+		} catch (Exception  e) {			
 			throw e;
-		}
-		
+		}		
 	}
 
 	private String createApplicationIdBySchemeType(Long schemeTypeId) {
@@ -555,13 +538,10 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
        if(schemeTypeId==2L) {
     	   return	consumerApplicationId=	"DS"+substringDateTime;
 	
-		}
-       
+		}       
        if(schemeTypeId==3L) {
     	   return	consumerApplicationId=	"SV"+substringDateTime;
-
-		}
-       
+		}      
        else {
     	   return null;
        }
@@ -573,43 +553,36 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 		    	Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();					 
 				if(schemeTypeId==null) {
 					return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
-
 				}    	
 				Long natureOfWorkId = consumerApplicationDtoParse.getNatureOfWorkId();
-
 				if(natureOfWorkId==null) {
 					return Response.response("Nature of work id should not be null", HttpStatus.BAD_REQUEST, natureOfWorkId, null);
 
 				}
 				if(natureOfWorkId>6) {
 					return Response.response("Nature of work id incorrect", HttpStatus.BAD_REQUEST, natureOfWorkId, null);
-				}
-				
+				}				
 				Long consumerId = consumerApplicationDtoParse.getConsumerId();
 				if(consumerId==null) {
 					return Response.response("Consumer id should not be null", HttpStatus.BAD_REQUEST, consumerId, null);
 				}
 				
 				Long districtId = consumerApplicationDtoParse.getDistrictId();
-
 				if(districtId==null) {
 					return Response.response("District id should not be null", HttpStatus.BAD_REQUEST, districtId, null);
 				}
 				
-				Long pincode = consumerApplicationDtoParse.getPincode();
-				
+				Long pincode = consumerApplicationDtoParse.getPincode();				
 				if(pincode==null) {
 					return Response.response("Pin code should not be null", HttpStatus.BAD_REQUEST, districtId, null);
 				}
 				
-				Boolean checkedWorkLocation = consumerApplicationDtoParse.getCheckedWorkLocation();
-				
+				Boolean checkedWorkLocation = consumerApplicationDtoParse.getCheckedWorkLocation();				
 				if(checkedWorkLocation==null) {
 					return Response.response("Checked box for work location is null", HttpStatus.BAD_REQUEST, null, null);
 				}
 				
-				String workLocationAddr = consumerApplicationDtoParse.getWorkLocationAddr();
-				
+				String workLocationAddr = consumerApplicationDtoParse.getWorkLocationAddr();				
 				if(checkedWorkLocation.equals(false) && workLocationAddr!=null ) {
 					return Response.response("You are doing wrong because you did not check the condition for work location address details and you are insert details", HttpStatus.BAD_REQUEST, workLocationAddr, null);
 				}
@@ -619,7 +592,6 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 					    }
 				
 				String descriptionOfWork = consumerApplicationDtoParse.getDescriptionOfWork();
-   
 				if( descriptionOfWork==null ) {
 					return Response.response("Short descripton of work should not be null", HttpStatus.BAD_REQUEST, descriptionOfWork, null);
 				}      
@@ -630,7 +602,6 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 				Boolean checkedGSTfile = consumerApplicationDtoParse.getCheckedGSTfile();
 				if(checkedGSTfile==null) {
 					return Response.response("Checked box for GST is null", HttpStatus.BAD_REQUEST, null, null);
-
 				}
 				String gstNo = consumerApplicationDtoParse.getGstNo();
  
@@ -654,7 +625,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
-			}	
+				}	
 	}
 
 	@Override
