@@ -11,4 +11,6 @@ public interface ConsumerApplicationService {
 	
 	Response update(String consumerApplicationDto, MultipartFile tAndCPpermissionFile, MultipartFile reraPermissionFile, MultipartFile grouppermissionFile, MultipartFile registryFile, MultipartFile nOCfile, MultipartFile administrativeFile, MultipartFile gstFile, MultipartFile khasraKhatoniFile);
 
+	Response pendingForGeoLocationApplication(String mobileNo);
+
 }

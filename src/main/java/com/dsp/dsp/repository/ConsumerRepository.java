@@ -15,5 +15,4 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long>{
 //	@Query(value="select * from MOBILE_NUMBER=:mNo and PASSWORD=:pass",nativeQuery = true)
 //	public Consumer getLoginDetailByMobileAndPassword(@Param("mNo") String mobile,@Param("pass") String password)	;
 
-
 }

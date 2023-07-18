@@ -131,9 +131,9 @@ public class ConsumerApplication {
     @Column(name="IS_ACTIVE")
    	private Boolean isActive;
     
+    @Column(name="APPLICATION_STATUS_ID")
+   	private Long applicationStatusId;
     
-    
-
 	public ConsumerApplication() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -510,8 +510,20 @@ public class ConsumerApplication {
 	}
 
 
-	
-	
-    
-   
+	public Long getSr_No() {
+		return sr_No;
+	}
+
+
+	public void setSr_No(Long sr_No) {
+		this.sr_No = sr_No;
+	}
+
+	public Long getApplicationStatusId() {
+		return applicationStatusId;
+	}
+
+	public void setApplicationStatusId(Long applicationStatusId) {
+		this.applicationStatusId = applicationStatusId;
+	}
 }

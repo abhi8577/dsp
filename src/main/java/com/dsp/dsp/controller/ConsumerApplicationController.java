@@ -1,6 +1,8 @@
 package com.dsp.dsp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -48,4 +50,10 @@ public class ConsumerApplicationController {
 
 		return consumerApplicationService.update(consumerApplicationDto,TAndCPpermissionFile,reraPermissionFile,grouppermissionFile,registryFile,NOCfile,administrativeFile,gstFile,khasraKhatoniFile);
 }
+	
+	@GetMapping("/pending_for_geo_location/{mobileNo}")
+	public Response pendingForGeoLocationApplication(@PathVariable(name="mobileNo") String mobileNo) {
+		return consumerApplicationService.pendingForGeoLocationApplication(mobileNo);
+	}
+	
 }
