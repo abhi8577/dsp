@@ -518,12 +518,18 @@ public class ConsumerApplication {
 	public void setSr_No(Long sr_No) {
 		this.sr_No = sr_No;
 	}
-
 	public Long getApplicationStatusId() {
 		return applicationStatusId;
 	}
 
+
 	public void setApplicationStatusId(Long applicationStatusId) {
 		this.applicationStatusId = applicationStatusId;
 	}
+
+
+	
+	
+    
+   
 }

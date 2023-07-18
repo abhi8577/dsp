@@ -34,6 +34,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	@Autowired
 	ApplicationStatusRepository applicationStatusRepository;
 
+	
 	@Override
 	@org.springframework.transaction.annotation.Transactional
 	public Response submit(String consumerApplicationDto, MultipartFile tAndCPpermissionFile,
@@ -128,7 +129,9 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
+			
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
 		} catch (Exception  e) {		
@@ -137,7 +140,55 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	}
 
 	private Response setLineShiftingNonGov(ConsumerApplicationDto consumerApplicationDtoParse, ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile) throws Exception {
-		try {
+        try {
+       
+        String ivrsNo = consumerApplicationDtoParse.getIvrsNo();
+    	Long ht11kv = consumerApplicationDtoParse.getHt11KV();
+    	Long ht132kv = consumerApplicationDtoParse.getHt132KV();
+    	Long ht33kv = consumerApplicationDtoParse.getHt33KV();
+    	Long dtr = consumerApplicationDtoParse.getDtr();
+    	Long lt = consumerApplicationDtoParse.getLt();
+    	Long ptr = consumerApplicationDtoParse.getPtr();
+ 
+    	if(ivrsNo==null ) {
+			return Response.response("Ivrs number should not be null", HttpStatus.BAD_REQUEST, ivrsNo, null);
+    	}
+    	
+    	if(ht11kv==null && ht132kv==null && ht33kv==null && dtr==null && lt==null && ptr==null) {
+			return Response.response("Supply voltage should not be null", HttpStatus.BAD_REQUEST, null, null);
+    	}
+    	
+        Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
+		 if(gstUploadFile.getStatus()==200){
+		FileUploadPathDto fileUploadPathDto=	 (FileUploadPathDto) gstUploadFile.getObject();
+		consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());  
+		  }
+		 else {
+			 return gstUploadFile;
+		 }
+	consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
+    consumerApplication.setIvrsNo(ivrsNo);
+	consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
+	consumerApplication.setHt11KV(consumerApplicationDtoParse.getHt11KV());
+	consumerApplication.setHt132KV(consumerApplicationDtoParse.getHt132KV());
+	consumerApplication.setHt33KV(consumerApplicationDtoParse.getHt33KV());
+	consumerApplication.setDtr( consumerApplicationDtoParse.getDtr());
+	consumerApplication.setLt(consumerApplicationDtoParse.getLt());
+	consumerApplication.setSchemeTypeId(consumerApplicationDtoParse.getSchemeTypeId());
+	consumerApplication.setConsumerId(consumerApplicationDtoParse.getConsumerId());
+	consumerApplication.setGuardianName(consumerApplicationDtoParse.getGuardianName());
+	consumerApplication.setAddress(consumerApplicationDtoParse.getAddress());
+	consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
+	consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
+	consumerApplication.setDcId( consumerApplicationDtoParse.getDcId());
+	consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
+	consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
+	consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
+	consumerApplication.setCreatedTime(LocalDateTime.now().toString());
+	consumerApplication.setIsActive(true);
+	consumerApplication.setApplicationStatusId(4L);
+	ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
+	return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
 			String ivrsNo = consumerApplicationDtoParse.getIvrsNo();
 			Long ht11kv = consumerApplicationDtoParse.getHt11KV();
@@ -239,6 +290,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -350,6 +402,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -459,6 +512,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -529,6 +583,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
