@@ -16,4 +16,6 @@ public interface ConsumerApplicationRepository extends JpaRepository<ConsumerApp
 	 public ConsumerApplication getConsumerApplicationByConsumerIdAndConsumerApplicationNumber(@Param("cId") Long consumerId , @Param("caId") String consumerApplicationId);
 
 	List<ConsumerApplication> findByConsumerId(Long consumerId);
+	
+	ConsumerApplication findByConsumerApplicationId(String consumerApplicationId);
 }

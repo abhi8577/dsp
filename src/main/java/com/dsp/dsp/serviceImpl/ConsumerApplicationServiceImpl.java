@@ -14,12 +14,16 @@ import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.ConsumerApplication;
+import com.dsp.dsp.model.GeoLocation;
 import com.dsp.dsp.repository.ApplicationStatusRepository;
 import com.dsp.dsp.repository.ConsumerApplicationRepository;
 import com.dsp.dsp.repository.ConsumerRepository;
+import com.dsp.dsp.repository.GeoLocationRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -34,7 +38,9 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	@Autowired
 	ApplicationStatusRepository applicationStatusRepository;
 
-	
+	@Autowired
+	GeoLocationRepository geoLocationRepository;
+
 	@Override
 	@org.springframework.transaction.annotation.Transactional
 	public Response submit(String consumerApplicationDto, MultipartFile tAndCPpermissionFile,
@@ -131,7 +137,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setIsActive(true);
 			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
-			
+
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
 		} catch (Exception  e) {		
@@ -140,55 +146,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	}
 
 	private Response setLineShiftingNonGov(ConsumerApplicationDto consumerApplicationDtoParse, ConsumerApplication consumerApplication, String createApplicationIdBySchemeType, MultipartFile gstFile) throws Exception {
-        try {
-       
-        String ivrsNo = consumerApplicationDtoParse.getIvrsNo();
-    	Long ht11kv = consumerApplicationDtoParse.getHt11KV();
-    	Long ht132kv = consumerApplicationDtoParse.getHt132KV();
-    	Long ht33kv = consumerApplicationDtoParse.getHt33KV();
-    	Long dtr = consumerApplicationDtoParse.getDtr();
-    	Long lt = consumerApplicationDtoParse.getLt();
-    	Long ptr = consumerApplicationDtoParse.getPtr();
- 
-    	if(ivrsNo==null ) {
-			return Response.response("Ivrs number should not be null", HttpStatus.BAD_REQUEST, ivrsNo, null);
-    	}
-    	
-    	if(ht11kv==null && ht132kv==null && ht33kv==null && dtr==null && lt==null && ptr==null) {
-			return Response.response("Supply voltage should not be null", HttpStatus.BAD_REQUEST, null, null);
-    	}
-    	
-        Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
-		 if(gstUploadFile.getStatus()==200){
-		FileUploadPathDto fileUploadPathDto=	 (FileUploadPathDto) gstUploadFile.getObject();
-		consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());  
-		  }
-		 else {
-			 return gstUploadFile;
-		 }
-	consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
-    consumerApplication.setIvrsNo(ivrsNo);
-	consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
-	consumerApplication.setHt11KV(consumerApplicationDtoParse.getHt11KV());
-	consumerApplication.setHt132KV(consumerApplicationDtoParse.getHt132KV());
-	consumerApplication.setHt33KV(consumerApplicationDtoParse.getHt33KV());
-	consumerApplication.setDtr( consumerApplicationDtoParse.getDtr());
-	consumerApplication.setLt(consumerApplicationDtoParse.getLt());
-	consumerApplication.setSchemeTypeId(consumerApplicationDtoParse.getSchemeTypeId());
-	consumerApplication.setConsumerId(consumerApplicationDtoParse.getConsumerId());
-	consumerApplication.setGuardianName(consumerApplicationDtoParse.getGuardianName());
-	consumerApplication.setAddress(consumerApplicationDtoParse.getAddress());
-	consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
-	consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-	consumerApplication.setDcId( consumerApplicationDtoParse.getDcId());
-	consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
-	consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
-	consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
-	consumerApplication.setCreatedTime(LocalDateTime.now().toString());
-	consumerApplication.setIsActive(true);
-	consumerApplication.setApplicationStatusId(4L);
-	ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
-	return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
+		try {
 
 			String ivrsNo = consumerApplicationDtoParse.getIvrsNo();
 			Long ht11kv = consumerApplicationDtoParse.getHt11KV();
@@ -234,8 +192,10 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
+
 
 		} catch (Exception  e) {	
 			throw e;
@@ -796,8 +756,93 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			return Response.response("No Application Pending for GeoLocation", 
 					HttpStatus.NOT_FOUND, null, null);
 		}
-		
+
 		return Response.response("Pending Application For GeoLocation in This Consumer Number", 
 				HttpStatus.OK, dtos, null);
+	}
+
+	@Override
+	public Response addGeoLocation(String geoLocationAddForm, MultipartFile startDoc, MultipartFile endDoc) {
+
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			GeoLocation geoLocation = objectMapper.readValue(geoLocationAddForm, GeoLocation.class);
+
+			String consumerApplicationNo =  geoLocation.getConsumerApplicationNo();
+
+			if(consumerApplicationNo == null) {
+				return Response.response("Please Fill Consumer Application Number", 
+						HttpStatus.NOT_FOUND, null, null);
+			}
+
+			if(startDoc == null) {
+				return Response.response("Please Attach Start Document", 
+						HttpStatus.NOT_FOUND, null, null);
+			}
+
+			if(endDoc == null) {
+				return Response.response("Please Attach End Document", 
+						HttpStatus.NOT_FOUND, null, null);
+			}
+
+			GeoLocation findByConsumerApplicationNo = geoLocationRepository.findByConsumerApplicationNo(consumerApplicationNo);
+			if(findByConsumerApplicationNo!=null) {
+				return Response.response("Geo Location Already Captured For This Application Number", 
+						HttpStatus.CONFLICT, null, null);
+			}
+			GeoLocation location =  new GeoLocation();
+
+			Response startDocumentFile;
+			Response endDocumentFile;
+			try {
+				startDocumentFile = Utility.uploadFile(startDoc, "START-"+consumerApplicationNo);
+				if(startDocumentFile.getStatus()==200){
+					FileUploadPathDto fileUploadPathDto=(FileUploadPathDto) startDocumentFile.getObject();
+					location.setStartDocPath(fileUploadPathDto.getFilePath());  
+				}
+				else {
+					return startDocumentFile;
+				}
+
+				endDocumentFile = Utility.uploadFile(endDoc, "END-"+consumerApplicationNo);
+				if(endDocumentFile.getStatus()==200){
+					FileUploadPathDto fileUploadPathDto=(FileUploadPathDto) endDocumentFile.getObject();
+					location.setEndDocPath(fileUploadPathDto.getFilePath());  
+				}
+				else {
+					return endDocumentFile;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			location.setConsumerApplicationNo(consumerApplicationNo);
+			location.setStartingLatitude(geoLocation.getStartingLatitude());
+			location.setStartingLongitude(geoLocation.getStartingLongitude());
+			location.setEndingLatitude(geoLocation.getEndingLatitude());
+			location.setEndingLongitude(geoLocation.getEndingLongitude());
+			location.setIsActive(true);
+			location.setCreatedTime(LocalDateTime.now().toString());
+			
+			GeoLocation save = geoLocationRepository.save(location);
+
+			if(save != null) {			
+				ConsumerApplication consumerApplication = consumerApplicationRepository.findByConsumerApplicationId(consumerApplicationNo);
+				if(consumerApplication!= null) {
+					consumerApplication.setApplicationStatusId(5L);
+					consumerApplicationRepository.save(consumerApplication);
+				}
+				return Response.response("Geo Location Captured", 
+						HttpStatus.OK, save, null);
+			}
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		return Response.response("Geo Location Not Captured", 
+				HttpStatus.OK, null, null);
 	}
 }

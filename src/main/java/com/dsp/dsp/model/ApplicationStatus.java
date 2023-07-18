@@ -14,7 +14,7 @@ public class ApplicationStatus {
 	private Long applicationStatusId;
 	
 	@Column(name="APPLICATION_STATUS_NAME")
-	private Long applicationStatusName;
+	private String applicationStatusName;
 
 	public Long getApplicationStatusId() {
 		return applicationStatusId;
@@ -24,15 +24,12 @@ public class ApplicationStatus {
 		this.applicationStatusId = applicationStatusId;
 	}
 
-	public Long getApplicationStatusName() {
+	public String getApplicationStatusName() {
 		return applicationStatusName;
 	}
 
-	public void setApplicationStatusName(Long applicationStatusName) {
+	public void setApplicationStatusName(String applicationStatusName) {
 		this.applicationStatusName = applicationStatusName;
 	}
-	
-	
-	
 
 }

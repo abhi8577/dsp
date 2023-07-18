@@ -20,7 +20,7 @@ public class ConsumerApplicationController {
 
 	@Autowired
 	ConsumerApplicationService consumerApplicationService;
-	
+
 	@PostMapping("/submit")
 	public Response consumerApplicationFormSubmit(@RequestPart String consumerApplicationDto,
 			@RequestPart(value="TAndCPpermissionFile",required = false) MultipartFile TAndCPpermissionFile,
@@ -31,11 +31,11 @@ public class ConsumerApplicationController {
 			@RequestPart(value="administrativeFile",required = false) MultipartFile administrativeFile,
 			@RequestPart(value="gstFile",required = false) MultipartFile gstFile,
 			@RequestPart(value="khasraKhatoniFile",required = false) MultipartFile khasraKhatoniFile ) {
-		
+
 
 		return consumerApplicationService.submit(consumerApplicationDto,TAndCPpermissionFile,reraPermissionFile,grouppermissionFile,registryFile,NOCfile,administrativeFile,gstFile,khasraKhatoniFile);
-}
-	
+	}
+
 	@PostMapping("/update")
 	public Response consumerApplicationFormUpdate(@RequestPart String consumerApplicationDto,
 			@RequestPart(value="TAndCPpermissionFile",required = false) MultipartFile TAndCPpermissionFile,
@@ -46,14 +46,21 @@ public class ConsumerApplicationController {
 			@RequestPart(value="administrativeFile",required = false) MultipartFile administrativeFile,
 			@RequestPart(value="gstFile",required = false) MultipartFile gstFile,
 			@RequestPart(value="khasraKhatoniFile",required = false) MultipartFile khasraKhatoniFile ) {
-		
 
 		return consumerApplicationService.update(consumerApplicationDto,TAndCPpermissionFile,reraPermissionFile,grouppermissionFile,registryFile,NOCfile,administrativeFile,gstFile,khasraKhatoniFile);
-}
-	
+	}
+
 	@GetMapping("/pending_for_geo_location/{mobileNo}")
 	public Response pendingForGeoLocationApplication(@PathVariable(name="mobileNo") String mobileNo) {
 		return consumerApplicationService.pendingForGeoLocationApplication(mobileNo);
 	}
-	
+
+	@PostMapping("/geo_location_add")
+	public Response addGeoLocation(@RequestPart String geoLocationAddForm,
+			@RequestPart(value="startDocPath",required = false) MultipartFile startDocPath,
+			@RequestPart(value="endDocPath",required = false) MultipartFile endDocPath) {
+
+		return consumerApplicationService.addGeoLocation(geoLocationAddForm,startDocPath,endDocPath);
+
+	}
 }
