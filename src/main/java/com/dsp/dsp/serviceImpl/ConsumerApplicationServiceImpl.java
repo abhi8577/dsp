@@ -23,6 +23,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	ConsumerApplicationRepository consumerApplicationRepository;
 	
 	
+	
 	@Override
 	@org.springframework.transaction.annotation.Transactional
 	public Response submit(String consumerApplicationDto, MultipartFile tAndCPpermissionFile,
@@ -117,7 +118,9 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
+			
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
 		} catch (Exception  e) {		
@@ -172,6 +175,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 	consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 	consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 	consumerApplication.setIsActive(true);
+	consumerApplication.setApplicationStatusId(4L);
 	ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 	return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -228,6 +232,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -339,6 +344,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -448,6 +454,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -518,6 +525,7 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
+			consumerApplication.setApplicationStatusId(4L);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -695,6 +703,6 @@ private Response setLineShiftingGov(ConsumerApplicationDto consumerApplicationDt
            if(natureOfWorkId.equals(6L)) {
  			    return	setOYT(consumerApplicationDtoParse,consumerApplication,consumerApplicationId,gstFile,khasraKhatoniFile);    	
 			    }
-           return null;
+			return Response.response("Invalid nature of work id ", HttpStatus.BAD_REQUEST, null, null);
            }
 }

@@ -131,6 +131,9 @@ public class ConsumerApplication {
     @Column(name="IS_ACTIVE")
    	private Boolean isActive;
     
+    @Column(name="APPLICATION_STATUS_ID")
+   	private Long applicationStatusId;
+    
     
     
 
@@ -507,6 +510,16 @@ public class ConsumerApplication {
 
 	public void setPtr(Long ptr) {
 		this.ptr = ptr;
+	}
+
+
+	public Long getApplicationStatusId() {
+		return applicationStatusId;
+	}
+
+
+	public void setApplicationStatusId(Long applicationStatusId) {
+		this.applicationStatusId = applicationStatusId;
 	}
 
 
