@@ -1,12 +1,19 @@
 package com.dsp.dsp.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dsp.dsp.model.ApplyType;
@@ -61,16 +68,16 @@ public class MasterController {
 
 	@Autowired
 	ApplyTypeRepository applyTypeRepository;
-	
+
 	@Autowired
 	RegionRepository regionRepository;
-	
+
 	@Autowired
 	CircleRepository circleRepository;
-	
+
 	@Autowired
 	DivisionRepository divisionRepository;
-	
+
 	@Autowired
 	SubDivisionRepository subDivisionRepository;
 
@@ -224,7 +231,7 @@ public class MasterController {
 
 		}
 	}
-	
+
 	@GetMapping("/get_circle_by_region/{regionCode}")
 	public Response getCircleByRegion(@PathVariable(name ="regionCode") Long regionCode) {
 		try {
@@ -240,7 +247,7 @@ public class MasterController {
 
 		}
 	}
-	
+
 	@GetMapping("/get_division_by_circle/{circleId}")
 	public Response getDivisioneByCircle(@PathVariable(name ="circleId") Long circleCode) {
 		try {
@@ -256,7 +263,7 @@ public class MasterController {
 
 		}
 	}
-	
+
 	@GetMapping("/get_sub_division_by_division/{divisionId}")
 	public Response getSubDivisioneByDivision(@PathVariable(name ="divisionId") Long divisionId) {
 		try {
@@ -272,7 +279,7 @@ public class MasterController {
 
 		}
 	}
-	
+
 	@GetMapping("/get_dc_by_sub_division/{subDivisionId}")
 	public Response getDcBySubDivision(@PathVariable(name ="subDivisionId") Long subDivisionId) {
 		try {
@@ -288,7 +295,7 @@ public class MasterController {
 
 		}
 	}
-	
+
 	@GetMapping("/get_dc_by_district/{districtId}")
 	public Response getDcByDitrictId(@PathVariable(name ="districtId") Long districtId) {
 		try {
@@ -303,5 +310,33 @@ public class MasterController {
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
 		}
+	}
+
+	@GetMapping("/downloadpdf")
+	public ResponseEntity<byte[]> downloadFileForGallery(@RequestParam("path") String filePath)  {
+		byte[] readAllBytes = null;
+		HttpHeaders headers = null;
+		try {
+			String file =filePath.replace("\\", "/");
+
+			double random1=  Math.random();
+			String random=String.valueOf(random1);
+			System.out.println(random);
+			random=random.substring(random.indexOf(".")+1);
+			Path path = Paths.get(file);
+			readAllBytes = Files.readAllBytes(path);
+			headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_PDF);
+			headers.set("Content-Disposition",
+					String.format("attachment; filename=document"+".pdf"));
+		} catch (Exception e) {
+
+			return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);	 
+
+		}
+
+		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(readAllBytes, headers, HttpStatus.OK);	 
+
+		return responseEntity;
 	}
 }
