@@ -2,15 +2,17 @@ package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.Base64.Encoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
-import com.dsp.dsp.model.Consumer;
+
 import com.dsp.dsp.model.DiscomUser;
 import com.dsp.dsp.repository.DiscomUserRepository;
 import com.dsp.dsp.response.Response;
@@ -160,9 +162,37 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
 		}
-
-
 	}
 
+	@Override
+	public Response changePwd(ChangePasswordDto changePasswordDto) {
+		try {
+			Optional<DiscomUser> discomUser = discomUserRepository.findById(changePasswordDto.getId());
+			if(discomUser.isPresent()) {
 
+				DiscomUser discomUser2 = discomUser.get();		
+				String encodePass = Utility.getEncodeData(changePasswordDto.getPassword());
+				discomUser2.setPassword(encodePass);
+
+				discomUser2 = discomUserRepository.save(discomUser2);
+
+				return Response.response("Password Successfully changed", HttpStatus.OK, discomUser2, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return Response.response("Id Not Found", HttpStatus.NOT_FOUND, null, null);
+	}
+
+	@Override
+	public Response dsicomUserDetails(String mobileNo) {
+	
+		DiscomUser discomUser = discomUserRepository.findByMobileNo(mobileNo);
+
+		if(discomUser==null) {
+			return Response.response("Discom User Not Found", HttpStatus.NOT_FOUND, null, null);
+		}
+		return Response.response("Discom User Details", HttpStatus.OK, discomUser, null);
+	}
 }

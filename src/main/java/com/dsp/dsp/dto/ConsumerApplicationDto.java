@@ -1,11 +1,7 @@
 package com.dsp.dsp.dto;
 
-
-
 public class ConsumerApplicationDto {
-	
-	
-	
+
 	private Long natureOfWorkId;
 	
 	private String consumerApplicationId;
@@ -82,7 +78,6 @@ public class ConsumerApplicationDto {
 
 	public ConsumerApplicationDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Long getNatureOfWorkId() {
@@ -316,9 +311,5 @@ public class ConsumerApplicationDto {
 	public void setConsumerApplicationId(String consumerApplicationId) {
 		this.consumerApplicationId = consumerApplicationId;
 	}
-
-	
-	
-    
 
 }

@@ -1,11 +1,14 @@
 package com.dsp.dsp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
 import com.dsp.dsp.response.Response;
@@ -30,4 +33,15 @@ public class DiscomUserController {
 		
 	}
 	
+	@PostMapping("/change_discom_password")
+	public Response changePwd(@RequestBody ChangePasswordDto changePasswordDto) {
+		
+	 return discomUserService.changePwd(changePasswordDto);
+		
+	}
+	
+	@GetMapping("/discom_user_details/{mobileNo}")
+	public Response dsicomUserDetails(@PathVariable(name="mobileNo") String mobileNo) {
+		return discomUserService.dsicomUserDetails(mobileNo);
+	}
 }

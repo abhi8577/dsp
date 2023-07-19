@@ -71,12 +71,4 @@ public class RegistrationFeePaymentDetailDto {
 	public void setFees(String fees) {
 		this.fees = fees;
 	}
-	
-	
-	
-	
-	
-	
-	
-
 }

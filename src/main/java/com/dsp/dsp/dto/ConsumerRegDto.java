@@ -1,9 +1,6 @@
 package com.dsp.dsp.dto;
 
-import javax.persistence.Column;
-
 public class ConsumerRegDto {
-	
 	
 	private String consumerName;
 	
