@@ -63,4 +63,9 @@ public class ConsumerApplicationController {
 		return consumerApplicationService.addGeoLocation(geoLocationAddForm,startDocPath,endDocPath);
 
 	}
+	
+	@GetMapping("/get_consumer_applications/{mobileNo}")
+	public Response getConsumerApplications(@PathVariable(name="mobileNo") String mobileNo) {
+		return consumerApplicationService.getConsumerApplications(mobileNo);
+	}
 }

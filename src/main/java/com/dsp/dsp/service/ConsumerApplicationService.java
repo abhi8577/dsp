@@ -15,4 +15,6 @@ public interface ConsumerApplicationService {
 
 	Response addGeoLocation(String geoLocationAddForm, MultipartFile startDocPath, MultipartFile endDocPath);
 
+	Response getConsumerApplications(String mobileNo);
+
 }

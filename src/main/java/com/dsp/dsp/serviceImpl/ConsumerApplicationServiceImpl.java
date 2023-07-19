@@ -845,4 +845,23 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		return Response.response("Geo Location Not Captured", 
 				HttpStatus.OK, null, null);
 	}
+
+	@Override
+	public Response getConsumerApplications(String mobileNo) {
+
+		Consumer consumer = consumerRepository.findByMobileNumber(mobileNo);
+		if(consumer == null) {
+			return Response.response("Consumer Not Found In This Mobile Number", 
+					HttpStatus.NOT_FOUND, null, null);
+		}
+		List<ConsumerApplication> list = consumerApplicationRepository.findByConsumerId(consumer.getConsumerId());
+
+		if(list.isEmpty()) {
+			return Response.response("No Application For This Consumer Number", 
+					HttpStatus.NOT_FOUND, null, null);
+		}
+		return Response.response("Pending Application For GeoLocation in This Consumer Number", 
+				HttpStatus.OK, list, null);
+
+	}
 }
