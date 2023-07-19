@@ -2,12 +2,14 @@ package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.Base64.Encoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.ConsumerRegDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.model.Consumer;
@@ -16,6 +18,7 @@ import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
 import com.dsp.dsp.util.Utility;
 import com.fasterxml.jackson.databind.deser.Deserializers.Base;
+
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
@@ -136,8 +139,38 @@ public class ConsumerServiceImpl implements ConsumerService {
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
 		}
-
-
 	}
 
+	@Override
+	public Response changePwd(ChangePasswordDto changePasswordDto) {
+		// TODO Auto-generated method `
+		try {
+			Optional<Consumer> consumer = consumerRepository.findById(changePasswordDto.getId());
+			if(consumer.isPresent()) {
+
+				Consumer consumer2 = consumer.get();		
+				String encodePass = Utility.getEncodeData(changePasswordDto.getPassword());
+				consumer2.setPassword(encodePass);
+
+				consumer2 = consumerRepository.save(consumer2);
+
+				return Response.response("Password Successfully changed", HttpStatus.OK, consumer2, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return Response.response("Id Not Found", HttpStatus.NOT_FOUND, null, null);
+	}
+
+	@Override
+	public Response consumerDetails(String mobileNo) {
+	
+		Consumer consumer = consumerRepository.findByMobileNumber(mobileNo);
+
+		if(consumer==null) {
+			return Response.response("Consumer not found", HttpStatus.NOT_FOUND, null, null);
+		}
+		return Response.response("Consumer Details", HttpStatus.OK, consumer, null);
+	}
 }

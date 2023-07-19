@@ -11,4 +11,5 @@ public interface DiscomUserRepository extends JpaRepository<DiscomUser, Long> {
 	
 	DiscomUser findByUserId(String userId);
 
+	DiscomUser findByMobileNo(String mobileNo);
 }

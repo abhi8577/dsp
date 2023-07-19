@@ -1,8 +1,8 @@
 package com.dsp.dsp.service;
 
+import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.ConsumerRegDto;
 import com.dsp.dsp.dto.CredentialsDto;
-import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.response.Response;
 
 public interface ConsumerService {
@@ -11,5 +11,8 @@ public interface ConsumerService {
 	
 	Response getLoginDetails(CredentialsDto credentialsDto);
 
+	Response changePwd(ChangePasswordDto changePasswordDto);
+
+	Response consumerDetails(String mobileNo);
 
 }

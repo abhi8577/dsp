@@ -1,5 +1,7 @@
 package com.dsp.dsp.serviceImpl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ConsumerApplicationDto;
 import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
+import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
+import com.dsp.dsp.dto.RegistrationFeePaymentDetailDto;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.GeoLocation;
@@ -53,10 +57,10 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 	@Autowired
 	GeoLocationRepository geoLocationRepository;
-	
+
 	@Autowired
 	NatureOfWorkRepository natureOfWorkRepository;
-	
+
 	@Autowired
 	SupplyVoltageRepository supplyVoltageRepository;
 
@@ -873,7 +877,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			location.setEndingLongitude(geoLocation.getEndingLongitude());
 			location.setIsActive(true);
 			location.setCreatedTime(LocalDateTime.now().toString());
-			
+
 			GeoLocation save = geoLocationRepository.save(location);
 
 			if(save != null) {			
@@ -885,16 +889,53 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return Response.response("Geo Location Captured", 
 						HttpStatus.OK, save, null);
 			}
-		} catch (JsonMappingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		} 
+
 		return Response.response("Geo Location Not Captured", 
 				HttpStatus.OK, null, null);
 	}
 
+	@Override
+	public Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(ConsumerApplicationIdDto consumerApplicationIdDto) {
+
+		RegistrationFeePaymentDetailDto registrationFeePaymentDetailDto=new RegistrationFeePaymentDetailDto();
+
+		try {
+			String consumerApplicationId = consumerApplicationIdDto.getConsumerApplicationId();
+			if(consumerApplicationId==null) {
+				return Response.response("Consumer application id should not be null", HttpStatus.BAD_REQUEST, consumerApplicationId, null);	
+			}
+			ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(consumerApplicationId);
+			if(findByConsumerApplicationId==null) {
+				return Response.response("Data not found for this application id", HttpStatus.NOT_FOUND, consumerApplicationId, null);	
+			}
+
+			Consumer consumerDetailByConsumerId = consumerRepository.getConsumerDetailByConsumerId(findByConsumerApplicationId.getConsumerId());
+
+			if(consumerDetailByConsumerId==null) {
+				return Response.response("Consumer detail not found for this consumer id ("+findByConsumerApplicationId.getConsumerId()+")", HttpStatus.NOT_FOUND, consumerApplicationId, null);	
+
+			}
+			registrationFeePaymentDetailDto.setConsumerApplicationId(findByConsumerApplicationId.getConsumerApplicationId());
+			registrationFeePaymentDetailDto.setConsumerName(consumerDetailByConsumerId.getConsumerName());
+			registrationFeePaymentDetailDto.setEmail(consumerDetailByConsumerId.getEmail());
+			//			BigDecimal bigDecimal = new BigDecimal(1180.00);
+			//			BigDecimal fees = bigDecimal.setScale(2,RoundingMode.HALF_UP);
+			registrationFeePaymentDetailDto.setFees("1180.00");
+			registrationFeePaymentDetailDto.setMobileNo(consumerDetailByConsumerId.getMobileNumber());
+			registrationFeePaymentDetailDto.setOrderId("ODR_"+Utility.getRandomNumber());
+			registrationFeePaymentDetailDto.setPaymentParticular("Registration Fees");
+			return Response.response("Data found sucessfully", HttpStatus.OK, registrationFeePaymentDetailDto, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}	
+	}
+	
 	@Override
 	public Response getConsumerApplications(String mobileNo) {
 
@@ -912,57 +953,57 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		}
 		for (ConsumerApplication application : list) {
 			ConsumerApplicationsResponseDto responseDTO = new ConsumerApplicationsResponseDto();
-		    
-		    // Map values from ConsumerApplication to ResponseDTO
-		    responseDTO.setSr_No(application.getSr_No());
-		    responseDTO.setConsumerApplicationId(application.getConsumerApplicationId());
-		    if(application.getNatureOfWorkId()!= null)
-		    	responseDTO.setNatureOfWork(natureOfWorkRepository.findById(application.getNatureOfWorkId()).get().getNatureOfWorkName());
-		    responseDTO.setDtr(application.getDtr());
-		    responseDTO.setHt11KV(application.getHt11KV());
-		    responseDTO.setHt132KV(application.getHt132KV());
-		    responseDTO.setHt33KV(application.getHt33KV());
-		    responseDTO.setLt(application.getLt());
-		    responseDTO.setPtr(application.getPtr());
-		    if(application.getSchemeTypeId()!= null)
-		    	responseDTO.setSchemeType(schemeTypeRepository.findById(application.getSchemeTypeId()).get().getSchemeTypeName());
-		    responseDTO.setConsumerId(application.getConsumerId());
-		    responseDTO.setGuardianName(application.getGuardianName());
-		    responseDTO.setAddress(application.getAddress());
-		    responseDTO.setWorkLocationAddr(application.getWorkLocationAddr());
-		    responseDTO.setPincode(application.getPincode());
-		    if(application.getDistrictId()!=null)
-		    	responseDTO.setDistrict(districtRepository.findById(application.getDistrictId()).get().getDistrictName());
-		    if(application.getDcId()!=null)
-		    	responseDTO.setDc(dcRepository.findById(application.getDcId()).get().getDcName());
-		    responseDTO.setDescriptionOfWork(application.getDescriptionOfWork());
-		    responseDTO.setAdministrativeFilePath(application.getAdministrativeFilePath());
-		    responseDTO.setGstNo(application.getGstNo());
-		    responseDTO.setGstFilePath(application.getGstFilePath());
-		    responseDTO.setIvrsNo(application.getIvrsNo());
-		    responseDTO.setLoadRequested(application.getLoadRequested());
-		    if(application.getLoadUnitId()!=null)
-		    	responseDTO.setLoadUnit(loadRequestedRepository.findById(application.getLoadUnitId()).get().getLoadUnitName());
-		    responseDTO.setLandArea(application.getLandArea());
-		    if(application.getLandAreaUnitId()!=null)
-		    	responseDTO.setLandAreaUnit(LandAreaUnitRepository.findById(application.getLandAreaUnitId()).get().getLandAreaUnitName());
-		    responseDTO.setNoOfPlots(application.getNoOfPlots());
-		    if(application.getApplyTypeId()!=null)
-		    	responseDTO.setApplyType(applyTypeRepository.findById(application.getApplyTypeId()).get().getApplyTypeName());
-		    responseDTO.setTAndCPpermissionFilePath(application.getTAndCPpermissionFilePath());
-		    responseDTO.setReraPermissionFilePath(application.getReraPermissionFilePath());
-		    responseDTO.setGrouppermissionFilePath(application.getGrouppermissionFilePath());
-		    responseDTO.setRegistryFilePath(application.getRegistryFilePath());
-		    responseDTO.setNOCfilePath(application.getNOCfilePath());
-		    responseDTO.setKhasra(application.getKhasra());
-		    responseDTO.setKhatoni(application.getKhatoni());
-		    responseDTO.setKhasraKhatoniFilePath(application.getKhasraKhatoniFilePath());
-		    responseDTO.setCreatedTime(application.getCreatedTime());
-		    responseDTO.setIsActive(application.getIsActive());
-		    if(application.getApplicationStatusId()!=null)
-		    	responseDTO.setApplicationStatus(applicationStatusRepository.findById(application.getApplicationStatusId()).get().getApplicationStatusName());
 
-		    responseList.add(responseDTO);
+			// Map values from ConsumerApplication to ResponseDTO
+			responseDTO.setSr_No(application.getSr_No());
+			responseDTO.setConsumerApplicationId(application.getConsumerApplicationId());
+			if(application.getNatureOfWorkId()!= null)
+				responseDTO.setNatureOfWork(natureOfWorkRepository.findById(application.getNatureOfWorkId()).get().getNatureOfWorkName());
+			responseDTO.setDtr(application.getDtr());
+			responseDTO.setHt11KV(application.getHt11KV());
+			responseDTO.setHt132KV(application.getHt132KV());
+			responseDTO.setHt33KV(application.getHt33KV());
+			responseDTO.setLt(application.getLt());
+			responseDTO.setPtr(application.getPtr());
+			if(application.getSchemeTypeId()!= null)
+				responseDTO.setSchemeType(schemeTypeRepository.findById(application.getSchemeTypeId()).get().getSchemeTypeName());
+			responseDTO.setConsumerId(application.getConsumerId());
+			responseDTO.setGuardianName(application.getGuardianName());
+			responseDTO.setAddress(application.getAddress());
+			responseDTO.setWorkLocationAddr(application.getWorkLocationAddr());
+			responseDTO.setPincode(application.getPincode());
+			if(application.getDistrictId()!=null)
+				responseDTO.setDistrict(districtRepository.findById(application.getDistrictId()).get().getDistrictName());
+			if(application.getDcId()!=null)
+				responseDTO.setDc(dcRepository.findById(application.getDcId()).get().getDcName());
+			responseDTO.setDescriptionOfWork(application.getDescriptionOfWork());
+			responseDTO.setAdministrativeFilePath(application.getAdministrativeFilePath());
+			responseDTO.setGstNo(application.getGstNo());
+			responseDTO.setGstFilePath(application.getGstFilePath());
+			responseDTO.setIvrsNo(application.getIvrsNo());
+			responseDTO.setLoadRequested(application.getLoadRequested());
+			if(application.getLoadUnitId()!=null)
+				responseDTO.setLoadUnit(loadRequestedRepository.findById(application.getLoadUnitId()).get().getLoadUnitName());
+			responseDTO.setLandArea(application.getLandArea());
+			if(application.getLandAreaUnitId()!=null)
+				responseDTO.setLandAreaUnit(LandAreaUnitRepository.findById(application.getLandAreaUnitId()).get().getLandAreaUnitName());
+			responseDTO.setNoOfPlots(application.getNoOfPlots());
+			if(application.getApplyTypeId()!=null)
+				responseDTO.setApplyType(applyTypeRepository.findById(application.getApplyTypeId()).get().getApplyTypeName());
+			responseDTO.setTAndCPpermissionFilePath(application.getTAndCPpermissionFilePath());
+			responseDTO.setReraPermissionFilePath(application.getReraPermissionFilePath());
+			responseDTO.setGrouppermissionFilePath(application.getGrouppermissionFilePath());
+			responseDTO.setRegistryFilePath(application.getRegistryFilePath());
+			responseDTO.setNOCfilePath(application.getNOCfilePath());
+			responseDTO.setKhasra(application.getKhasra());
+			responseDTO.setKhatoni(application.getKhatoni());
+			responseDTO.setKhasraKhatoniFilePath(application.getKhasraKhatoniFilePath());
+			responseDTO.setCreatedTime(application.getCreatedTime());
+			responseDTO.setIsActive(application.getIsActive());
+			if(application.getApplicationStatusId()!=null)
+				responseDTO.setApplicationStatus(applicationStatusRepository.findById(application.getApplicationStatusId()).get().getApplicationStatusName());
+
+			responseList.add(responseDTO);
 
 		}
 		return Response.response("Pending Application For GeoLocation in This Consumer Number", 

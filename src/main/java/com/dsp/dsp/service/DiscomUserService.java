@@ -1,6 +1,7 @@
 package com.dsp.dsp.service;
 
 
+import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 
 import com.dsp.dsp.dto.DiscomUserRegDto;
@@ -12,5 +13,8 @@ public interface DiscomUserService {
 	
 	Response getLoginDetails(CredentialsDto credentialsDto);
 
+	Response changePwd(ChangePasswordDto changePasswordDto);
+
+	Response dsicomUserDetails(String mobileNo);
 
 }

@@ -2,6 +2,7 @@ package com.dsp.dsp.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.response.Response;
 
 public interface ConsumerApplicationService {
@@ -14,6 +15,8 @@ public interface ConsumerApplicationService {
 	Response pendingForGeoLocationApplication(String mobileNo);
 
 	Response addGeoLocation(String geoLocationAddForm, MultipartFile startDocPath, MultipartFile endDocPath);
+
+	Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(ConsumerApplicationIdDto consumerApplicationIdDto);
 
 	Response getConsumerApplications(String mobileNo);
 
