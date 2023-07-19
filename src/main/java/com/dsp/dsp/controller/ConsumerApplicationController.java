@@ -66,11 +66,16 @@ public class ConsumerApplicationController {
 
 	}
 	
+
 	
 	@PostMapping("/get_registration_fee_payment_detail_by_application_number")
 	public Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(@RequestBody ConsumerApplicationIdDto consumerApplicationIdDto) {
 
 		return consumerApplicationService.getRegistrationFeePaymentDetailByConsumerApplicationNumber(consumerApplicationIdDto);
 
+
+	@GetMapping("/get_consumer_applications/{mobileNo}")
+	public Response getConsumerApplications(@PathVariable(name="mobileNo") String mobileNo) {
+		return consumerApplicationService.getConsumerApplications(mobileNo);
 	}
 }

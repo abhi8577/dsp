@@ -16,7 +16,8 @@ public interface ConsumerApplicationService {
 
 	Response addGeoLocation(String geoLocationAddForm, MultipartFile startDocPath, MultipartFile endDocPath);
 
-
 	Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(ConsumerApplicationIdDto consumerApplicationIdDto);
+
+	Response getConsumerApplications(String mobileNo);
 
 }
