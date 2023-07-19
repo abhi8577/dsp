@@ -11,7 +11,4 @@ public class ConsumerApplicationIdDto {
 	public void setConsumerApplicationId(String consumerApplicationId) {
 		this.consumerApplicationId = consumerApplicationId;
 	}
-	
-	
-
 }

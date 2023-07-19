@@ -10,15 +10,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ConsumerApplicationDto;
+import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.GeoLocation;
 import com.dsp.dsp.repository.ApplicationStatusRepository;
+import com.dsp.dsp.repository.ApplyTypeRepository;
+import com.dsp.dsp.repository.CircleRepository;
 import com.dsp.dsp.repository.ConsumerApplicationRepository;
 import com.dsp.dsp.repository.ConsumerRepository;
+import com.dsp.dsp.repository.DcRepository;
+import com.dsp.dsp.repository.DistrictRepository;
+import com.dsp.dsp.repository.DivisionRepository;
 import com.dsp.dsp.repository.GeoLocationRepository;
+import com.dsp.dsp.repository.LandAreaUnitRepository;
+import com.dsp.dsp.repository.LoadRequestedRepository;
+import com.dsp.dsp.repository.NatureOfWorkRepository;
+import com.dsp.dsp.repository.RegionRepository;
+import com.dsp.dsp.repository.SchemeTypeRepository;
+import com.dsp.dsp.repository.SubDivisionRepository;
+import com.dsp.dsp.repository.SupplyVoltageRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
@@ -40,6 +53,42 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 	@Autowired
 	GeoLocationRepository geoLocationRepository;
+	
+	@Autowired
+	NatureOfWorkRepository natureOfWorkRepository;
+	
+	@Autowired
+	SupplyVoltageRepository supplyVoltageRepository;
+
+	@Autowired
+	SchemeTypeRepository schemeTypeRepository;
+
+	@Autowired
+	LoadRequestedRepository loadRequestedRepository;
+
+	@Autowired
+	LandAreaUnitRepository LandAreaUnitRepository;
+
+	@Autowired
+	DistrictRepository districtRepository;
+
+	@Autowired
+	DcRepository dcRepository;
+
+	@Autowired
+	ApplyTypeRepository applyTypeRepository;
+
+	@Autowired
+	RegionRepository regionRepository;
+
+	@Autowired
+	CircleRepository circleRepository;
+
+	@Autowired
+	DivisionRepository divisionRepository;
+
+	@Autowired
+	SubDivisionRepository subDivisionRepository;
 
 	@Override
 	@org.springframework.transaction.annotation.Transactional
@@ -855,13 +904,68 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 					HttpStatus.NOT_FOUND, null, null);
 		}
 		List<ConsumerApplication> list = consumerApplicationRepository.findByConsumerId(consumer.getConsumerId());
+		List<ConsumerApplicationsResponseDto> responseList = new ArrayList<>();
 
 		if(list.isEmpty()) {
 			return Response.response("No Application For This Consumer Number", 
 					HttpStatus.NOT_FOUND, null, null);
 		}
-		return Response.response("Pending Application For GeoLocation in This Consumer Number", 
-				HttpStatus.OK, list, null);
+		for (ConsumerApplication application : list) {
+			ConsumerApplicationsResponseDto responseDTO = new ConsumerApplicationsResponseDto();
+		    
+		    // Map values from ConsumerApplication to ResponseDTO
+		    responseDTO.setSr_No(application.getSr_No());
+		    responseDTO.setConsumerApplicationId(application.getConsumerApplicationId());
+		    if(application.getNatureOfWorkId()!= null)
+		    	responseDTO.setNatureOfWork(natureOfWorkRepository.findById(application.getNatureOfWorkId()).get().getNatureOfWorkName());
+		    responseDTO.setDtr(application.getDtr());
+		    responseDTO.setHt11KV(application.getHt11KV());
+		    responseDTO.setHt132KV(application.getHt132KV());
+		    responseDTO.setHt33KV(application.getHt33KV());
+		    responseDTO.setLt(application.getLt());
+		    responseDTO.setPtr(application.getPtr());
+		    if(application.getSchemeTypeId()!= null)
+		    	responseDTO.setSchemeType(schemeTypeRepository.findById(application.getSchemeTypeId()).get().getSchemeTypeName());
+		    responseDTO.setConsumerId(application.getConsumerId());
+		    responseDTO.setGuardianName(application.getGuardianName());
+		    responseDTO.setAddress(application.getAddress());
+		    responseDTO.setWorkLocationAddr(application.getWorkLocationAddr());
+		    responseDTO.setPincode(application.getPincode());
+		    if(application.getDistrictId()!=null)
+		    	responseDTO.setDistrict(districtRepository.findById(application.getDistrictId()).get().getDistrictName());
+		    if(application.getDcId()!=null)
+		    	responseDTO.setDc(dcRepository.findById(application.getDcId()).get().getDcName());
+		    responseDTO.setDescriptionOfWork(application.getDescriptionOfWork());
+		    responseDTO.setAdministrativeFilePath(application.getAdministrativeFilePath());
+		    responseDTO.setGstNo(application.getGstNo());
+		    responseDTO.setGstFilePath(application.getGstFilePath());
+		    responseDTO.setIvrsNo(application.getIvrsNo());
+		    responseDTO.setLoadRequested(application.getLoadRequested());
+		    if(application.getLoadUnitId()!=null)
+		    	responseDTO.setLoadUnit(loadRequestedRepository.findById(application.getLoadUnitId()).get().getLoadUnitName());
+		    responseDTO.setLandArea(application.getLandArea());
+		    if(application.getLandAreaUnitId()!=null)
+		    	responseDTO.setLandAreaUnit(LandAreaUnitRepository.findById(application.getLandAreaUnitId()).get().getLandAreaUnitName());
+		    responseDTO.setNoOfPlots(application.getNoOfPlots());
+		    if(application.getApplyTypeId()!=null)
+		    	responseDTO.setApplyType(applyTypeRepository.findById(application.getApplyTypeId()).get().getApplyTypeName());
+		    responseDTO.setTAndCPpermissionFilePath(application.getTAndCPpermissionFilePath());
+		    responseDTO.setReraPermissionFilePath(application.getReraPermissionFilePath());
+		    responseDTO.setGrouppermissionFilePath(application.getGrouppermissionFilePath());
+		    responseDTO.setRegistryFilePath(application.getRegistryFilePath());
+		    responseDTO.setNOCfilePath(application.getNOCfilePath());
+		    responseDTO.setKhasra(application.getKhasra());
+		    responseDTO.setKhatoni(application.getKhatoni());
+		    responseDTO.setKhasraKhatoniFilePath(application.getKhasraKhatoniFilePath());
+		    responseDTO.setCreatedTime(application.getCreatedTime());
+		    responseDTO.setIsActive(application.getIsActive());
+		    if(application.getApplicationStatusId()!=null)
+		    	responseDTO.setApplicationStatus(applicationStatusRepository.findById(application.getApplicationStatusId()).get().getApplicationStatusName());
 
+		    responseList.add(responseDTO);
+
+		}
+		return Response.response("Pending Application For GeoLocation in This Consumer Number", 
+				HttpStatus.OK, responseList, null);
 	}
 }
