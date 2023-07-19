@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 
+import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 
@@ -61,6 +63,14 @@ public class ConsumerApplicationController {
 			@RequestPart(value="endDocPath",required = false) MultipartFile endDocPath) {
 
 		return consumerApplicationService.addGeoLocation(geoLocationAddForm,startDocPath,endDocPath);
+
+	}
+	
+	
+	@PostMapping("/get_registration_fee_payment_detail_by_application_number")
+	public Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(@RequestBody ConsumerApplicationIdDto consumerApplicationIdDto) {
+
+		return consumerApplicationService.getRegistrationFeePaymentDetailByConsumerApplicationNumber(consumerApplicationIdDto);
 
 	}
 }

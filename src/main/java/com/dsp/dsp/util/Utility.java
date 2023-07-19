@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Base64.Encoder;
 
@@ -62,6 +63,12 @@ public class Utility {
         	throw e;
         }
 		
-
     }
+      
+     public static String getRandomNumber() {
+    	  String localDateTime = LocalDateTime.now().toString();//2023-07-11T10:31:28.279
+  		String localDateTimeReplace = localDateTime.replaceAll("\\-|\\:|[a-zA-z]|\\.", "");
+      
+  		return localDateTimeReplace;
+      }
 }

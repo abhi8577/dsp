@@ -1,5 +1,7 @@
 package com.dsp.dsp.serviceImpl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ConsumerApplicationDto;
+import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
+import com.dsp.dsp.dto.RegistrationFeePaymentDetailDto;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.GeoLocation;
@@ -836,13 +840,51 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return Response.response("Geo Location Captured", 
 						HttpStatus.OK, save, null);
 			}
-		} catch (JsonMappingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		} 
 		
 		return Response.response("Geo Location Not Captured", 
 				HttpStatus.OK, null, null);
+	}
+
+	@Override
+	public Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(ConsumerApplicationIdDto consumerApplicationIdDto) {
+		
+		RegistrationFeePaymentDetailDto registrationFeePaymentDetailDto=new RegistrationFeePaymentDetailDto();
+		
+		try {
+			String consumerApplicationId = consumerApplicationIdDto.getConsumerApplicationId();
+			if(consumerApplicationId==null) {
+				return Response.response("Consumer application id should not be null", HttpStatus.BAD_REQUEST, consumerApplicationId, null);	
+			}
+			ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(consumerApplicationId);
+			if(findByConsumerApplicationId==null) {
+				return Response.response("Data not found for this application id", HttpStatus.NOT_FOUND, consumerApplicationId, null);	
+			}
+				
+			Consumer consumerDetailByConsumerId = consumerRepository.getConsumerDetailByConsumerId(findByConsumerApplicationId.getConsumerId());
+
+			 if(consumerDetailByConsumerId==null) {
+				return Response.response("Consumer detail not found for this consumer id ("+findByConsumerApplicationId.getConsumerId()+")", HttpStatus.NOT_FOUND, consumerApplicationId, null);	
+ 
+			 }
+			registrationFeePaymentDetailDto.setConsumerApplicationId(findByConsumerApplicationId.getConsumerApplicationId());
+			registrationFeePaymentDetailDto.setConsumerName(consumerDetailByConsumerId.getConsumerName());
+			registrationFeePaymentDetailDto.setEmail(consumerDetailByConsumerId.getEmail());
+//			BigDecimal bigDecimal = new BigDecimal(1180.00);
+//			BigDecimal fees = bigDecimal.setScale(2,RoundingMode.HALF_UP);
+			registrationFeePaymentDetailDto.setFees("1180.00");
+			registrationFeePaymentDetailDto.setMobileNo(consumerDetailByConsumerId.getMobileNumber());
+			registrationFeePaymentDetailDto.setOrderId("ODR_"+Utility.getRandomNumber());
+			registrationFeePaymentDetailDto.setPaymentParticular("Registration Fees");
+            return Response.response("Data found sucessfully", HttpStatus.OK, registrationFeePaymentDetailDto, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}	
+
 	}
 }
