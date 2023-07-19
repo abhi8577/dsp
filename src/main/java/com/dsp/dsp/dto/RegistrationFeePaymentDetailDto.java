@@ -1,9 +1,6 @@
 package com.dsp.dsp.dto;
 
-import java.math.BigDecimal;
-
 public class RegistrationFeePaymentDetailDto {
-	
 	
 	private String consumerApplicationId;
 	
