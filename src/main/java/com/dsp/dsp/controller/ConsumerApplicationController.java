@@ -72,7 +72,7 @@ public class ConsumerApplicationController {
 	public Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(@RequestBody ConsumerApplicationIdDto consumerApplicationIdDto) {
 
 		return consumerApplicationService.getRegistrationFeePaymentDetailByConsumerApplicationNumber(consumerApplicationIdDto);
-
+	}
 
 	@GetMapping("/get_consumer_applications/{mobileNo}")
 	public Response getConsumerApplications(@PathVariable(name="mobileNo") String mobileNo) {

@@ -15,7 +15,7 @@ public class RegistrationFeePaymentDetailDto {
 	
 	private String paymentParticular;
 	
-	private String orderId;
+	//private String orderId;
 	
 	private String fees;
 
@@ -59,13 +59,13 @@ public class RegistrationFeePaymentDetailDto {
 		this.paymentParticular = paymentParticular;
 	}
 
-	public String getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
+//	public String getOrderId() {
+//		return orderId;
+//	}
+//
+//	public void setOrderId(String orderId) {
+//		this.orderId = orderId;
+//	}
 
 	public String getFees() {
 		return fees;

@@ -878,7 +878,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 //			BigDecimal fees = bigDecimal.setScale(2,RoundingMode.HALF_UP);
 			registrationFeePaymentDetailDto.setFees("1180.00");
 			registrationFeePaymentDetailDto.setMobileNo(consumerDetailByConsumerId.getMobileNumber());
-			registrationFeePaymentDetailDto.setOrderId("ODR_"+Utility.getRandomNumber());
+		//	registrationFeePaymentDetailDto.setOrderId("ODR_"+Utility.getRandomNumber());
 			registrationFeePaymentDetailDto.setPaymentParticular("Registration Fees");
             return Response.response("Data found sucessfully", HttpStatus.OK, registrationFeePaymentDetailDto, null);
 		} catch (Exception e) {
