@@ -44,4 +44,9 @@ public class DiscomUserController {
 	public Response dsicomUserDetails(@PathVariable(name="mobileNo") String mobileNo) {
 		return discomUserService.dsicomUserDetails(mobileNo);
 	}
+	
+	@GetMapping("/application_details_by_dc_for_discom_user/{dcId}")
+	public Response applicationDetailsByDcForDiscomUser(@PathVariable("dcId") Long dcId) {
+		return discomUserService.applicationDetailsByDcForDiscomUser(dcId);
+	}
 }

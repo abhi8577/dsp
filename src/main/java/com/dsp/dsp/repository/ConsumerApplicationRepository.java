@@ -18,4 +18,6 @@ public interface ConsumerApplicationRepository extends JpaRepository<ConsumerApp
 	List<ConsumerApplication> findByConsumerId(Long consumerId);
 	
 	ConsumerApplication findByConsumerApplicationId(String consumerApplicationId);
+	
+	List<ConsumerApplication> findByDcId(Long dcId);
 }

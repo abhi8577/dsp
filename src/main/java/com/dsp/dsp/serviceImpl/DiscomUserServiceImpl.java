@@ -1,9 +1,11 @@
 package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.Base64.Encoder;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,18 +14,22 @@ import org.springframework.stereotype.Service;
 import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
-
+import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.DiscomUser;
 import com.dsp.dsp.repository.DiscomUserRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
 import com.dsp.dsp.util.Utility;
+import com.dsp.dsp.repository.ConsumerApplicationRepository;
 
 @Service
 public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Autowired
 	DiscomUserRepository discomUserRepository;
+	
+	@Autowired
+	ConsumerApplicationRepository ConsumerApplicationRepository;
 
 	@Override
 	public Response save(DiscomUserRegDto discomUserRegDto) {
@@ -194,5 +200,23 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			return Response.response("Discom User Not Found", HttpStatus.NOT_FOUND, null, null);
 		}
 		return Response.response("Discom User Details", HttpStatus.OK, discomUser, null);
+	}
+
+	@Override
+	public Response applicationDetailsByDcForDiscomUser(Long dcId) {
+	
+		List<ConsumerApplication> listOfConsumerApplication = new ArrayList<ConsumerApplication>();
+		try {
+			listOfConsumerApplication = ConsumerApplicationRepository.findByDcId(dcId);
+			if(!listOfConsumerApplication.isEmpty()) {
+				return Response.response("Data found successfully", HttpStatus.OK, listOfConsumerApplication, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}
+		return Response.response("Data not found", HttpStatus.OK, listOfConsumerApplication, null);
+
+		
 	}
 }

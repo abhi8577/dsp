@@ -17,4 +17,6 @@ public interface DiscomUserService {
 
 	Response dsicomUserDetails(String mobileNo);
 
+	Response applicationDetailsByDcForDiscomUser(Long dcId);
+
 }
