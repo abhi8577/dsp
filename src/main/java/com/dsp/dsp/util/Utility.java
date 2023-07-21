@@ -1,12 +1,13 @@
 package com.dsp.dsp.util;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Base64.Encoder;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,4 +72,20 @@ public class Utility {
       
   		return localDateTimeReplace;
       }
+     
+     public static String getUserIPAddress(HttpServletRequest request) {
+ 		String ipAddress = request.getHeader("X-Forwarded-For");
+
+ 		if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+ 			ipAddress = request.getHeader("Proxy-Client-IP");
+ 		}
+ 		if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+ 			ipAddress = request.getHeader("WL-Proxy-Client-IP");
+ 		}
+ 		if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+ 			ipAddress = request.getRemoteAddr();
+ 		}
+ 		System.err.println("IP" + ipAddress);
+ 		return ipAddress;
+ 	}
 }

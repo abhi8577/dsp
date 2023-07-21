@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="PAYMENT_REQUEST")
-class PaymentRequest{
+public class PaymentRequestHistory{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -463,10 +463,5 @@ class PaymentRequest{
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
 	}
-    
-    
-    
-
-
 }
 
