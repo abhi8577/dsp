@@ -1,7 +1,5 @@
 package com.dsp.dsp.serviceImpl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +37,6 @@ import com.dsp.dsp.repository.SupplyVoltageRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
