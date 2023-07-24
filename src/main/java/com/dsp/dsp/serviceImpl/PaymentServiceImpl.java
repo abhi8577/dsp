@@ -164,7 +164,6 @@ public class PaymentServiceImpl implements PaymentService {
 					dspPaymentHistory.setPaymentStatus(2);
 					dspPaymentHistory.setUpdatedDate(LocalDateTime.now().toString());
 					dspPaymentHistory.setRemark(dspInvoiceHistory.getTransaction_error_desc());
-
 					DspPaymentHistory paymentHistory = dspPaymentHistoryRepository.save(dspPaymentHistory);
 					if (paymentHistory != null) {
 

@@ -13,13 +13,16 @@ import org.springframework.stereotype.Service;
 
 import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
+import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
+import com.dsp.dsp.model.ConsumerAppDCChange;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.DiscomUser;
 import com.dsp.dsp.repository.DiscomUserRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
 import com.dsp.dsp.util.Utility;
+import com.dsp.dsp.repository.ConsumerAppDCChangeRepository;
 import com.dsp.dsp.repository.ConsumerApplicationRepository;
 
 @Service
@@ -27,9 +30,12 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Autowired
 	DiscomUserRepository discomUserRepository;
-	
+
 	@Autowired
-	ConsumerApplicationRepository ConsumerApplicationRepository;
+	ConsumerApplicationRepository consumerApplicationRepository;
+
+	@Autowired
+	ConsumerAppDCChangeRepository consumerAppDCChangeRepository;
 
 	@Override
 	public Response save(DiscomUserRegDto discomUserRegDto) {
@@ -193,7 +199,7 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Override
 	public Response dsicomUserDetails(String mobileNo) {
-	
+
 		DiscomUser discomUser = discomUserRepository.findByMobileNo(mobileNo);
 
 		if(discomUser==null) {
@@ -204,19 +210,47 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Override
 	public Response applicationDetailsByDcForDiscomUser(Long dcId) {
-	
+
 		List<ConsumerApplication> listOfConsumerApplication = new ArrayList<ConsumerApplication>();
 		try {
-			listOfConsumerApplication = ConsumerApplicationRepository.findByDcId(dcId);
+			listOfConsumerApplication = consumerApplicationRepository.findByDcId(dcId);
 			if(!listOfConsumerApplication.isEmpty()) {
 				return Response.response("Data found successfully", HttpStatus.OK, listOfConsumerApplication, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 		}
-		return Response.response("Data not found", HttpStatus.OK, listOfConsumerApplication, null);
+		return Response.response("Data not found", HttpStatus.OK, listOfConsumerApplication, null);	
+	}
 
-		
+	@Override
+	public Response acceptAppOrChangeDc(DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto) {
+
+		ConsumerApplication consumerApplication = consumerApplicationRepository.findByConsumerApplicationId(dcAcceptOrDcChangeDto.getConsumerApplicationNumber());
+		if(consumerApplication == null) {
+			return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
+		}
+		if(dcAcceptOrDcChangeDto.getIsDcChange()) {			
+			ConsumerAppDCChange appDCChange = new ConsumerAppDCChange();
+			appDCChange.setConsumerApplicationId(dcAcceptOrDcChangeDto.getConsumerApplicationNumber());
+			appDCChange.setOldDcId(dcAcceptOrDcChangeDto.getOldDcId());
+			appDCChange.setNewDcId(dcAcceptOrDcChangeDto.getNewdDcId());
+			appDCChange.setReason(dcAcceptOrDcChangeDto.getDcChangedReason());
+			appDCChange.setUpdatedBy(dcAcceptOrDcChangeDto.getUpdatedBy());
+			appDCChange.setUpdatedTime(LocalDateTime.now().toString());
+
+			ConsumerAppDCChange save = consumerAppDCChangeRepository.save(appDCChange);
+			if(save!=null) {
+				consumerApplication.setDcId(dcAcceptOrDcChangeDto.getNewdDcId());
+				ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
+			}
+			return Response.response("DC Changed", HttpStatus.OK, appDCChange, null);
+		}
+		else {			
+			consumerApplication.setApplicationStatusId(7L);
+			ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
+			return Response.response("Application Accepted At Dc End", HttpStatus.OK, application, null);
+		}
 	}
 }

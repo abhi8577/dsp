@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
+import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
@@ -20,33 +21,34 @@ public class DiscomUserController {
 
 	@Autowired
 	DiscomUserService discomUserService;
-	
+
 	@PostMapping("/discom_registration")
 	public Response registration(@RequestBody DiscomUserRegDto discomUserRegDto) {
 		return discomUserService.save(discomUserRegDto);
-		
 	}
-	
+
 	@PostMapping("/discom_login")
 	public Response login(@RequestBody CredentialsDto credentialsDto) {
 		return discomUserService.getLoginDetails(credentialsDto);
-		
 	}
-	
+
 	@PostMapping("/change_discom_password")
 	public Response changePwd(@RequestBody ChangePasswordDto changePasswordDto) {
-		
-	 return discomUserService.changePwd(changePasswordDto);
-		
+		return discomUserService.changePwd(changePasswordDto);
 	}
-	
+
 	@GetMapping("/discom_user_details/{mobileNo}")
 	public Response dsicomUserDetails(@PathVariable(name="mobileNo") String mobileNo) {
 		return discomUserService.dsicomUserDetails(mobileNo);
 	}
-	
+
 	@GetMapping("/application_details_by_dc_for_discom_user/{dcId}")
 	public Response applicationDetailsByDcForDiscomUser(@PathVariable("dcId") Long dcId) {
 		return discomUserService.applicationDetailsByDcForDiscomUser(dcId);
+	}
+	
+	@PostMapping("/accept_app_or_change_dc")
+	public Response acceptAppOrChangeDc(@RequestBody DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto) {
+		return discomUserService.acceptAppOrChangeDc(dcAcceptOrDcChangeDto);
 	}
 }
