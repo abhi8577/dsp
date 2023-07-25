@@ -268,52 +268,52 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 	public Response erpSurveySubmit(String erpSurveySubmitDto, MultipartFile eRPEstimateFile) {
 
 		try {
-			if(erpSurveySubmitDto !=null) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				ErpSurveySubmitDto erp = objectMapper.readValue(erpSurveySubmitDto, ErpSurveySubmitDto.class);
-
-				if(erp.getConsumerApplicationNumber()==null) {
-					return Response.response("Please Send Consumer Application Number", HttpStatus.NOT_FOUND, null, null);
-				}
-
-				ConsumerApplication consumerApplication = consumerApplicationRepository.findByConsumerApplicationId(erp.getConsumerApplicationNumber());
-				if(consumerApplication == null) {
-					return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
-				}
-				
-				ERPEstimate estimate = erpEstimateRepository.findByProjectNumber(erp.getProjectNumber());
-				if(estimate != null) {
-					return Response.response("This ERP Project Number Is Already Exist", HttpStatus.CONFLICT, null, null);
-				}
-				
-				ERPEstimate erpEstimate = new ERPEstimate();
-				BeanUtils.copyProperties(erp,erpEstimate);
-
-				Response erpUploadFile = Utility.uploadFile(eRPEstimateFile, "ERP_ESTIMATE");
-				if(erpUploadFile.getStatus()==200){
-					FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) erpUploadFile.getObject();
-					erpEstimate.setErpEstimateFilePath(fileUploadPathDto.getFilePath());  
-				}
-				else {
-					return erpUploadFile;
-				}
-				erpEstimate.setCreatedTime(LocalDateTime.now().toString());
-				ERPEstimate save = erpEstimateRepository.save(erpEstimate);
-				if(save!=null) {
-					consumerApplication.setErpProjectNumber(save.getProjectNumber());
-					consumerApplication.setApplicationStatusId(12L);
-					consumerApplicationRepository.save(consumerApplication);
-				} else {
-					return Response.response("Data Not Saved In ERP Table", HttpStatus.CONFLICT, null, null);
-
-				}
-				return Response.response("Data Saved", HttpStatus.OK, save, null);
+			if(erpSurveySubmitDto ==null) {
+				return Response.response("ERP Submit Request Not Found ", HttpStatus.NOT_FOUND, null, null);
 			}
-			return Response.response("ERP Submit Request Not Found ", HttpStatus.NOT_FOUND, null, null);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
-		}
+			ObjectMapper objectMapper = new ObjectMapper();
+			ErpSurveySubmitDto erp = objectMapper.readValue(erpSurveySubmitDto, ErpSurveySubmitDto.class);
+
+			if(erp.getConsumerApplicationNumber()==null) {
+				return Response.response("Please Send Consumer Application Number", HttpStatus.NOT_FOUND, null, null);
+			}
+
+			ConsumerApplication consumerApplication = consumerApplicationRepository.findByConsumerApplicationId(erp.getConsumerApplicationNumber());
+			if(consumerApplication == null) {
+				return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
+			}
+
+			ERPEstimate estimate = erpEstimateRepository.findByProjectNumber(erp.getProjectNumber());
+			if(estimate != null) {
+				return Response.response("This ERP Project Number Is Already Exist", HttpStatus.CONFLICT, null, null);
+			}
+
+			ERPEstimate erpEstimate = new ERPEstimate();
+			BeanUtils.copyProperties(erp,erpEstimate);
+
+			Response erpUploadFile = Utility.uploadFile(eRPEstimateFile, "ERP_ESTIMATE");
+			if(erpUploadFile.getStatus()==200){
+				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) erpUploadFile.getObject();
+				erpEstimate.setErpEstimateFilePath(fileUploadPathDto.getFilePath());  
+			}
+			else {
+				return erpUploadFile;
+			}
+			erpEstimate.setCreatedTime(LocalDateTime.now().toString());
+			ERPEstimate save = erpEstimateRepository.save(erpEstimate);
+			if(save!=null) {
+				consumerApplication.setErpProjectNumber(save.getProjectNumber());
+				consumerApplication.setApplicationStatusId(12L);
+				consumerApplicationRepository.save(consumerApplication);
+			} else {
+				return Response.response("Data Not Saved In ERP Table", HttpStatus.CONFLICT, null, null);
+
+			}
+			return Response.response("Data Saved", HttpStatus.OK, save, null);
 	}
+	catch (Exception e) {
+		e.printStackTrace();
+		return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+	}
+}
 }
