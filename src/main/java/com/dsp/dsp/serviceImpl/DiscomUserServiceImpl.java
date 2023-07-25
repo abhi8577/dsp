@@ -3,27 +3,34 @@ package com.dsp.dsp.serviceImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Optional;
 import java.util.Base64.Encoder;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
+import com.dsp.dsp.dto.ErpSurveySubmitDto;
+import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.model.ConsumerAppDCChange;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.DiscomUser;
+import com.dsp.dsp.model.ERPEstimate;
+import com.dsp.dsp.repository.ConsumerAppDCChangeRepository;
+import com.dsp.dsp.repository.ConsumerApplicationRepository;
 import com.dsp.dsp.repository.DiscomUserRepository;
+import com.dsp.dsp.repository.ERPEstimateRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
 import com.dsp.dsp.util.Utility;
-import com.dsp.dsp.repository.ConsumerAppDCChangeRepository;
-import com.dsp.dsp.repository.ConsumerApplicationRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class DiscomUserServiceImpl implements DiscomUserService{
@@ -36,6 +43,9 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 
 	@Autowired
 	ConsumerAppDCChangeRepository consumerAppDCChangeRepository;
+
+	@Autowired
+	ERPEstimateRepository erpEstimateRepository;
 
 	@Override
 	public Response save(DiscomUserRegDto discomUserRegDto) {
@@ -251,6 +261,59 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			consumerApplication.setApplicationStatusId(7L);
 			ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Application Accepted At Dc End", HttpStatus.OK, application, null);
+		}
+	}
+
+	@Override
+	public Response erpSurveySubmit(String erpSurveySubmitDto, MultipartFile eRPEstimateFile) {
+
+		try {
+			if(erpSurveySubmitDto !=null) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				ErpSurveySubmitDto erp = objectMapper.readValue(erpSurveySubmitDto, ErpSurveySubmitDto.class);
+
+				if(erp.getConsumerApplicationNumber()==null) {
+					return Response.response("Please Send Consumer Application Number", HttpStatus.NOT_FOUND, null, null);
+				}
+
+				ConsumerApplication consumerApplication = consumerApplicationRepository.findByConsumerApplicationId(erp.getConsumerApplicationNumber());
+				if(consumerApplication == null) {
+					return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
+				}
+				
+				ERPEstimate estimate = erpEstimateRepository.findByProjectNumber(erp.getProjectNumber());
+				if(estimate != null) {
+					return Response.response("This ERP Project Number Is Already Exist", HttpStatus.CONFLICT, null, null);
+				}
+				
+				ERPEstimate erpEstimate = new ERPEstimate();
+				BeanUtils.copyProperties(erp,erpEstimate);
+
+				Response erpUploadFile = Utility.uploadFile(eRPEstimateFile, "ERP_ESTIMATE");
+				if(erpUploadFile.getStatus()==200){
+					FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) erpUploadFile.getObject();
+					erpEstimate.setErpEstimateFilePath(fileUploadPathDto.getFilePath());  
+				}
+				else {
+					return erpUploadFile;
+				}
+				erpEstimate.setCreatedTime(LocalDateTime.now().toString());
+				ERPEstimate save = erpEstimateRepository.save(erpEstimate);
+				if(save!=null) {
+					consumerApplication.setErpProjectNumber(save.getProjectNumber());
+					consumerApplication.setApplicationStatusId(12L);
+					consumerApplicationRepository.save(consumerApplication);
+				} else {
+					return Response.response("Data Not Saved In ERP Table", HttpStatus.CONFLICT, null, null);
+
+				}
+				return Response.response("Data Saved", HttpStatus.OK, save, null);
+			}
+			return Response.response("ERP Submit Request Not Found ", HttpStatus.NOT_FOUND, null, null);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 		}
 	}
 }

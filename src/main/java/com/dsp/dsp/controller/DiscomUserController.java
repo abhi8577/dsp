@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
@@ -50,5 +52,12 @@ public class DiscomUserController {
 	@PostMapping("/accept_app_or_change_dc")
 	public Response acceptAppOrChangeDc(@RequestBody DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto) {
 		return discomUserService.acceptAppOrChangeDc(dcAcceptOrDcChangeDto);
+	}
+	
+	@PostMapping("/erp_survey_submit")
+	public Response erpSurveySubmit(@RequestPart String erpSurveySubmitDto,
+			@RequestPart(value="eRPEstimateFile",required = true) MultipartFile eRPEstimateFile) {
+				return discomUserService.erpSurveySubmit(erpSurveySubmitDto,eRPEstimateFile);
+	
 	}
 }

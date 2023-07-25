@@ -1,5 +1,7 @@
 package com.dsp.dsp.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
@@ -20,4 +22,5 @@ public interface DiscomUserService {
 
 	Response acceptAppOrChangeDc(DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto);
 
+	Response erpSurveySubmit(String erpSurveySubmitDto, MultipartFile eRPEstimateFile);
 }

@@ -134,9 +134,11 @@ public class ConsumerApplication {
     @Column(name="APPLICATION_STATUS_ID")
    	private Long applicationStatusId;
     
+    @Column(name="ERP_PROJECT_NUMBER")
+   	private String erpProjectNumber;
+    
 	public ConsumerApplication() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -522,14 +524,17 @@ public class ConsumerApplication {
 		return applicationStatusId;
 	}
 
-
 	public void setApplicationStatusId(Long applicationStatusId) {
 		this.applicationStatusId = applicationStatusId;
 	}
 
 
-	
-	
-    
-   
+	public String getErpProjectNumber() {
+		return erpProjectNumber;
+	}
+
+
+	public void setErpProjectNumber(String erpProjectNumber) {
+		this.erpProjectNumber = erpProjectNumber;
+	}
 }
