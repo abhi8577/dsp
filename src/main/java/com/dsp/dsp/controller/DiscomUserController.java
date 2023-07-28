@@ -1,6 +1,7 @@
 package com.dsp.dsp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import com.dsp.dsp.dto.DiscomUserRegDto;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/discom_user")
 public class DiscomUserController {

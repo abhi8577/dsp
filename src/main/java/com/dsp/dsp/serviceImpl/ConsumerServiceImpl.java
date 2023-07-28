@@ -1,11 +1,11 @@
 package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
+import java.util.Date;
 import java.util.Optional;
-import java.util.Base64.Encoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,9 @@ import com.dsp.dsp.repository.ConsumerRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
 import com.dsp.dsp.util.Utility;
-import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
@@ -41,30 +42,28 @@ public class ConsumerServiceImpl implements ConsumerService {
 			String password = consumerRegDto.getPassword();
 			String address = consumerRegDto.getAddress();
 
-
-			if(mobileNumber==null || mobileNumber.isEmpty()) {
+			if (mobileNumber == null || mobileNumber.isEmpty()) {
 				return Response.response("Mobile number should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
 
-			if(password==null || password.isEmpty()) {	
+			if (password == null || password.isEmpty()) {
 				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
 
-			if(consumerName==null || consumerName.isEmpty()) {
+			if (consumerName == null || consumerName.isEmpty()) {
 
 				return Response.response("Consumer name should not be null", HttpStatus.BAD_REQUEST, null, null);
 
-			}	
+			}
 
-
-			if(email==null || email.isEmpty()) {
+			if (email == null || email.isEmpty()) {
 
 				return Response.response("Email id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
-			if(address==null || address.isEmpty()) {
+			if (address == null || address.isEmpty()) {
 				return Response.response("Address should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
@@ -73,14 +72,15 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 			Consumer findByMobileNumber = consumerRepository.findByMobileNumber(mobileNumber);
 
-			if(findByMobileNumber!=null) {	
-				return Response.response("Consumer Mobile Number Already Exist", HttpStatus.OK, findByMobileNumber, null);
+			if (findByMobileNumber != null) {
+				return Response.response("Consumer Mobile Number Already Exist", HttpStatus.OK, findByMobileNumber,
+						null);
 
 			}
 
 			String encodePass = Utility.getEncodeData(password);
 
-			Consumer consumer=new Consumer();
+			Consumer consumer = new Consumer();
 			consumer.setAddress(address);
 			consumer.setEmail(email);
 			consumer.setMobileNumber(mobileNumber);
@@ -97,8 +97,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 			e.printStackTrace();
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
-		}	
-
+		}
 
 	}
 
@@ -109,28 +108,27 @@ public class ConsumerServiceImpl implements ConsumerService {
 			String id = credentialsDto.getId();
 			String password = credentialsDto.getPassword();
 
-			if(id==null || id.isEmpty()) {
+			if (id == null || id.isEmpty()) {
 				return Response.response("Id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
 
-			if(password==null || password.isEmpty()) {	
+			if (password == null || password.isEmpty()) {
 				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
 
 			Consumer findByMobileNumber = consumerRepository.findByMobileNumber(id);
 
-			if(findByMobileNumber==null) {
+			if (findByMobileNumber == null) {
 				return Response.response("Consumer not found", HttpStatus.NOT_FOUND, null, null);
 
 			}
 			String decryptData = Utility.getDecryptData(findByMobileNumber.getPassword());
 
-			if(decryptData.equals(password)) {
+			if (decryptData.equals(password)) {
 				return Response.response("Login successfully", HttpStatus.OK, findByMobileNumber, null);
-			}
-			else {
+			} else {
 				return Response.response("Invalid credentials", HttpStatus.NOT_FOUND, null, null);
 
 			}
@@ -140,15 +138,15 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 		}
 	}
-
+	
 	@Override
 	public Response changePwd(ChangePasswordDto changePasswordDto) {
 		// TODO Auto-generated method `
 		try {
 			Optional<Consumer> consumer = consumerRepository.findById(changePasswordDto.getId());
-			if(consumer.isPresent()) {
+			if (consumer.isPresent()) {
 
-				Consumer consumer2 = consumer.get();		
+				Consumer consumer2 = consumer.get();
 				String encodePass = Utility.getEncodeData(changePasswordDto.getPassword());
 				consumer2.setPassword(encodePass);
 
@@ -165,10 +163,10 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 	@Override
 	public Response consumerDetails(String mobileNo) {
-	
+
 		Consumer consumer = consumerRepository.findByMobileNumber(mobileNo);
 
-		if(consumer==null) {
+		if (consumer == null) {
 			return Response.response("Consumer not found", HttpStatus.NOT_FOUND, null, null);
 		}
 		return Response.response("Consumer Details", HttpStatus.OK, consumer, null);

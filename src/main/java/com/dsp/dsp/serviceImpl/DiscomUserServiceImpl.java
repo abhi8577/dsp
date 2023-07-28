@@ -271,6 +271,7 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			if(erpSurveySubmitDto ==null) {
 				return Response.response("ERP Submit Request Not Found ", HttpStatus.NOT_FOUND, null, null);
 			}
+
 			ObjectMapper objectMapper = new ObjectMapper();
 			ErpSurveySubmitDto erp = objectMapper.readValue(erpSurveySubmitDto, ErpSurveySubmitDto.class);
 
@@ -291,7 +292,7 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 			ERPEstimate erpEstimate = new ERPEstimate();
 			BeanUtils.copyProperties(erp,erpEstimate);
 
-			Response erpUploadFile = Utility.uploadFile(eRPEstimateFile, "ERP_ESTIMATE");
+			Response erpUploadFile = Utility.uploadFile(eRPEstimateFile, "ERP_ESTIMATE-"+consumerApplication.getConsumerApplicationId());
 			if(erpUploadFile.getStatus()==200){
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) erpUploadFile.getObject();
 				erpEstimate.setErpEstimateFilePath(fileUploadPathDto.getFilePath());  
@@ -307,13 +308,12 @@ public class DiscomUserServiceImpl implements DiscomUserService{
 				consumerApplicationRepository.save(consumerApplication);
 			} else {
 				return Response.response("Data Not Saved In ERP Table", HttpStatus.CONFLICT, null, null);
-
 			}
 			return Response.response("Data Saved", HttpStatus.OK, save, null);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}
 	}
-	catch (Exception e) {
-		e.printStackTrace();
-		return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
-	}
-}
 }
