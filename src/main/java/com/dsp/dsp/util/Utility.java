@@ -40,26 +40,23 @@ public class Utility {
 	            return Response.response("Upload file was empty", HttpStatus.BAD_REQUEST, null, null);
 	
 			}
-			//else if(file.getContentType().contains("pdf/")) {
             // Get the file and save it somewhere
             byte[] bytes = file.getBytes();
             double rand=  Math.random();
             String random=String.valueOf(rand);
             random=random.substring(random.indexOf(".")+1);
-           // Path path = Paths.get("C:\\fileUploadTest\\"+random+file.getOriginalFilename());
-           Path path = Paths.get("C:\\dspUploadFile\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
+            
+           //For Local
+           //Path path = Paths.get("C:\\dspUploadFile\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
+
+            //For Rooftop
+            Path path = Paths.get("D:\\DSP-pdf-upload\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
 
             Path filePath = Files.write(path, bytes);
             FileUploadPathDto filePathDto = new FileUploadPathDto();
             filePathDto.setFilePath(filePath.toString());
             return Response.response("File upload successfully", HttpStatus.OK, filePathDto, null);
-            		
-
-		//}
-//			else {
-//	            return Response.response("File type incorrect", HttpStatus.BAD_REQUEST, null, null);
-//	
-//			}
+            
         } catch (Exception e) {
         	throw e;
         }
