@@ -23,4 +23,6 @@ public interface DiscomUserService {
 	Response acceptAppOrChangeDc(DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto);
 
 	Response erpSurveySubmit(String erpSurveySubmitDto, MultipartFile eRPEstimateFile);
+
+	Response demandFeeCalculation(String consumerAppNo);
 }

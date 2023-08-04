@@ -23,7 +23,7 @@ import com.dsp.dsp.model.Dc;
 import com.dsp.dsp.model.District;
 import com.dsp.dsp.model.Division;
 import com.dsp.dsp.model.LandAreaUnit;
-import com.dsp.dsp.model.LoadRequested;
+import com.dsp.dsp.model.LoadUnit;
 import com.dsp.dsp.model.NatureOfWork;
 import com.dsp.dsp.model.Region;
 import com.dsp.dsp.model.SchemeType;
@@ -35,7 +35,7 @@ import com.dsp.dsp.repository.DcRepository;
 import com.dsp.dsp.repository.DistrictRepository;
 import com.dsp.dsp.repository.DivisionRepository;
 import com.dsp.dsp.repository.LandAreaUnitRepository;
-import com.dsp.dsp.repository.LoadRequestedRepository;
+import com.dsp.dsp.repository.LoadUnitRepository;
 import com.dsp.dsp.repository.NatureOfWorkRepository;
 import com.dsp.dsp.repository.RegionRepository;
 import com.dsp.dsp.repository.SchemeTypeRepository;
@@ -57,8 +57,8 @@ public class MasterController {
 	SchemeTypeRepository schemeTypeRepository;
 
 	@Autowired
-	LoadRequestedRepository loadRequestedRepository;
-
+	LoadUnitRepository loadUnitRepository; 
+	
 	@Autowired
 	LandAreaUnitRepository LandAreaUnitRepository;
 
@@ -138,7 +138,7 @@ public class MasterController {
 	@GetMapping("/get_all_load_requested_unit")
 	public Response getAllLoadRequestedUnit() {
 		try {
-			List<LoadRequested> findAll = loadRequestedRepository.findAll();
+			List<LoadUnit> findAll = loadUnitRepository.findAll();
 
 			if(findAll.isEmpty()) {
 				return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);

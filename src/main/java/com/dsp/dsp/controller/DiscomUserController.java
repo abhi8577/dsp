@@ -59,7 +59,11 @@ public class DiscomUserController {
 	@PostMapping("/erp_survey_submit")
 	public Response erpSurveySubmit(@RequestPart String erpSurveySubmitDto,
 			@RequestPart(value="eRPEstimateFile",required = true) MultipartFile eRPEstimateFile) {
-				return discomUserService.erpSurveySubmit(erpSurveySubmitDto,eRPEstimateFile);
+				return discomUserService.erpSurveySubmit(erpSurveySubmitDto,eRPEstimateFile);	
+	}	
 	
+	@GetMapping("/demand_fee_calculation/{consumerAppNo}")
+	public Response demandFeeCalculation(@PathVariable("consumerAppNo") String consumerAppNo) {
+		return discomUserService.demandFeeCalculation(consumerAppNo);
 	}
 }

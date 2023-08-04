@@ -4,11 +4,14 @@ public interface BillDeskPaymentValueConstant {
 
 	/**** TESTING ****/
 	/* INITIAL PAYMENT TEST KIT */
-
+	
 	String BASE_URL = "https://pguat.billdesk.io/payments/ve1_2/orders/create";
-	// String
-	// RETURN_URL_VALUE="https://survey.mpcz.in:8080/ssp-web/payment/response"; //
-	String RETURN_URL_VALUE = "http://localhost:8080/dsp/payment/billdesk_payment_response";
+	
+	//UAT Return URL -:
+	String RETURN_URL_VALUE="https://rooftop-uat.mpcz.in:8443/dsp/payment/billdesk_payment_response"; //
+	
+	//Local Return URL -:
+	//String RETURN_URL_VALUE = "http://localhost:8080/dsp/payment/billdesk_payment_response";
 
 	/* REFUND PROPERTIES TEST KIT */
 	String REFUND_URL = "https://pguat.billdesk.io/payments/ve1_2/refunds/create";
@@ -21,6 +24,7 @@ public interface BillDeskPaymentValueConstant {
 	String CLIENT_ID_VALUE = "uatmpmkvv";
 	String SECRET_KEY_VALUE = "Z4aBcHyD9QS5KiGvYDVZxZxXFSex8TOA";
 
+	
 	/**** PRODUCTION ****/
 
 	/* INITIAL PAYMENT PROD KIT */

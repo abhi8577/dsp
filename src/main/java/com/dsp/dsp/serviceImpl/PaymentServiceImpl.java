@@ -53,6 +53,13 @@ public class PaymentServiceImpl implements PaymentService {
 
 		Map<Object, Object> response = new HashMap<>();
 		try {
+			
+			ConsumerApplication consumerApplication = consumerApplicationRepository
+					.findByConsumerApplicationId(consumerAppNo);
+			if (consumerApplication == null) {
+				return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
+			}
+			
 			DspInvoiceHistory dspInvoiceHistory = dspInvoiceHistoryRepository
 					.findByApplicationNumberAndPaymentType(consumerAppNo, paymentType);
 
@@ -60,10 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
 					&& dspInvoiceHistory.getAuth_status().equals("0300")) {
 				return Response.response("Payment Already Done", HttpStatus.CONFLICT, null, null);
 			} else {
-				// check lgana h ki unpaid record delete ho jaye
 
-				ConsumerApplication consumerApplication = consumerApplicationRepository
-						.findByConsumerApplicationId(consumerAppNo);
 				DspPaymentHistory dspPaymentHistory = dspPaymentHistoryRepository
 						.findByApplicationNumberAndPaymentType(consumerAppNo, paymentType);
 

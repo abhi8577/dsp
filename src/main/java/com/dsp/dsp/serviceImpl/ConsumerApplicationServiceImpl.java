@@ -28,7 +28,7 @@ import com.dsp.dsp.repository.DistrictRepository;
 import com.dsp.dsp.repository.DivisionRepository;
 import com.dsp.dsp.repository.GeoLocationRepository;
 import com.dsp.dsp.repository.LandAreaUnitRepository;
-import com.dsp.dsp.repository.LoadRequestedRepository;
+import com.dsp.dsp.repository.LoadUnitRepository;
 import com.dsp.dsp.repository.NatureOfWorkRepository;
 import com.dsp.dsp.repository.RegionRepository;
 import com.dsp.dsp.repository.SchemeTypeRepository;
@@ -64,7 +64,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	SchemeTypeRepository schemeTypeRepository;
 
 	@Autowired
-	LoadRequestedRepository loadRequestedRepository;
+	LoadUnitRepository loadUnitRepository;
 
 	@Autowired
 	LandAreaUnitRepository LandAreaUnitRepository;
@@ -979,7 +979,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			responseDTO.setIvrsNo(application.getIvrsNo());
 			responseDTO.setLoadRequested(application.getLoadRequested());
 			if(application.getLoadUnitId()!=null)
-				responseDTO.setLoadUnit(loadRequestedRepository.findById(application.getLoadUnitId()).get().getLoadUnitName());
+				responseDTO.setLoadUnit(loadUnitRepository.findById(application.getLoadUnitId()).get().getLoadUnitName());
 			responseDTO.setLandArea(application.getLandArea());
 			if(application.getLandAreaUnitId()!=null)
 				responseDTO.setLandAreaUnit(LandAreaUnitRepository.findById(application.getLandAreaUnitId()).get().getLandAreaUnitName());

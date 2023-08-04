@@ -6,23 +6,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="LOAD_REQUESTED")
-public class LoadRequested {
+@Table(name="LOAD_UNIT")
+public class LoadUnit {
 	
 	@Id
-	@Column(name="LOAD_REQUESTED_ID")
-	private Long loadRequestedId;
+	@Column(name="LOAD_UNIT_ID")
+	private Long loadUnitId;
 	
 	@Column(name="LOAD_UNIT_NAME")
 	private String loadUnitName;
-
-	public Long getLoadRequestedId() {
-		return loadRequestedId;
-	}
-
-	public void setLoadRequestedId(Long loadRequestedId) {
-		this.loadRequestedId = loadRequestedId;
-	}
 
 	public String getLoadUnitName() {
 		return loadUnitName;
@@ -31,9 +23,12 @@ public class LoadRequested {
 	public void setLoadUnitName(String loadUnitName) {
 		this.loadUnitName = loadUnitName;
 	}
-	
-	
-	
 
+	public Long getLoadUnitId() {
+		return loadUnitId;
+	}
 
+	public void setLoadUnitId(Long loadUnitId) {
+		this.loadUnitId = loadUnitId;
+	}
 }

@@ -75,6 +75,21 @@ public class ERPEstimate {
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
     
+    @Column(name = "TOTAL_AMOUNT")
+    private Double totalAmount;
+  
+    @Column(name = "CGST")
+    private Double cgst;
+    
+    @Column(name = "SGST")
+    private Double sgst;
+    
+    @Column(name = "IGST")
+    private Double igst;
+    
+    @Column(name = "LOAD_REQUESTED_AMOUNT")
+    private Double loadRequestedAmount;
+    
     @Column(name = "ERP_ESTIMATE_FILE_PATH")
     private String erpEstimateFilePath;
     
@@ -267,5 +282,45 @@ public class ERPEstimate {
 
 	public void setErpEstimateFilePath(String erpEstimateFilePath) {
 		this.erpEstimateFilePath = erpEstimateFilePath;
+	}
+
+	public Double getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Double totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public Double getCgst() {
+		return cgst;
+	}
+
+	public void setCgst(Double cgst) {
+		this.cgst = cgst;
+	}
+
+	public Double getSgst() {
+		return sgst;
+	}
+
+	public void setSgst(Double sgst) {
+		this.sgst = sgst;
+	}
+
+	public Double getIgst() {
+		return igst;
+	}
+
+	public void setIgst(Double igst) {
+		this.igst = igst;
+	}
+
+	public Double getLoadRequestedAmount() {
+		return loadRequestedAmount;
+	}
+
+	public void setLoadRequestedAmount(Double loadRequestedAmount) {
+		this.loadRequestedAmount = loadRequestedAmount;
 	}
 }
