@@ -266,7 +266,7 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 				ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
 			}
 			return Response.response("DC Changed", HttpStatus.OK, appDCChange, null);
-		} else {
+		} else 	{
 			consumerApplication.setApplicationStatusId(7L);
 			ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Application Accepted At Dc End", HttpStatus.OK, application, null);
@@ -393,7 +393,7 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 				else if (consumerApplication.getLoadRequested() != null && consumerApplication.getLoadUnitId() == 2L) {
 
 					Double supervisionAmount = estimate.getSupervisionCost();
-					Double kvaLoadAmount = (double) (consumerApplication.getLoadRequested() * 12.5 * 15567);
+					Double kvaLoadAmount = (double) (consumerApplication.getLoadRequested() * 0.8 * 15567);
 					Double totalAmountWithoutGst = supervisionAmount + kvaLoadAmount;
 
 					demandFeeCalculationDto.setKvaLoadAmount(round(kvaLoadAmount, 2));

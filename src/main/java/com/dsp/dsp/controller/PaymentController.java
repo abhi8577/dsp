@@ -22,7 +22,10 @@ public class PaymentController {
 
 	@PostMapping("/make_registration_payment/{consumerAppNo}/{paymentType}")
 	public Response createOrder(@PathVariable(name="consumerAppNo") String consumerAppNo,
-			@PathVariable(name="paymentType") String paymentType,HttpServletRequest httpServletRequest) {		
+			@PathVariable(name="paymentType") String paymentType,HttpServletRequest httpServletRequest) {	
+		
+		// Payment Type - "DEMAND" or "REGISTRATION
+		
 		return paymentService.createOrder(consumerAppNo,paymentType,httpServletRequest);		
 	}
 
