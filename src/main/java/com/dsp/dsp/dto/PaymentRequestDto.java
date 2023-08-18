@@ -12,6 +12,7 @@ public class PaymentRequestDto {
 	private BigDecimal demandAmount;
 	private BigDecimal cgst;
 	private BigDecimal sgst;
+	private BigDecimal igst;
 	private String dc;
 	private String district;
 	
@@ -78,5 +79,11 @@ public class PaymentRequestDto {
 	}
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+	public BigDecimal getIgst() {
+		return igst;
+	}
+	public void setIgst(BigDecimal igst) {
+		this.igst = igst;
 	}
 }

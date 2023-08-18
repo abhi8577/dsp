@@ -17,6 +17,8 @@ public class DemandFeeCalculationResponseDto {
 	private Double kwLoadAmount;
 	
 	private Double kvaLoadAmount;
+	
+	private Double estimatedAmount;
 
 	public Double getSuperVisionAmount() {
 		return superVisionAmount;
@@ -81,4 +83,14 @@ public class DemandFeeCalculationResponseDto {
 	public void setConsumerApplicationNumber(String consumerApplicationNumber) {
 		this.consumerApplicationNumber = consumerApplicationNumber;
 	}
+
+	public Double getEstimatedAmount() {
+		return estimatedAmount;
+	}
+
+	public void setEstimatedAmount(Double estimatedAmount) {
+		this.estimatedAmount = estimatedAmount;
+	}
+	
+	
 }

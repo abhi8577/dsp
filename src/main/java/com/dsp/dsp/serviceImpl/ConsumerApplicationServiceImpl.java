@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ConsumerApplicationDto;
-import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
 import com.dsp.dsp.dto.ConsumerApplicationIdDto;
+import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
+import com.dsp.dsp.dto.DtrPtrDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
 import com.dsp.dsp.dto.RegistrationFeePaymentDetailDto;
@@ -1005,4 +1006,24 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		return Response.response("Pending Application For GeoLocation in This Consumer Number", 
 				HttpStatus.OK, responseList, null);
 	}
+
+	@Override
+	public Response updateDtrPtr(DtrPtrDto dtrPtrDto) {
+		String consumerApplicationId = dtrPtrDto.getConsumerApplicationId();
+		Boolean dtrPtr = dtrPtrDto.getDtrPtr();
+		if(consumerApplicationId!=null  && dtrPtr!=null) {
+	
+		ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(consumerApplicationId);
+		if(findByConsumerApplicationId==null) {
+			return Response.response("Consumer application not found for this consumer application id", 
+					HttpStatus.NOT_FOUND, dtrPtrDto, null);		
+			}
+		findByConsumerApplicationId.setPtrDtrCheckBox(dtrPtr);
+		consumerApplicationRepository.save(findByConsumerApplicationId);
+		return Response.response("PTR/DTR update successfully", 
+				HttpStatus.OK, dtrPtrDto, null);	
+		}
+		return Response.response("Consumer application id and PTR/DTR should not be null", 
+				HttpStatus.BAD_REQUEST, dtrPtrDto, null);
+		}
 }

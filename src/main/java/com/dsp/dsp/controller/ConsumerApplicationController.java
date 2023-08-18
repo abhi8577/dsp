@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import com.dsp.dsp.dto.ConsumerApplicationIdDto;
+import com.dsp.dsp.dto.DtrPtrDto;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 
@@ -74,5 +75,10 @@ public class ConsumerApplicationController {
 	@GetMapping("/get_consumer_applications/{mobileNo}")
 	public Response getConsumerApplications(@PathVariable(name="mobileNo") String mobileNo) {
 		return consumerApplicationService.getConsumerApplications(mobileNo);
+	}
+	
+	@PostMapping("/update_dtr_ptr")
+	public Response updateDtrPtr(@RequestBody DtrPtrDto dtrPtrDto) {
+		return consumerApplicationService.updateDtrPtr(dtrPtrDto);
 	}
 }
