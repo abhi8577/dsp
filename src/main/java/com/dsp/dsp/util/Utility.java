@@ -47,10 +47,10 @@ public class Utility {
             random=random.substring(random.indexOf(".")+1);
             
            //For Local
-           //Path path = Paths.get("C:\\dspUploadFile\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
+           Path path = Paths.get("C:\\dspUploadFile\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
 
             //For Rooftop
-            Path path = Paths.get("D:\\DSP-pdf-upload\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
+           // Path path = Paths.get("D:\\DSP-pdf-upload\\"+fileName+"_"+random+"_"+file.getOriginalFilename());
 
             Path filePath = Files.write(path, bytes);
             FileUploadPathDto filePathDto = new FileUploadPathDto();

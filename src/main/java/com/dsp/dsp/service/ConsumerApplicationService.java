@@ -20,8 +20,8 @@ public interface ConsumerApplicationService {
 	Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(ConsumerApplicationIdDto consumerApplicationIdDto);
 
 	Response getConsumerApplications(String mobileNo);
+	
+	Response updateDtrPtr (DtrPtrDto dtrPtrDto);
 
-
-	Response updateDtrPtr(DtrPtrDto dtrPtrDto);
 
 }

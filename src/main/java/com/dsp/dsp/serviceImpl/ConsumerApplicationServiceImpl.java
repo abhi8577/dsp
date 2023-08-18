@@ -1025,5 +1025,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		}
 		return Response.response("Consumer application id and PTR/DTR should not be null", 
 				HttpStatus.BAD_REQUEST, dtrPtrDto, null);
+
 	}
+
 }
