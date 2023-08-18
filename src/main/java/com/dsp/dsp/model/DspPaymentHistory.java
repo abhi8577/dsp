@@ -50,6 +50,15 @@ public class DspPaymentHistory implements Serializable {
 
     @Column(name = "TOTAL_AMOUNT")
     private BigDecimal totalAmount;
+    
+    @Column(name = "CGST")
+    private BigDecimal cgst;
+    
+    @Column(name = "SGST")
+    private BigDecimal sgst;
+    
+    @Column(name = "IGST")
+    private BigDecimal igst;
 
     @Column(name = "PAYMENT_SOURCE")
     private String paymentSource;
@@ -204,6 +213,30 @@ public class DspPaymentHistory implements Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public BigDecimal getCgst() {
+		return cgst;
+	}
+
+	public void setCgst(BigDecimal cgst) {
+		this.cgst = cgst;
+	}
+
+	public BigDecimal getSgst() {
+		return sgst;
+	}
+
+	public void setSgst(BigDecimal sgst) {
+		this.sgst = sgst;
+	}
+
+	public BigDecimal getIgst() {
+		return igst;
+	}
+
+	public void setIgst(BigDecimal igst) {
+		this.igst = igst;
 	}
 
 }

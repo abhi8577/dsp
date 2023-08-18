@@ -18,12 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.dsp.dsp.constant.ResponseConstant;
+import com.dsp.dsp.dto.DemandFeeCalculationResponseDto;
 import com.dsp.dsp.dto.PaymentRequestDto;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.DspInvoiceHistory;
 import com.dsp.dsp.model.DspPaymentHistory;
 import com.dsp.dsp.repository.ConsumerApplicationRepository;
 import com.dsp.dsp.repository.ConsumerRepository;
+import com.dsp.dsp.repository.DcRepository;
+import com.dsp.dsp.repository.DistrictRepository;
 import com.dsp.dsp.repository.DspInvoiceHistoryRepository;
 import com.dsp.dsp.repository.DspPaymentHistoryRepository;
 import com.dsp.dsp.response.Response;
@@ -48,18 +51,24 @@ public class PaymentServiceImpl implements PaymentService {
 	@Autowired
 	ConsumerRepository consumerRepository;
 
+	@Autowired
+	DcRepository dcRepository;
+
+	@Autowired
+	DistrictRepository districtRepository;
+
 	@Override
 	public Response createOrder(String consumerAppNo, String paymentType, HttpServletRequest httpServletRequest) {
 
 		Map<Object, Object> response = new HashMap<>();
 		try {
-			
+
 			ConsumerApplication consumerApplication = consumerApplicationRepository
 					.findByConsumerApplicationId(consumerAppNo);
 			if (consumerApplication == null) {
 				return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
 			}
-			
+
 			DspInvoiceHistory dspInvoiceHistory = dspInvoiceHistoryRepository
 					.findByApplicationNumberAndPaymentType(consumerAppNo, paymentType);
 
@@ -76,7 +85,9 @@ public class PaymentServiceImpl implements PaymentService {
 					OffsetDateTime oldDate = OffsetDateTime.parse(dspPaymentHistory.getOrderDate());
 					OffsetDateTime currentDateTime = OffsetDateTime.now(ZoneOffset.ofHoursMinutes(5, 30));
 					Duration duration = Duration.between(oldDate, currentDateTime);
-					durationMinutes = (int) duration.toMinutes();
+					// Change the duration to 10 minutes
+					Duration newDuration = duration.minusMinutes(20);
+					durationMinutes = (int) newDuration.toMinutes();
 					System.err.println("Duration--- " + durationMinutes);
 				}
 				if (dspPaymentHistory == null || dspPaymentHistory.getPaymentStatus() == 1 && durationMinutes > 25) {
@@ -92,8 +103,8 @@ public class PaymentServiceImpl implements PaymentService {
 					paymentRequestDto.setCgst(new BigDecimal(90));
 					paymentRequestDto.setSgst(new BigDecimal(90));
 					paymentRequestDto.setTotalAmount(new BigDecimal(1180));
-					paymentRequestDto.setDc("DC");
-					paymentRequestDto.setDistrict("district");
+					paymentRequestDto.setDc(dcRepository.findById(consumerApplication.getDcId()).get().getDcName().replace("(", "").replace(")", "").replace("/", ""));
+					paymentRequestDto.setDistrict(districtRepository.findById(consumerApplication.getDistrictId()).get().getDistrictName().replace("(", "").replace(")", "").replace("/", ""));
 					paymentRequestDto.setDemandAmount(new BigDecimal(0));
 
 					response = BillDeskUtil.createPaymentOrder(paymentRequestDto, httpServletRequest);
@@ -110,6 +121,8 @@ public class PaymentServiceImpl implements PaymentService {
 							dspPaymentHistory1.setConsumerName(consumerRepository
 									.findById(consumerApplication.getConsumerId()).get().getConsumerName());
 							dspPaymentHistory1.setTotalAmount(paymentRequestDto.getTotalAmount());
+							dspPaymentHistory1.setCgst(paymentRequestDto.getCgst());
+							dspPaymentHistory1.setSgst(paymentRequestDto.getSgst());
 							dspPaymentHistoryRepository.save(dspPaymentHistory1);
 							response.put(ResponseConstant.STATUS_CODE, HttpStatus.CREATED.value());
 							response.put(ResponseConstant.MESSAGE, HttpStatus.CREATED);
@@ -169,12 +182,27 @@ public class PaymentServiceImpl implements PaymentService {
 					dspPaymentHistory.setUpdatedDate(LocalDateTime.now().toString());
 					dspPaymentHistory.setRemark(dspInvoiceHistory.getTransaction_error_desc());
 					DspPaymentHistory paymentHistory = dspPaymentHistoryRepository.save(dspPaymentHistory);
-					if (paymentHistory != null) {
+					if (paymentHistory.getPaymentType().equalsIgnoreCase("REGISTRATION")) {
 
 						ConsumerApplication consumerApplication = consumerApplicationRepository
 								.findByConsumerApplicationId(paymentHistory.getApplicationNumber());
 						consumerApplication.setApplicationStatusId(6L);
 						consumerApplicationRepository.save(consumerApplication);
+					}else if (paymentHistory.getPaymentType().equalsIgnoreCase("DEMAND")) {
+
+						ConsumerApplication consumerApplication = consumerApplicationRepository
+								.findByConsumerApplicationId(paymentHistory.getApplicationNumber());
+
+						if(consumerApplication.getSchemeTypeId() == 2L) {
+							consumerApplication.setApplicationStatusId(23L);
+							consumerApplicationRepository.save(consumerApplication);
+						}else if(consumerApplication.getSchemeTypeId() == 3L && consumerApplication.getNatureOfWorkId() == 6L) {
+							consumerApplication.setApplicationStatusId(20L);
+							consumerApplicationRepository.save(consumerApplication);
+						}else if(consumerApplication.getSchemeTypeId() == 3L) {
+							consumerApplication.setApplicationStatusId(21L);
+							consumerApplicationRepository.save(consumerApplication);
+						}																				
 					}
 					return Response.response("Payment successfully Done", HttpStatus.OK, save, null);
 				}
@@ -186,5 +214,106 @@ public class PaymentServiceImpl implements PaymentService {
 			e.printStackTrace();
 		}
 		return Response.response("Payment Not Done", HttpStatus.CONFLICT, null, null);
+	}
+
+	@Override
+	public Response createDemandOrder(DemandFeeCalculationResponseDto demandFeeCalculationDto, String paymentType,
+			HttpServletRequest httpServletRequest) {
+
+		Map<Object, Object> response = new HashMap<>();
+		try {
+			ConsumerApplication consumerApplication = consumerApplicationRepository
+					.findByConsumerApplicationId(demandFeeCalculationDto.getConsumerApplicationNumber());
+			if (consumerApplication == null) {
+				return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
+			}
+
+			DspInvoiceHistory dspInvoiceHistory = dspInvoiceHistoryRepository
+					.findByApplicationNumberAndPaymentType(demandFeeCalculationDto.getConsumerApplicationNumber(), paymentType);
+
+			if (dspInvoiceHistory != null && dspInvoiceHistory.getTransaction_error_type().equalsIgnoreCase("success")
+					&& dspInvoiceHistory.getAuth_status().equals("0300")) {
+				return Response.response("Payment Already Done", HttpStatus.CONFLICT, null, null);
+			}else {
+
+				DspPaymentHistory dspPaymentHistory = dspPaymentHistoryRepository
+						.findByApplicationNumberAndPaymentType(demandFeeCalculationDto.getConsumerApplicationNumber(), paymentType);
+
+				int durationMinutes = 0;
+				if (dspPaymentHistory != null) {
+					OffsetDateTime oldDate = OffsetDateTime.parse(dspPaymentHistory.getOrderDate());
+					OffsetDateTime currentDateTime = OffsetDateTime.now(ZoneOffset.ofHoursMinutes(5, 30));
+					Duration duration = Duration.between(oldDate, currentDateTime);
+					durationMinutes = (int) duration.toMinutes();
+					System.err.println("Duration--- " + durationMinutes);
+				}
+
+				if (dspPaymentHistory == null || dspPaymentHistory.getPaymentStatus() == 1 && durationMinutes > 25) {
+
+					if(dspPaymentHistory!=null) {
+						dspPaymentHistoryRepository.delete(dspPaymentHistory);
+					}
+
+					PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+					paymentRequestDto.setConsumerApplicationNumber(demandFeeCalculationDto.getConsumerApplicationNumber());
+					paymentRequestDto.setPaymentType(paymentType);
+					paymentRequestDto.setOrderId("ORID" + Utility.getRandomNumber());
+					paymentRequestDto.setRegistrationAmount(new BigDecimal(0));
+					if(demandFeeCalculationDto.getCgst()!=null)
+						paymentRequestDto.setCgst(BigDecimal.valueOf(demandFeeCalculationDto.getCgst()));
+					if(demandFeeCalculationDto.getSgst()!=null)
+						paymentRequestDto.setSgst(BigDecimal.valueOf(demandFeeCalculationDto.getSgst()));
+					if(demandFeeCalculationDto.getIgst()!=null)
+						paymentRequestDto.setIgst(BigDecimal.valueOf(demandFeeCalculationDto.getIgst()));
+					paymentRequestDto.setTotalAmount(BigDecimal.valueOf(demandFeeCalculationDto.getTotalAmount()));
+					paymentRequestDto.setDc(dcRepository.findById(consumerApplication.getDcId()).get().getDcName().replace("(", "").replace(")", "").replace("/", ""));
+					paymentRequestDto.setDistrict(districtRepository.findById(consumerApplication.getDistrictId()).get().getDistrictName().replace("(", "").replace(")", "").replace("/", ""));
+					paymentRequestDto.setDemandAmount(BigDecimal.valueOf(demandFeeCalculationDto.getTotalAmount()));
+
+					response = BillDeskUtil.createPaymentOrder(paymentRequestDto, httpServletRequest);
+
+					if (!response.isEmpty()) {
+						if (response.get("DspPaymentHistory") != null) {
+							DspPaymentHistory dspPaymentHistory1 = new DspPaymentHistory();
+							BeanUtils.copyProperties(response.get("DspPaymentHistory"), dspPaymentHistory1);
+
+							dspPaymentHistory1.setPaymentSource("BILLDESK");
+							dspPaymentHistory1.setApplicationNumber(consumerApplication.getConsumerApplicationId());
+							dspPaymentHistory1.setConsumerMobile(consumerRepository
+									.findById(consumerApplication.getConsumerId()).get().getMobileNumber());
+							dspPaymentHistory1.setConsumerName(consumerRepository
+									.findById(consumerApplication.getConsumerId()).get().getConsumerName());
+							dspPaymentHistory1.setTotalAmount(paymentRequestDto.getTotalAmount());
+							if(paymentRequestDto.getCgst()!=null)
+								dspPaymentHistory1.setCgst(paymentRequestDto.getCgst());
+							if(paymentRequestDto.getSgst()!=null)
+								dspPaymentHistory1.setSgst(paymentRequestDto.getSgst());
+							if(paymentRequestDto.getIgst()!=null)
+								dspPaymentHistory1.setIgst(paymentRequestDto.getIgst());
+							dspPaymentHistoryRepository.save(dspPaymentHistory1);
+							response.put(ResponseConstant.STATUS_CODE, HttpStatus.CREATED.value());
+							response.put(ResponseConstant.MESSAGE, HttpStatus.CREATED);
+							response.put("data", dspPaymentHistory1);
+
+						} else {
+							response.put(ResponseConstant.STATUS_CODE, response.get(ResponseConstant.STATUS_CODE));
+							response.put(ResponseConstant.ERROR_MESSAGE, response.get(ResponseConstant.ERROR_MESSAGE));
+						}
+
+					} else {
+						response.put(ResponseConstant.STATUS_CODE, HttpStatus.NOT_FOUND.value());
+						response.put(ResponseConstant.ERROR_MESSAGE, "Payment Order Not Created");
+					}
+
+				} else {
+					return Response.response("Order Already Created", HttpStatus.CONFLICT, dspPaymentHistory, null);
+
+				}
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return Response.response("Payment Order Created Successfully", HttpStatus.OK, response, null);
 	}
 }

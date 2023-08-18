@@ -23,4 +23,5 @@ public interface ConsumerApplicationService {
 	
 	Response updateDtrPtr (DtrPtrDto dtrPtrDto);
 
+
 }
