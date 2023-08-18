@@ -137,6 +137,10 @@ public class ConsumerApplication {
     @Column(name="ERP_PROJECT_NUMBER")
    	private String erpProjectNumber;
     
+    @Column(name="PTR_DTR_CHECK_BOX")
+   	private Boolean ptrDtrCheckBox=false;
+    
+    
 	public ConsumerApplication() {
 		super();
 	}
@@ -537,4 +541,16 @@ public class ConsumerApplication {
 	public void setErpProjectNumber(String erpProjectNumber) {
 		this.erpProjectNumber = erpProjectNumber;
 	}
+
+
+	public Boolean getPtrDtrCheckBox() {
+		return ptrDtrCheckBox;
+	}
+
+
+	public void setPtrDtrCheckBox(Boolean ptrDtrCheckBox) {
+		this.ptrDtrCheckBox = ptrDtrCheckBox;
+	}
+	
+	
 }
