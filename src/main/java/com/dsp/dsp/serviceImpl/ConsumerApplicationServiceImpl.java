@@ -924,7 +924,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			//			BigDecimal fees = bigDecimal.setScale(2,RoundingMode.HALF_UP);
 			registrationFeePaymentDetailDto.setFees("1180.00");
 			registrationFeePaymentDetailDto.setMobileNo(consumerDetailByConsumerId.getMobileNumber());
-		//	registrationFeePaymentDetailDto.setOrderId("ODR_"+Utility.getRandomNumber());
+			//	registrationFeePaymentDetailDto.setOrderId("ODR_"+Utility.getRandomNumber());
 			registrationFeePaymentDetailDto.setPaymentParticular("Registration Fees");
 			return Response.response("Data found sucessfully", HttpStatus.OK, registrationFeePaymentDetailDto, null);
 		} catch (Exception e) {
@@ -932,7 +932,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 		}	
 	}
-	
+
 	@Override
 	public Response getConsumerApplications(String mobileNo) {
 
@@ -1012,18 +1012,18 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		String consumerApplicationId = dtrPtrDto.getConsumerApplicationId();
 		Boolean dtrPtr = dtrPtrDto.getDtrPtr();
 		if(consumerApplicationId!=null  && dtrPtr!=null) {
-	
-		ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(consumerApplicationId);
-		if(findByConsumerApplicationId==null) {
-			return Response.response("Consumer application not found for this consumer application id", 
-					HttpStatus.NOT_FOUND, dtrPtrDto, null);		
+
+			ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(consumerApplicationId);
+			if(findByConsumerApplicationId==null) {
+				return Response.response("Consumer application not found for this consumer application id", 
+						HttpStatus.NOT_FOUND, dtrPtrDto, null);		
 			}
-		findByConsumerApplicationId.setPtrDtrCheckBox(dtrPtr);
-		consumerApplicationRepository.save(findByConsumerApplicationId);
-		return Response.response("PTR/DTR update successfully", 
-				HttpStatus.OK, dtrPtrDto, null);	
+			findByConsumerApplicationId.setPtrDtrCheckBox(dtrPtr);
+			consumerApplicationRepository.save(findByConsumerApplicationId);
+			return Response.response("PTR/DTR update successfully", 
+					HttpStatus.OK, dtrPtrDto, null);	
 		}
 		return Response.response("Consumer application id and PTR/DTR should not be null", 
 				HttpStatus.BAD_REQUEST, dtrPtrDto, null);
-		}
+	}
 }
