@@ -128,6 +128,9 @@ public class ConsumerApplication {
     @Column(name="CREATED_TIME")
 	private String createdTime;
     
+    @Column(name="UPDATED_TIME")
+	private String updatedTime;
+    
     @Column(name="IS_ACTIVE")
    	private Boolean isActive;
     
@@ -551,6 +554,14 @@ public class ConsumerApplication {
 	public void setPtrDtrCheckBox(Boolean ptrDtrCheckBox) {
 		this.ptrDtrCheckBox = ptrDtrCheckBox;
 	}
-	
-	
+
+
+	public String getUpdatedTime() {
+		return updatedTime;
+	}
+
+
+	public void setUpdatedTime(String updatedTime) {
+		this.updatedTime = updatedTime;
+	}
 }
