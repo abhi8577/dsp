@@ -342,6 +342,11 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			if(applyTypeId==null) {
 				return Response.response("Apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null); 
 			}
+			
+			Long buildingType = consumerApplicationDtoParse.getBuildingType();
+			if(buildingType==null) {
+				return Response.response("Building type should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null); 
+			}
 
 			if(tAndCPpermissionFile==null) {
 				return Response.response("T&CP permission file should not be null", HttpStatus.BAD_REQUEST, null, null);
@@ -413,6 +418,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
 			consumerApplication.setApplicationStatusId(4L);
+			consumerApplication.setBuildingType(buildingType);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -453,7 +459,10 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			if(applyTypeId==null) {
 				return Response.response("Apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null);
 			}
-
+			Long buildingType = consumerApplicationDtoParse.getBuildingType();
+			if(buildingType==null) {
+				return Response.response("Building type should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId, null); 
+			}		
 			if(registryFile==null) {
 				return Response.response("Registry permission file should not be null", HttpStatus.BAD_REQUEST, null, null);
 			}
@@ -523,6 +532,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
 			consumerApplication.setApplicationStatusId(4L);
+			consumerApplication.setBuildingType(buildingType);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 

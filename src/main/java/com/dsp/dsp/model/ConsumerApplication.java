@@ -140,6 +140,9 @@ public class ConsumerApplication {
     @Column(name="PTR_DTR_CHECK_BOX")
    	private Boolean ptrDtrCheckBox=false;
     
+    @Column(name="BUILDING_TYPE")
+   	private Long buildingType;
+    
     
 	public ConsumerApplication() {
 		super();
@@ -550,6 +553,16 @@ public class ConsumerApplication {
 
 	public void setPtrDtrCheckBox(Boolean ptrDtrCheckBox) {
 		this.ptrDtrCheckBox = ptrDtrCheckBox;
+	}
+
+
+	public Long getBuildingType() {
+		return buildingType;
+	}
+
+
+	public void setBuildingType(Long buildingType) {
+		this.buildingType = buildingType;
 	}
 	
 	

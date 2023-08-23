@@ -59,6 +59,8 @@ public class ConsumerApplicationDto {
     private Boolean checkedGSTfile;
     
     private Boolean checkedWorkLocation;
+    
+    private Long buildingType;
      
 //    private MultipartFile TAndCPpermissionFile;
 //     
@@ -312,4 +314,13 @@ public class ConsumerApplicationDto {
 		this.consumerApplicationId = consumerApplicationId;
 	}
 
+	public Long getBuildingType() {
+		return buildingType;
+	}
+
+	public void setBuildingType(Long buildingType) {
+		this.buildingType = buildingType;
+	}
+
+	
 }
