@@ -34,7 +34,7 @@ public class ContractorController {
 	@GetMapping("/contractor_list")
 	ResponseEntity<String> contractorList() {
 
-		String url = "https://rooftop-uat.mpcz.in:8443/qcp/data";
+		String url = "https://rooftop-uat.mpcz.in:8443/qcp/contractors_details";
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();
