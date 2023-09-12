@@ -1,11 +1,9 @@
 package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +15,6 @@ import com.dsp.dsp.repository.ConsumerRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
 import com.dsp.dsp.util.Utility;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {

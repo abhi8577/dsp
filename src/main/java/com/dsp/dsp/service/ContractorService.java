@@ -1,10 +1,10 @@
 package com.dsp.dsp.service;
 
 import com.dsp.dsp.dto.ContractorDetailsDto;
-import com.dsp.dsp.dto.ContractorSelectionDto;
+import com.dsp.dsp.response.Response;
 
 public interface ContractorService {
 
-	void contractorSelectionSave(ContractorDetailsDto contractorDetailsDto);
+	Response contractorSelectionSave(ContractorDetailsDto contractorDetailsDto);
 
 }

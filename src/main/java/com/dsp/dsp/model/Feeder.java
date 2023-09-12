@@ -1,48 +1,33 @@
 package com.dsp.dsp.model;
 
-import javax.persistence.Entity;
-
-import javax.persistence.Id;
-
 import javax.persistence.Column;
-
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
-
-
 
 @Entity
 @Table(name = "FEEDER")
 public class Feeder {
 
+	@Id
+	@Column(name = "FEEDER_ID")
+	private Long feederId;
 
+	@Column(name = "SUBSTATION_ID")
 
-    @Id
-    @Column(name = "FEEDER_ID")
-    private Long feederId;
+	private Long subStationId;
 
-    @Column(name = "SUBSTATION_ID")
+	@Column(name = "FEEDER_NAME", length = 260)
 
-    private Long subStationId;
+	private String feederName;
 
+	@Column(name = "FEEDER_CODE")
 
+	private Long feederCode;
 
-    @Column(name = "FEEDER_NAME", length = 260)
+	@Column(name = "IS_ACTIVE")
 
-    private String feederName;
-
-
-
-    @Column(name = "FEEDER_CODE")
-
-    private Long feederCode;
-
-
-
-    @Column(name = "IS_ACTIVE")
-
-    private Long isActive;
-
-
+	private Long isActive;
 
 	public Long getFeederId() {
 
@@ -50,17 +35,11 @@ public class Feeder {
 
 	}
 
-
-
 	public void setFeederId(Long feederId) {
 
 		this.feederId = feederId;
 
 	}
-
-
-
-
 
 	public Long getSubStationId() {
 
@@ -68,15 +47,11 @@ public class Feeder {
 
 	}
 
-
-
 	public void setSubStationId(Long subStationId) {
 
 		this.subStationId = subStationId;
 
 	}
-
-
 
 	public String getFeederName() {
 
@@ -84,15 +59,11 @@ public class Feeder {
 
 	}
 
-
-
 	public void setFeederName(String feederName) {
 
 		this.feederName = feederName;
 
 	}
-
-
 
 	public Long getFeederCode() {
 
@@ -100,15 +71,11 @@ public class Feeder {
 
 	}
 
-
-
 	public void setFeederCode(Long feederCode) {
 
 		this.feederCode = feederCode;
 
 	}
-
-
 
 	public Long getIsActive() {
 
@@ -116,12 +83,10 @@ public class Feeder {
 
 	}
 
-
 	public void setIsActive(Long isActive) {
 
 		this.isActive = isActive;
 
 	}
-
 
 }

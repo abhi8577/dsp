@@ -1,8 +1,8 @@
 package com.dsp.dsp.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Column;
 import javax.persistence.Table;
 
 @Entity
@@ -10,23 +10,23 @@ import javax.persistence.Table;
 public class Substation {
 
 	@Id
-    @Column(name = "SUBSTATION_ID")
-    private Long substationId;
+	@Column(name = "SUBSTATION_ID")
+	private Long substationId;
 
-    @Column(name = "DC_ID")
-    private Long dcId;
+	@Column(name = "DC_ID")
+	private Long dcId;
 
-    @Column(name = "SUBSTATION_NAME")
-    private String substationName;
+	@Column(name = "SUBSTATION_NAME")
+	private String substationName;
 
-    @Column(name = "SUBSTATION_CODE")
-    private Long substationCode;
+	@Column(name = "SUBSTATION_CODE")
+	private Long substationCode;
 
-    @Column(name = "IS_ACTIVE")
-    private Long isActive;
+	@Column(name = "IS_ACTIVE")
+	private Long isActive;
 
-    @Column(name = "DIVISION_ID")
-    private String divisionId;
+	@Column(name = "DIVISION_ID")
+	private String divisionId;
 
 	public Long getSubstationId() {
 
@@ -93,6 +93,7 @@ public class Substation {
 		return divisionId;
 
 	}
+
 	public void setDivisionId(String divisionId) {
 
 		this.divisionId = divisionId;
