@@ -26,6 +26,7 @@ import com.dsp.dsp.model.LandAreaUnit;
 import com.dsp.dsp.model.LoadUnit;
 import com.dsp.dsp.model.NatureOfWork;
 import com.dsp.dsp.model.Region;
+import com.dsp.dsp.model.Role;
 import com.dsp.dsp.model.SchemeType;
 import com.dsp.dsp.model.SubDivision;
 import com.dsp.dsp.model.SupplyVoltage;
@@ -38,6 +39,7 @@ import com.dsp.dsp.repository.LandAreaUnitRepository;
 import com.dsp.dsp.repository.LoadUnitRepository;
 import com.dsp.dsp.repository.NatureOfWorkRepository;
 import com.dsp.dsp.repository.RegionRepository;
+import com.dsp.dsp.repository.RoleRepository;
 import com.dsp.dsp.repository.SchemeTypeRepository;
 import com.dsp.dsp.repository.SubDivisionRepository;
 import com.dsp.dsp.repository.SupplyVoltageRepository;
@@ -82,6 +84,9 @@ public class MasterController {
 
 	@Autowired
 	SubDivisionRepository subDivisionRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
 
 	@GetMapping("/get_all_nature_of_work")
 	public Response getAllNatureOfWork() {
@@ -340,5 +345,24 @@ public class MasterController {
 		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(readAllBytes, headers, HttpStatus.OK);	 
 
 		return responseEntity;
+	}
+	
+	@GetMapping("/get_all_role")
+	public Response getAllRoles(){
+		
+		try {
+			List<Role> findAll = roleRepository.findAll();
+
+			if(findAll.isEmpty()) {
+				return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
+			}
+			return Response.response("Data  found", HttpStatus.OK, findAll, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		}
+	
+		
 	}
 }

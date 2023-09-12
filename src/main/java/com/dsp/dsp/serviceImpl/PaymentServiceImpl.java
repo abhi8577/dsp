@@ -195,12 +195,15 @@ public class PaymentServiceImpl implements PaymentService {
 
 						if(consumerApplication.getSchemeTypeId() == 2L) {
 							consumerApplication.setApplicationStatusId(23L);
+							consumerApplication.setUpdatedTime(LocalDateTime.now().toString());
 							consumerApplicationRepository.save(consumerApplication);
 						}else if(consumerApplication.getSchemeTypeId() == 3L && consumerApplication.getNatureOfWorkId() == 6L) {
 							consumerApplication.setApplicationStatusId(20L);
+							consumerApplication.setUpdatedTime(LocalDateTime.now().toString());
 							consumerApplicationRepository.save(consumerApplication);
 						}else if(consumerApplication.getSchemeTypeId() == 3L) {
 							consumerApplication.setApplicationStatusId(21L);
+							consumerApplication.setUpdatedTime(LocalDateTime.now().toString());
 							consumerApplicationRepository.save(consumerApplication);
 						}																				
 					}

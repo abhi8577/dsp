@@ -15,6 +15,12 @@ public class Role {
 	
 	@Column(name="ROLE_NAME")
 	private String roleName;
+	
+	@Column(name="ROLE")
+	private String role;
+	
+	@Column(name="ROLE_CODE")
+	private String roleCode;
 
 	public Role() {
 		super();
@@ -35,5 +41,22 @@ public class Role {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getRoleCode() {
+		return roleCode;
+	}
+
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode;
+	}
+	
 	
 }
