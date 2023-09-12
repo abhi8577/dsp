@@ -97,18 +97,22 @@ public class ConsumerApplication {
     @Column(name = "APPLY_TYPE_ID")
     private Long applyTypeId;
     
+    
     @Column(name = "T_AND_CP_PERMISSION_FILE_PATH")
     private String TAndCPpermissionFilePath;
     
+    
     @Column(name = "RERA_PERMISSION_FILE_PATH")
-    private String reraPermissionFilePath;    
-
+    private String reraPermissionFilePath;
+    
+    
     @Column(name = "GROUP_PERMISSION_FILE_PATH")
     private String grouppermissionFilePath;
     
     @Column(name = "REGISTRY_FILE_PATH")
     private String registryFilePath;
-       
+    
+    
     @Column(name = "NOC_FILE_PATH")
     private String NOCfilePath;
     

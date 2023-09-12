@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -20,32 +21,15 @@ import com.dsp.dsp.service.ContractorService;
 @RestController
 @RequestMapping("/contractor")
 public class ContractorController {
-
+	
 	@Autowired
 	ContractorService contractorService;
-
+	
 	@PostMapping("/contractor_selection_save")
-	void contractorSelectionSave(ContractorDetailsDto contractorDetailsDto) {
-
+	void contractorSelectionSave(@RequestBody ContractorDetailsDto contractorDetailsDto) {
+		
 		contractorService.contractorSelectionSave(contractorDetailsDto);
-
-	}
-
-	@GetMapping("/contractor_list")
-	ResponseEntity<String> contractorList() {
-
-		String url = "https://rooftop-uat.mpcz.in:8443/qcp/contractors_details";
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Content-Type", "application/json");
-
-		HttpEntity httpEntity = new HttpEntity<>(headers);
-
-		System.out.println(url);
-		ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-		// System.out.println("responseEntity------------->" + exchange);
-		return exchange;
+		
 	}
 
 }
