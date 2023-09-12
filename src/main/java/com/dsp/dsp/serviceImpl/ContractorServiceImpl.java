@@ -35,12 +35,7 @@ public class ContractorServiceImpl implements ContractorService {
 		ContractorsDetails contractorDetailsWithAppNo=new ContractorsDetails();
 		int dspDataCheck=0;
 		int qcDataCheck=0;
-		if(contractorDetailsDto.getUserId()!=null && contractorDetailsDto.getConsumerApplicationNo()!=null) {
-
-		ContractorsDetails saveContractorsDetails = new ContractorsDetails();
-		ContractorsDetails contractorDetailsWithAppNo = new ContractorsDetails();
-		int dspDataCheck = 0;
-		int qcDataCheck = 0;
+		
 		if (contractorDetailsDto.getUserId() != null && contractorDetailsDto.getConsumerApplicationNo() != null) {
 			try {
 
