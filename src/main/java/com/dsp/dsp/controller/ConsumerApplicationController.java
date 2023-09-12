@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 
+import com.dsp.dsp.dto.ApplicationRejectDto;
 import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.dto.DtrPtrDto;
 import com.dsp.dsp.response.Response;
@@ -80,5 +81,11 @@ public class ConsumerApplicationController {
 	@PostMapping("/update_dtr_ptr")
 	public Response updateDtrPtr(@RequestBody DtrPtrDto dtrPtrDto) {
 		return consumerApplicationService.updateDtrPtr(dtrPtrDto);
+	}
+	
+	
+	@PostMapping("/reject_application")
+	public Response rejectApplication(@RequestBody ApplicationRejectDto applicationRejectDto) {
+		return consumerApplicationService.rejectApplication(applicationRejectDto);
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dsp.dsp.dto.ApplicationRejectDto;
 import com.dsp.dsp.dto.ConsumerApplicationDto;
 import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
@@ -16,9 +17,11 @@ import com.dsp.dsp.dto.DtrPtrDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
 import com.dsp.dsp.dto.RegistrationFeePaymentDetailDto;
+import com.dsp.dsp.model.ApplicationRejectedDetails;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.GeoLocation;
+import com.dsp.dsp.repository.ApplicationRejectRepository;
 import com.dsp.dsp.repository.ApplicationStatusRepository;
 import com.dsp.dsp.repository.ApplyTypeRepository;
 import com.dsp.dsp.repository.CircleRepository;
@@ -90,6 +93,9 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 	@Autowired
 	SubDivisionRepository subDivisionRepository;
+	
+	@Autowired
+	ApplicationRejectRepository applicationRejectRepository;
 
 	@Override
 	@org.springframework.transaction.annotation.Transactional
@@ -1036,4 +1042,40 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		return Response.response("Consumer application id and PTR/DTR should not be null", 
 				HttpStatus.BAD_REQUEST, dtrPtrDto, null);
 		}
+
+	@Override
+	public Response rejectApplication(ApplicationRejectDto applicationRejectDto) {
+		String applicationNo = applicationRejectDto.getApplicationNo();
+		 String rejectRemark = applicationRejectDto.getRejectRemark();
+		Long rejectBy = applicationRejectDto.getRejectBy();
+		ApplicationRejectedDetails applicationRejectedDetails=new ApplicationRejectedDetails();
+		
+		try {
+			if(applicationNo!=null && rejectRemark!=null && rejectBy!=null) {
+				ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(applicationNo);
+
+				if(findByConsumerApplicationId==null) {
+				return	Response.response("Consumer application not found", HttpStatus.NOT_FOUND, applicationRejectDto, null);
+				}
+				applicationRejectedDetails.setApplicationNo(applicationNo);
+				applicationRejectedDetails.setRejectBy(rejectBy);
+				applicationRejectedDetails.setRejectRemark(rejectRemark);
+				applicationRejectedDetails.setCreationDate(LocalDateTime.now().toString());
+			    applicationRejectRepository.save(applicationRejectedDetails);
+			
+				findByConsumerApplicationId.setApplicationStatusId(29L);
+				consumerApplicationRepository.save(findByConsumerApplicationId);
+				return	Response.response("Consumer application rejected", HttpStatus.OK, applicationRejectedDetails, null);
+			}
+			else {
+				return Response.response("Consumer application id,reject remark and reject by should not be null", 
+						HttpStatus.BAD_REQUEST, applicationRejectDto, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}
+		
+		//return null;
+	}
 }
