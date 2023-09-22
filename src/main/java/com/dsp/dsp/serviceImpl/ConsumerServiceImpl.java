@@ -48,13 +48,10 @@ public class ConsumerServiceImpl implements ConsumerService {
 			}
 
 			if (consumerName == null || consumerName.isEmpty()) {
-
 				return Response.response("Consumer name should not be null", HttpStatus.BAD_REQUEST, null, null);
-
 			}
-
+			
 			if (email == null || email.isEmpty()) {
-
 				return Response.response("Email id should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
@@ -105,19 +102,16 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 			if (id == null || id.isEmpty()) {
 				return Response.response("Id should not be null", HttpStatus.BAD_REQUEST, null, null);
-
 			}
 
 			if (password == null || password.isEmpty()) {
 				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
-
 			}
 
 			Consumer findByMobileNumber = consumerRepository.findByMobileNumber(id);
 
 			if (findByMobileNumber == null) {
 				return Response.response("Consumer not found", HttpStatus.NOT_FOUND, null, null);
-
 			}
 			String decryptData = Utility.getDecryptData(findByMobileNumber.getPassword());
 
@@ -125,7 +119,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 				return Response.response("Login successfully", HttpStatus.OK, findByMobileNumber, null);
 			} else {
 				return Response.response("Invalid credentials", HttpStatus.NOT_FOUND, null, null);
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,10 +126,9 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 		}
 	}
-	
+
 	@Override
 	public Response changePwd(ChangePasswordDto changePasswordDto) {
-		// TODO Auto-generated method `
 		try {
 			Optional<Consumer> consumer = consumerRepository.findById(changePasswordDto.getId());
 			if (consumer.isPresent()) {

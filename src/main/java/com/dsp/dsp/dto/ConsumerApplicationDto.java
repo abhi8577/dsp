@@ -1,5 +1,7 @@
 package com.dsp.dsp.dto;
 
+import java.util.List;
+
 public class ConsumerApplicationDto {
 
 	private Long natureOfWorkId;
@@ -17,6 +19,8 @@ public class ConsumerApplicationDto {
     private Long lt;
     
     private Long ptr;
+    
+    private List<Long> supplyVoltageId;
     
     private Long schemeTypeId;
     
@@ -61,6 +65,8 @@ public class ConsumerApplicationDto {
     private Boolean checkedWorkLocation;
     
     private Long buildingType;
+    
+	private Long colonyType;
      
 //    private MultipartFile TAndCPpermissionFile;
 //     
@@ -78,8 +84,17 @@ public class ConsumerApplicationDto {
 //    
 //    private MultipartFile khasraKhatoniFile;
 
+    
 	public ConsumerApplicationDto() {
 		super();
+	}
+
+	public List<Long> getSupplyVoltageId() {
+		return supplyVoltageId;
+	}
+
+	public void setSupplyVoltageId(List<Long> supplyVoltageId) {
+		this.supplyVoltageId = supplyVoltageId;
 	}
 
 	public Long getNatureOfWorkId() {
@@ -320,6 +335,14 @@ public class ConsumerApplicationDto {
 
 	public void setBuildingType(Long buildingType) {
 		this.buildingType = buildingType;
+	}
+
+	public Long getColonyType() {
+		return colonyType;
+	}
+
+	public void setColonyType(Long colonyType) {
+		this.colonyType = colonyType;
 	}
 
 	

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dsp.dsp.model.AccessLevel;
 import com.dsp.dsp.model.ApplyType;
+import com.dsp.dsp.model.BuildingType;
 import com.dsp.dsp.model.Circle;
+import com.dsp.dsp.model.ColonyType;
 import com.dsp.dsp.model.Dc;
 import com.dsp.dsp.model.District;
 import com.dsp.dsp.model.Division;
@@ -35,7 +37,9 @@ import com.dsp.dsp.model.Substation;
 import com.dsp.dsp.model.SupplyVoltage;
 import com.dsp.dsp.repository.AccessLevelRepository;
 import com.dsp.dsp.repository.ApplyTypeRepository;
+import com.dsp.dsp.repository.BuildingTypeRepository;
 import com.dsp.dsp.repository.CircleRepository;
+import com.dsp.dsp.repository.ColonyTypeRepository;
 import com.dsp.dsp.repository.DcRepository;
 import com.dsp.dsp.repository.DistrictRepository;
 import com.dsp.dsp.repository.DivisionRepository;
@@ -102,6 +106,12 @@ public class MasterController {
 
 	@Autowired
 	SubStationRepository substationRepository;
+
+	@Autowired
+	BuildingTypeRepository buildingTypeRepository;
+
+	@Autowired
+	ColonyTypeRepository colonyTypeRepository;
 
 	@GetMapping("/get_all_nature_of_work")
 	public Response getAllNatureOfWork() {
@@ -440,4 +450,35 @@ public class MasterController {
 
 	}
 
+	@GetMapping("/get_all_building_type")
+	public Response getAllBuildingType() {
+
+		try {
+			List<BuildingType> findAll = buildingTypeRepository.findAll();
+
+			if (findAll.isEmpty()) {
+				return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
+			}
+			return Response.response("Data  found", HttpStatus.OK, findAll, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}
+	}
+
+	@GetMapping("/get_all_colony_type")
+	public Response getAllColonyType() {
+
+		try {
+			List<ColonyType> findAll = colonyTypeRepository.findAll();
+
+			if (findAll.isEmpty()) {
+				return Response.response("Data not found", HttpStatus.NOT_FOUND, null, null);
+			}
+			return Response.response("Data  found", HttpStatus.OK, findAll, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+		}
+	}
 }

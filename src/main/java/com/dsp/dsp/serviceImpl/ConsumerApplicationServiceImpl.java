@@ -96,7 +96,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 	@Autowired
 	SubDivisionRepository subDivisionRepository;
-	
+
 	@Autowired
 	ApplicationRejectRepository applicationRejectRepository;
 
@@ -143,12 +143,42 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			MultipartFile administrativeFile, MultipartFile gstFile) throws Exception {
 
 		try {
-			Long ht11kv = consumerApplicationDtoParse.getHt11KV();
-			Long ht132kv = consumerApplicationDtoParse.getHt132KV();
-			Long ht33kv = consumerApplicationDtoParse.getHt33KV();
-			Long dtr = consumerApplicationDtoParse.getDtr();
-			Long lt = consumerApplicationDtoParse.getLt();
-			Long ptr = consumerApplicationDtoParse.getPtr();
+			Long ht11kv = null;
+			Long ht132kv = null;
+			Long ht33kv = null;
+			Long dtr = null;
+			Long lt = null;
+			Long ptr = null;
+
+			List<Long> supplyVoltageIds = consumerApplicationDtoParse.getSupplyVoltageId();
+
+			for (Long id : supplyVoltageIds) {
+				switch (id.intValue()) {
+				
+				case 3:
+					dtr = id;
+					break;
+				case 4:
+					ptr = id;
+					break;
+				case 5:
+					lt = id;
+					break;
+				case 6:
+					ht11kv = id;
+					break;
+				case 7:
+					ht33kv = id;
+					break;
+				case 8:
+					ht132kv = id;
+					break;
+				// Add more cases for other IDs if needed
+				default:
+					// Handle unknown IDs
+					break;
+				}
+			}
 
 			if (administrativeFile == null) {
 				return Response.response("Administrative File should not be null", HttpStatus.BAD_REQUEST, null, null);
@@ -175,11 +205,12 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
-			consumerApplication.setHt11KV(consumerApplicationDtoParse.getHt11KV());
-			consumerApplication.setHt132KV(consumerApplicationDtoParse.getHt132KV());
-			consumerApplication.setHt33KV(consumerApplicationDtoParse.getHt33KV());
-			consumerApplication.setDtr(consumerApplicationDtoParse.getDtr());
-			consumerApplication.setLt(consumerApplicationDtoParse.getLt());
+			consumerApplication.setHt11KV(ht11kv);
+			consumerApplication.setHt132KV(ht132kv);
+			consumerApplication.setHt33KV(ht33kv);
+			consumerApplication.setDtr(dtr);
+			consumerApplication.setLt(lt);
+			consumerApplication.setPtr(ptr);
 			consumerApplication.setSchemeTypeId(consumerApplicationDtoParse.getSchemeTypeId());
 			consumerApplication.setConsumerId(consumerApplicationDtoParse.getConsumerId());
 			consumerApplication.setGuardianName(consumerApplicationDtoParse.getGuardianName());
@@ -208,12 +239,42 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		try {
 
 			String ivrsNo = consumerApplicationDtoParse.getIvrsNo();
-			Long ht11kv = consumerApplicationDtoParse.getHt11KV();
-			Long ht132kv = consumerApplicationDtoParse.getHt132KV();
-			Long ht33kv = consumerApplicationDtoParse.getHt33KV();
-			Long dtr = consumerApplicationDtoParse.getDtr();
-			Long lt = consumerApplicationDtoParse.getLt();
-			Long ptr = consumerApplicationDtoParse.getPtr();
+			Long ht11kv = null;
+			Long ht132kv = null;
+			Long ht33kv = null;
+			Long dtr = null;
+			Long lt = null;
+			Long ptr = null;
+
+			List<Long> supplyVoltageIds = consumerApplicationDtoParse.getSupplyVoltageId();
+
+			for (Long id : supplyVoltageIds) {
+				switch (id.intValue()) {
+				
+				case 3:
+					dtr = id;
+					break;
+				case 4:
+					ptr = id;
+					break;
+				case 5:
+					lt = id;
+					break;
+				case 6:
+					ht11kv = id;
+					break;
+				case 7:
+					ht33kv = id;
+					break;
+				case 8:
+					ht132kv = id;
+					break;
+				// Add more cases for other IDs if needed
+				default:
+					// Handle unknown IDs
+					break;
+				}
+			}
 
 			if (ivrsNo == null) {
 				return Response.response("Ivrs number should not be null", HttpStatus.BAD_REQUEST, ivrsNo, null);
@@ -233,11 +294,12 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setIvrsNo(ivrsNo);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
-			consumerApplication.setHt11KV(consumerApplicationDtoParse.getHt11KV());
-			consumerApplication.setHt132KV(consumerApplicationDtoParse.getHt132KV());
-			consumerApplication.setHt33KV(consumerApplicationDtoParse.getHt33KV());
-			consumerApplication.setDtr(consumerApplicationDtoParse.getDtr());
-			consumerApplication.setLt(consumerApplicationDtoParse.getLt());
+			consumerApplication.setHt11KV(ht11kv);
+			consumerApplication.setHt132KV(ht132kv);
+			consumerApplication.setHt33KV(ht33kv);
+			consumerApplication.setDtr(dtr);
+			consumerApplication.setLt(lt);
+			consumerApplication.setPtr(ptr);
 			consumerApplication.setSchemeTypeId(consumerApplicationDtoParse.getSchemeTypeId());
 			consumerApplication.setConsumerId(consumerApplicationDtoParse.getConsumerId());
 			consumerApplication.setGuardianName(consumerApplicationDtoParse.getGuardianName());
@@ -478,8 +540,8 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return Response.response("Apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
 						null);
 			}
-			Long buildingType = consumerApplicationDtoParse.getBuildingType();
-			if (buildingType == null) {
+			Long colonyType = consumerApplicationDtoParse.getColonyType();
+			if (colonyType == null) {
 				return Response.response("Building type should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
 						null);
 			}
@@ -550,7 +612,8 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setCreatedTime(LocalDateTime.now().toString());
 			consumerApplication.setIsActive(true);
 			consumerApplication.setApplicationStatusId(4L);
-			consumerApplication.setBuildingType(buildingType);
+			consumerApplication.setColonyType(colonyType);
+			consumerApplication.setApplyTypeId(applyTypeId);
 			ConsumerApplication saveConsumerApplication = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Submit sucessfully", HttpStatus.OK, saveConsumerApplication, null);
 
@@ -712,7 +775,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			Boolean checkedGSTfile = consumerApplicationDtoParse.getCheckedGSTfile();
 			if (checkedGSTfile == null) {
 				return Response.response("Checked box for GST is null", HttpStatus.BAD_REQUEST, null, null);
-			}
+			}	
 			String gstNo = consumerApplicationDtoParse.getGstNo();
 
 			if (checkedGSTfile.equals(true) && gstFile == null) {
@@ -1118,36 +1181,38 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	@Override
 	public Response rejectApplication(ApplicationRejectDto applicationRejectDto) {
 		String applicationNo = applicationRejectDto.getApplicationNo();
-		 String rejectRemark = applicationRejectDto.getRejectRemark();
+		String rejectRemark = applicationRejectDto.getRejectRemark();
 		Long rejectBy = applicationRejectDto.getRejectBy();
-		ApplicationRejectedDetails applicationRejectedDetails=new ApplicationRejectedDetails();
-		
-		try {
-			if(applicationNo!=null && rejectRemark!=null && rejectBy!=null) {
-				ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(applicationNo);
+		ApplicationRejectedDetails applicationRejectedDetails = new ApplicationRejectedDetails();
 
-				if(findByConsumerApplicationId==null) {
-				return	Response.response("Consumer application not found", HttpStatus.NOT_FOUND, applicationRejectDto, null);
+		try {
+			if (applicationNo != null && rejectRemark != null && rejectBy != null) {
+				ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository
+						.findByConsumerApplicationId(applicationNo);
+
+				if (findByConsumerApplicationId == null) {
+					return Response.response("Consumer application not found", HttpStatus.NOT_FOUND,
+							applicationRejectDto, null);
 				}
 				applicationRejectedDetails.setApplicationNo(applicationNo);
 				applicationRejectedDetails.setRejectBy(rejectBy);
 				applicationRejectedDetails.setRejectRemark(rejectRemark);
 				applicationRejectedDetails.setCreationDate(LocalDateTime.now().toString());
-			    applicationRejectRepository.save(applicationRejectedDetails);
-			
+				applicationRejectRepository.save(applicationRejectedDetails);
+
 				findByConsumerApplicationId.setApplicationStatusId(29L);
 				consumerApplicationRepository.save(findByConsumerApplicationId);
-				return	Response.response("Consumer application rejected", HttpStatus.OK, applicationRejectedDetails, null);
-			}
-			else {
-				return Response.response("Consumer application id,reject remark and reject by should not be null", 
+				return Response.response("Consumer application rejected", HttpStatus.OK, applicationRejectedDetails,
+						null);
+			} else {
+				return Response.response("Consumer application id,reject remark and reject by should not be null",
 						HttpStatus.BAD_REQUEST, applicationRejectDto, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 		}
-		
-		//return null;
+
+		// return null;
 	}
 }

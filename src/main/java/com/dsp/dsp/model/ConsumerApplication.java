@@ -143,9 +143,11 @@ public class ConsumerApplication {
     @Column(name="PTR_DTR_CHECK_BOX")
    	private Boolean ptrDtrCheckBox=false;
     
-    @Column(name="BUILDING_TYPE")
+    @Column(name="BUILDING_TYPE")      	//Multi & Individual -: Colony Electrification(Legal)
    	private Long buildingType;
-    
+       
+    @Column(name="COLONY_TYPE")			//Declared & Undeclared -: Colony Electrification(Illegal)
+   	private Long colonyType;
     
 	public ConsumerApplication() {
 		super();
@@ -578,4 +580,15 @@ public class ConsumerApplication {
 	public void setUpdatedTime(String updatedTime) {
 		this.updatedTime = updatedTime;
 	}
+
+
+	public Long getColonyType() {
+		return colonyType;
+	}
+
+
+	public void setColonyType(Long colonyType) {
+		this.colonyType = colonyType;
+	}
+	
 }
