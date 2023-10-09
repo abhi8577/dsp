@@ -1,6 +1,7 @@
 package com.dsp.dsp.serviceImpl;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,10 @@ import com.dsp.dsp.repository.ConsumerRepository;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerService;
 import com.dsp.dsp.util.Utility;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
@@ -116,6 +121,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 			String decryptData = Utility.getDecryptData(findByMobileNumber.getPassword());
 
 			if (decryptData.equals(password)) {
+				
+				 //String jwtToken = generateJWTToken(findByMobileNumber.getConsumerName());
 				return Response.response("Login successfully", HttpStatus.OK, findByMobileNumber, null);
 			} else {
 				return Response.response("Invalid credentials", HttpStatus.NOT_FOUND, null, null);
@@ -127,6 +134,24 @@ public class ConsumerServiceImpl implements ConsumerService {
 		}
 	}
 
+	  // Method to generate JWT token
+    private String generateJWTToken(String userId) {
+        // Set expiration time for the token (e.g., 1 hour)
+        long expirationTimeMillis = System.currentTimeMillis() + 3600000;  // 1 hour
+
+        byte[] keyBytes = Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded();
+
+        // Create the JWT token
+        String jwtToken = Jwts.builder()
+                .setSubject(userId)
+                .setExpiration(new Date(expirationTimeMillis))
+                .signWith(SignatureAlgorithm.HS256, keyBytes)
+                .compact();
+
+        return jwtToken;
+    }
+    
+	
 	@Override
 	public Response changePwd(ChangePasswordDto changePasswordDto) {
 		try {

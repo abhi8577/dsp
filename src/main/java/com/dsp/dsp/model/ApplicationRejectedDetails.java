@@ -16,7 +16,6 @@ public class ApplicationRejectedDetails {
 	@Column(name = "SR_NO")
 	private Long srNo;
 	
-	
 	@Column(name = "REJECT_BY")
 	private Long rejectBy;
 	

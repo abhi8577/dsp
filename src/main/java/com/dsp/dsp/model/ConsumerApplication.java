@@ -143,14 +143,68 @@ public class ConsumerApplication {
     @Column(name="PTR_DTR_CHECK_BOX")
    	private Boolean ptrDtrCheckBox=false;
     
-    @Column(name="BUILDING_TYPE")      	//Multi & Individual -: Colony Electrification(Legal)
+    @Column(name="BUILDING_TYPE")      		//Multi & Individual -: Colony Electrification(Legal)
    	private Long buildingType;
        
-    @Column(name="COLONY_TYPE")			//Declared & Undeclared -: Colony Electrification(Illegal)
+    @Column(name="COLONY_TYPE")				//Declared & Undeclared -: Colony Electrification(Illegal)
    	private Long colonyType;
+    
+    @Column(name = "JE_LOAD")
+    private String jeLoad; 					//Disocm User Fill Karega
+
+    @Column(name = "JE_LOAD_UNIT_KW_KVA")
+    private String jeLoadUnitKwYaKva;		//Disocm User Fill Karega
+
+    @Column(name = "samagra_id")
+    private String samagraId;
+
+    @Column(name = "CAST_CATEGORY")
+    private String castCategory;
+    
+    @Column(name = "SAMGRA_FILE_PATH")
+    private String samagraFilePath;
     
 	public ConsumerApplication() {
 		super();
+	}
+
+	public String getJeLoad() {
+		return jeLoad;
+	}
+
+
+	public void setJeLoad(String jeLoad) {
+		this.jeLoad = jeLoad;
+	}
+
+
+	public String getJeLoadUnitKwYaKva() {
+		return jeLoadUnitKwYaKva;
+	}
+
+
+	public void setJeLoadUnitKwYaKva(String jeLoadUnitKwYaKva) {
+		this.jeLoadUnitKwYaKva = jeLoadUnitKwYaKva;
+	}
+
+
+	public String getSamagraId() {
+		return samagraId;
+	}
+
+
+	public void setSamagraId(String samagraId) {
+		this.samagraId = samagraId;
+	}
+
+
+	public String getCastCategory() {
+		return castCategory;
+	}
+
+
+	public void setCastCategory(String castCategory) {
+		this.castCategory = castCategory;
 	}
 
 
@@ -570,25 +624,27 @@ public class ConsumerApplication {
 		this.buildingType = buildingType;
 	}
 	
-	
-
 	public String getUpdatedTime() {
 		return updatedTime;
 	}
-
 
 	public void setUpdatedTime(String updatedTime) {
 		this.updatedTime = updatedTime;
 	}
 
-
 	public Long getColonyType() {
 		return colonyType;
 	}
 
-
 	public void setColonyType(Long colonyType) {
 		this.colonyType = colonyType;
 	}
-	
+
+	public String getSamagraFilePath() {
+		return samagraFilePath;
+	}
+
+	public void setSamagraFilePath(String samagraFilePath) {
+		this.samagraFilePath = samagraFilePath;
+	}
 }

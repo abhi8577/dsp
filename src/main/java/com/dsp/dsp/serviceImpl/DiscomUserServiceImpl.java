@@ -22,6 +22,7 @@ import com.dsp.dsp.dto.DemandFeeCalculationResponseDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
 import com.dsp.dsp.dto.ErpSurveySubmitDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
+import com.dsp.dsp.dto.UpdateJELoadByDiscomUserDto;
 import com.dsp.dsp.model.ConsumerAppDCChange;
 import com.dsp.dsp.model.ConsumerApplication;
 import com.dsp.dsp.model.DiscomUser;
@@ -266,7 +267,7 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 				ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
 			}
 			return Response.response("DC Changed", HttpStatus.OK, appDCChange, null);
-		} else 	{
+		} else {
 			consumerApplication.setApplicationStatusId(7L);
 			ConsumerApplication application = consumerApplicationRepository.save(consumerApplication);
 			return Response.response("Application Accepted At Dc End", HttpStatus.OK, application, null);
@@ -350,10 +351,11 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 		String gstNo = consumerApplication.getGstNo();
 		Boolean ptrDtrCheckBox = consumerApplication.getPtrDtrCheckBox();
 
-	  Long natureOfWorkId= consumerApplication.getNatureOfWorkId();
-	  if(natureOfWorkId>6 ||  natureOfWorkId<1) {
-		  return Response.response("Invalid nature of work id in consumer application", HttpStatus.NOT_FOUND, null,	null);  
-	  }
+		Long natureOfWorkId = consumerApplication.getNatureOfWorkId();
+		if (natureOfWorkId > 6 || natureOfWorkId < 1) {
+			return Response.response("Invalid nature of work id in consumer application", HttpStatus.NOT_FOUND, null,
+					null);
+		}
 		demandFeeCalculationDto.setConsumerApplicationNumber(consumerAppNo);
 		demandFeeCalculationDto.setSuperVisionAmount(supervisionAmount);
 		demandFeeCalculationDto.setKwLoadAmount(0.0);
@@ -364,43 +366,52 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 		if (schemeType.get().getSchemeTypeName().equalsIgnoreCase("Supervision")
 				&& estimate.getSchemeCode().equalsIgnoreCase("OYT")) {
 			System.out.println("inside estimate oyt");
-		    checkGstStartWith23orNot(gstNo,supervisionAmount,cgstRate,sgstRate,igstRate,0.0,demandFeeCalculationDto);
+			checkGstStartWith23orNot(gstNo, supervisionAmount, cgstRate, sgstRate, igstRate, 0.0,
+					demandFeeCalculationDto);
 			return Response.response("Demand Fee Genrated", HttpStatus.OK, demandFeeCalculationDto, null);
 		}
 		// For checking Application Scheme Type is Supervision SCCW
 		else if (schemeType.get().getSchemeTypeName().equalsIgnoreCase("Supervision")
 				&& estimate.getSchemeCode().equalsIgnoreCase("SCCW")) {
 			// For Checking Nature Of Work And RequestLoad
-			demandFeeCalculationDto=checkNatureOfWorkAndRequestLoad(loadRequest,loadUnitId,natureOfWorkId,ptrDtrCheckBox,demandFeeCalculationDto);
+			demandFeeCalculationDto = checkNatureOfWorkAndRequestLoad(loadRequest, loadUnitId, natureOfWorkId,
+					ptrDtrCheckBox, demandFeeCalculationDto);
 			// For Checking Application GST Number Start with 23 or Not
-			checkGstStartWith23orNot(gstNo,supervisionAmount,cgstRate,sgstRate,igstRate,0.0,demandFeeCalculationDto);
+			checkGstStartWith23orNot(gstNo, supervisionAmount, cgstRate, sgstRate, igstRate, 0.0,
+					demandFeeCalculationDto);
 			return Response.response("Demand Fee Genrated", HttpStatus.OK, demandFeeCalculationDto, null);
 		}
 		// For checking Application Scheme Type is Deposite
 		else if (schemeType.get().getSchemeTypeName().equalsIgnoreCase("Deposit")
 				&& estimate.getSchemeCode().equalsIgnoreCase("Deposit")) {
-		    Double estimateAmount=estimate.getEstimatedCost();
-		    demandFeeCalculationDto.setEstimatedAmount(estimateAmount);
-		    
+			Double estimateAmount = estimate.getEstimatedCost();
+			demandFeeCalculationDto.setEstimatedAmount(estimateAmount);
+
 			// For Checking Nature Of Work And RequestLoad
-			demandFeeCalculationDto=checkNatureOfWorkAndRequestLoad(loadRequest,loadUnitId,natureOfWorkId,ptrDtrCheckBox,demandFeeCalculationDto);
+			demandFeeCalculationDto = checkNatureOfWorkAndRequestLoad(loadRequest, loadUnitId, natureOfWorkId,
+					ptrDtrCheckBox, demandFeeCalculationDto);
 			// For Checking Application GST Number Start with 23 or Not
-			checkGstStartWith23orNot(gstNo,supervisionAmount,cgstRate,sgstRate,igstRate,estimateAmount,demandFeeCalculationDto);
-			return Response.response("Demand Fee Genrated", HttpStatus.OK, demandFeeCalculationDto, null);	
+			checkGstStartWith23orNot(gstNo, supervisionAmount, cgstRate, sgstRate, igstRate, estimateAmount,
+					demandFeeCalculationDto);
+			return Response.response("Demand Fee Genrated", HttpStatus.OK, demandFeeCalculationDto, null);
 		}
 		return Response.response("Not a spervision or deposit application", HttpStatus.NOT_FOUND, null, null);
 	}
 
-	private void checkGstStartWith23orNot(String gstNo, Double supervisionAmount, Double cgstRate, Double sgstRate,Double igstRate, Double estimateAmount,Object demandFeeCalculationDto) {
-		DemandFeeCalculationResponseDto dto=(DemandFeeCalculationResponseDto) demandFeeCalculationDto;
-		if (gstNo == null || gstNo != null
-				&& gstNo.startsWith("23")) {
-			Double kwLoadAmount=dto.getKwLoadAmount();
-			Double kvaLoadAmount=dto.getKvaLoadAmount();
+	private void checkGstStartWith23orNot(String gstNo, Double supervisionAmount, Double cgstRate, Double sgstRate,
+			Double igstRate, Double estimateAmount, Object demandFeeCalculationDto) {
+		DemandFeeCalculationResponseDto dto = (DemandFeeCalculationResponseDto) demandFeeCalculationDto;
+		if (gstNo == null || gstNo != null && gstNo.startsWith("23")) {
+			Double kwLoadAmount = dto.getKwLoadAmount();
+			Double kvaLoadAmount = dto.getKvaLoadAmount();
 			Double cgstAmount = supervisionAmount * cgstRate;
 			Double sgstAmount = supervisionAmount * sgstRate;
-			System.out.println("supervisionAmount , cgstAmount , sgstAmount , kwLoadAmount , kvaLoadAmount , estimateAmount = "+supervisionAmount +" , "+ cgstAmount +" , "+ sgstAmount + " , "+kwLoadAmount + " , "+kvaLoadAmount +" , "+ estimateAmount);
-			Double totalAmountWithGst = supervisionAmount + cgstAmount + sgstAmount + kwLoadAmount + kvaLoadAmount + estimateAmount;
+			System.out.println(
+					"supervisionAmount , cgstAmount , sgstAmount , kwLoadAmount , kvaLoadAmount , estimateAmount = "
+							+ supervisionAmount + " , " + cgstAmount + " , " + sgstAmount + " , " + kwLoadAmount + " , "
+							+ kvaLoadAmount + " , " + estimateAmount);
+			Double totalAmountWithGst = supervisionAmount + cgstAmount + sgstAmount + kwLoadAmount + kvaLoadAmount
+					+ estimateAmount;
 			dto.setCgst(round(cgstAmount, 2));
 			dto.setSgst(round(sgstAmount, 2));
 			dto.setTotalAmount(round(totalAmountWithGst, 2));
@@ -409,90 +420,89 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 			Double totalAmountWithGst = supervisionAmount + igstAmount + estimateAmount;
 			dto.setTotalAmount(round(totalAmountWithGst, 2));
 			dto.setIgst(round(igstAmount, 2));
-		}		
+		}
 	}
-	
-	DemandFeeCalculationResponseDto checkNatureOfWorkAndRequestLoad(Long loadRequest,Long loadUnitId,Long natureOfWorkId,Boolean ptrDtrCheckBox, DemandFeeCalculationResponseDto demandFeeCalculationDto) {
-		double kwLoadAmount=0.0;
-		double kvaLoadAmount=0.0;		
-		//check nature of work			
-		if(natureOfWorkId==5) {//Colony Electrification(Illegal)
-			//check load request for kw
-			if (loadRequest != null && loadUnitId == 1L ) {
+
+	DemandFeeCalculationResponseDto checkNatureOfWorkAndRequestLoad(Long loadRequest, Long loadUnitId,
+			Long natureOfWorkId, Boolean ptrDtrCheckBox, DemandFeeCalculationResponseDto demandFeeCalculationDto) {
+		double kwLoadAmount = 0.0;
+		double kvaLoadAmount = 0.0;
+		// check nature of work
+		if (natureOfWorkId == 5) {// Colony Electrification(Illegal)
+			// check load request for kw
+			if (loadRequest != null && loadUnitId == 1L) {
 				if (loadRequest < 400) {
 					kwLoadAmount = loadRequest * 15567.0;
-				}
-				else {
+				} else {
 					kwLoadAmount = loadRequest * 1.25 * 850;
 				}
 				kwLoadAmount = round(kwLoadAmount, 2);
 				demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
-				 demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount );
-				 return demandFeeCalculationDto;
+				demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
+				return demandFeeCalculationDto;
 			}
-			//check load request for kva
+			// check load request for kva
 			else if (loadRequest != null && loadUnitId == 2L) {
 
 				if (loadRequest < 500) {
 					kvaLoadAmount = loadRequest * 15567.0;
+				} else {
+					kvaLoadAmount = loadRequest * 1.25 * 850;
 				}
-				 else {
-					 kvaLoadAmount = loadRequest * 1.25 * 850;
-			 }				
 				kvaLoadAmount = round(kvaLoadAmount, 2);
 				demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
-				 demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
-				 return demandFeeCalculationDto;
+				demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
+				return demandFeeCalculationDto;
 			}
-		}	
-		//check nature of work	
-		else if(natureOfWorkId==4) {//Colony Electrification(Legal)
-			//check load request for kw
-			if (loadRequest != null && loadUnitId == 1L ) {
-			 kwLoadAmount = loadRequest * 1.25 * 850;		 
-				 kwLoadAmount = round(kwLoadAmount, 2);
-				 demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
-				  demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);	
-				  return demandFeeCalculationDto;
+		}
+		// check nature of work
+		else if (natureOfWorkId == 4) {// Colony Electrification(Legal)
+			// check load request for kw
+			if (loadRequest != null && loadUnitId == 1L) {
+				kwLoadAmount = loadRequest * 1.25 * 850;
+				kwLoadAmount = round(kwLoadAmount, 2);
+				demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
+				demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
+				return demandFeeCalculationDto;
 			}
-			//check load request for kva
-			else if (loadRequest != null && loadUnitId == 2L) {				
-				kvaLoadAmount = loadRequest  * 850;				 
+			// check load request for kva
+			else if (loadRequest != null && loadUnitId == 2L) {
+				kvaLoadAmount = loadRequest * 850;
 				kvaLoadAmount = round(kvaLoadAmount, 2);
-						 demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
-						  demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);	
-						  return demandFeeCalculationDto;
+				demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
+				demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
+				return demandFeeCalculationDto;
 			}
 		}
-		//check nature of work	
-		else if(natureOfWorkId==3) {//New Service Connection (Extension) 
-			//check load request for kw
-			 if (loadRequest != null && loadUnitId == 1L) {
-				 if(ptrDtrCheckBox) {
-			kwLoadAmount = loadRequest * 1.25 * 850 ;
-			kwLoadAmount = round(kwLoadAmount, 2);
-			}		 
-				 demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
-				  demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);	
-				  return demandFeeCalculationDto;
+		// check nature of work
+		else if (natureOfWorkId == 3) {// New Service Connection (Extension)
+			// check load request for kw
+			if (loadRequest != null && loadUnitId == 1L) {
+				if (ptrDtrCheckBox) {
+					kwLoadAmount = loadRequest * 1.25 * 850;
+					kwLoadAmount = round(kwLoadAmount, 2);
+				}
+				demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
+				demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
+				return demandFeeCalculationDto;
 			}
-				//check load request for kva
-			 else if (loadRequest != null && loadUnitId == 2L) {
-				 
-				 if(ptrDtrCheckBox) {
-					 kvaLoadAmount = loadRequest  * 850.0;
-					 kvaLoadAmount = round(kvaLoadAmount, 2);
-				}				 
-						 demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
-						  demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
-						  return demandFeeCalculationDto;
+			// check load request for kva
+			else if (loadRequest != null && loadUnitId == 2L) {
+
+				if (ptrDtrCheckBox) {
+					kvaLoadAmount = loadRequest * 850.0;
+					kvaLoadAmount = round(kvaLoadAmount, 2);
+				}
+				demandFeeCalculationDto.setKwLoadAmount(kwLoadAmount);
+				demandFeeCalculationDto.setKvaLoadAmount(kvaLoadAmount);
+				return demandFeeCalculationDto;
+			}
 		}
-	}	
-		//Other then "Colony Electrification (Illegal)"
+		// Other then "Colony Electrification (Illegal)"
 		// In this case Load Unit calculations are not performed (KW and KVA) (5L)
 		return demandFeeCalculationDto;
 	}
-	
+
 	public static double round(double value, int places) {
 		if (places < 0)
 			throw new IllegalArgumentException();
@@ -500,5 +510,21 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 		bd = bd.setScale(places, RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
-	
+
+	@Override
+	public Response updateJELoadByDiscomUser(UpdateJELoadByDiscomUserDto dto) {
+
+		ConsumerApplication consumerApplication = consumerApplicationRepository
+				.findByConsumerApplicationId(dto.getConsumerApplicationNumber());
+		if (consumerApplication == null) {
+			return Response.response("Consumer Application Not Found", HttpStatus.NOT_FOUND, null, null);
+		}
+
+		consumerApplication.setJeLoad(dto.getJeLoad());
+		consumerApplication.setJeLoadUnitKwYaKva(dto.getJeLoadUnitKwYaKva());
+		ConsumerApplication save = consumerApplicationRepository.save(consumerApplication);
+		
+		return Response.response("Consumer Application Updated", HttpStatus.OK, save, null);
+	}
+
 }

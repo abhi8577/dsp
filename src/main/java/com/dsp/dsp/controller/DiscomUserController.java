@@ -15,6 +15,7 @@ import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
+import com.dsp.dsp.dto.UpdateJELoadByDiscomUserDto;
 import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.DiscomUserService;
 
@@ -65,5 +66,10 @@ public class DiscomUserController {
 	@GetMapping("/demand_fee_calculation/{consumerAppNo}")
 	public Response demandFeeCalculation(@PathVariable("consumerAppNo") String consumerAppNo) {
 		return discomUserService.demandFeeCalculation(consumerAppNo);
+	}
+	
+	@PostMapping("/updateJELoadByDiscomUser")
+	public Response updateJELoadByDiscomUser(@RequestBody UpdateJELoadByDiscomUserDto dto) {
+		return discomUserService.updateJELoadByDiscomUser(dto);
 	}
 }

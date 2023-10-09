@@ -6,6 +6,7 @@ import com.dsp.dsp.dto.ChangePasswordDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
 import com.dsp.dsp.dto.DiscomUserRegDto;
+import com.dsp.dsp.dto.UpdateJELoadByDiscomUserDto;
 import com.dsp.dsp.response.Response;
 
 public interface DiscomUserService {
@@ -25,4 +26,6 @@ public interface DiscomUserService {
 	Response erpSurveySubmit(String erpSurveySubmitDto, MultipartFile eRPEstimateFile);
 
 	Response demandFeeCalculation(String consumerAppNo);
+
+	Response updateJELoadByDiscomUser(UpdateJELoadByDiscomUserDto dto);
 }

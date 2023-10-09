@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dsp.dsp.dto.ApplicationRejectDto;
 import com.dsp.dsp.dto.ConsumerApplicationDto;
 import com.dsp.dsp.dto.ConsumerApplicationIdDto;
+import com.dsp.dsp.dto.ConsumerApplicationUpdateDto;
 import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
 import com.dsp.dsp.dto.DtrPtrDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
@@ -45,6 +47,8 @@ import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 
 @Service
 public class ConsumerApplicationServiceImpl implements ConsumerApplicationService {
@@ -154,7 +158,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 			for (Long id : supplyVoltageIds) {
 				switch (id.intValue()) {
-				
+
 				case 3:
 					dtr = id;
 					break;
@@ -250,7 +254,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 			for (Long id : supplyVoltageIds) {
 				switch (id.intValue()) {
-				
+
 				case 3:
 					dtr = id;
 					break;
@@ -775,7 +779,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			Boolean checkedGSTfile = consumerApplicationDtoParse.getCheckedGSTfile();
 			if (checkedGSTfile == null) {
 				return Response.response("Checked box for GST is null", HttpStatus.BAD_REQUEST, null, null);
-			}	
+			}
 			String gstNo = consumerApplicationDtoParse.getGstNo();
 
 			if (checkedGSTfile.equals(true) && gstFile == null) {
@@ -1214,5 +1218,47 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 		}
 
 		// return null;
+	}
+
+	@Override
+	public Response consumerApplicationUpdateByMKMY(String consumerApplicationUpdateDto, MultipartFile khasraFile,
+			MultipartFile samagraFile) {
+		try {
+			if (consumerApplicationUpdateDto == null) {
+				return Response.response("consumerApplicationUpdateDto should be not null", HttpStatus.BAD_REQUEST,
+						null, null);
+			}
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			ConsumerApplicationUpdateDto consumerApplicationDtoParse = objectMapper
+					.readValue(consumerApplicationUpdateDto, ConsumerApplicationUpdateDto.class);
+			ConsumerApplication consumerApplication = new ConsumerApplication();
+
+			Response khasraUploadFile = Utility.uploadFile(khasraFile, "KHASRA_FILE");
+			if (khasraUploadFile.getStatus() == 200) {
+				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) khasraUploadFile.getObject();
+				consumerApplication.setKhasraKhatoniFilePath(fileUploadPathDto.getFilePath());
+			} else {
+				return khasraUploadFile;
+			}
+
+			Response samagraUploadFile = Utility.uploadFile(samagraFile, "SAMAGRA_FILE");
+			if (samagraUploadFile.getStatus() == 200) {
+				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) samagraUploadFile.getObject();
+				consumerApplication.setSamagraFilePath(fileUploadPathDto.getFilePath());
+			} else {
+				return samagraUploadFile;
+			}
+			
+			String ConsumerApplicationNumber = createApplicationIdBySchemeType(consumerApplicationDtoParse.getSchemeTypeId());
+			
+			
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		}
+
 	}
 }
