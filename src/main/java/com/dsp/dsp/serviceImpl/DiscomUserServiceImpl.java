@@ -243,7 +243,7 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 		}
 		return Response.response("Data not found", HttpStatus.OK, listOfConsumerApplication, null);
 	}
-
+	
 	@Override
 	public Response acceptAppOrChangeDc(DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto) {
 

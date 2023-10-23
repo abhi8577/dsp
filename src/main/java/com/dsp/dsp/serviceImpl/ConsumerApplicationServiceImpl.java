@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,8 +46,6 @@ import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 
 @Service
 public class ConsumerApplicationServiceImpl implements ConsumerApplicationService {
@@ -700,7 +697,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	private String createApplicationIdBySchemeType(Long schemeTypeId) {
 		String localDateTime = LocalDateTime.now().toString();// 2023-07-11T10:31:28.279
 		String localDateTimeReplace = localDateTime.replaceAll("\\-|\\:|[a-zA-z]|\\.", "");
-		String substringDateTime = localDateTimeReplace.substring(0, localDateTimeReplace.length() - 3);
+		String substringDateTime = localDateTimeReplace.substring(0, localDateTimeReplace.length());
 		String consumerApplicationId;
 
 		if (schemeTypeId == 1L) {
@@ -1250,8 +1247,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return samagraUploadFile;
 			}
 			
-			String ConsumerApplicationNumber = createApplicationIdBySchemeType(consumerApplicationDtoParse.getSchemeTypeId());
-			
+			String ConsumerApplicationNumber = createApplicationIdBySchemeType(consumerApplicationDtoParse.getSchemeTypeId());		
 			
 			return null;
 		} catch (Exception e) {
