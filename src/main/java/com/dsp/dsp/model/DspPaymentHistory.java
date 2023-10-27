@@ -47,6 +47,9 @@ public class DspPaymentHistory implements Serializable {
 
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
+    
+    @Column(name = "BASE_AMOUNT")
+    private BigDecimal baseAmount;
 
     @Column(name = "TOTAL_AMOUNT")
     private BigDecimal totalAmount;
@@ -239,4 +242,11 @@ public class DspPaymentHistory implements Serializable {
 		this.igst = igst;
 	}
 
+	public BigDecimal getBaseAmount() {
+		return baseAmount;
+	}
+
+	public void setBaseAmount(BigDecimal baseAmount) {
+		this.baseAmount = baseAmount;
+	}
 }
