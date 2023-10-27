@@ -442,12 +442,12 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 						null);
 
 			}
-			Long applyTypeId = consumerApplicationDtoParse.getApplyTypeId();
-
-			if (applyTypeId == null) {
-				return Response.response("Apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
-						null);
-			}
+//			Long applyTypeId = consumerApplicationDtoParse.getApplyTypeId();
+//
+//			if (applyTypeId == null) {
+//				return Response.response("Apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
+//						null);
+//			}
 
 			Long buildingType = consumerApplicationDtoParse.getBuildingType();
 			if (buildingType == null) {
@@ -465,10 +465,10 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 			}
 
-			if (applyTypeId.equals(2L) && groupPermissionFile == null) {
-				return Response.response("Group permission file file should not be null", HttpStatus.BAD_REQUEST, null,
-						null);
-			}
+//			if (applyTypeId.equals(2L) && groupPermissionFile == null) {
+//				return Response.response("Group permission file file should not be null", HttpStatus.BAD_REQUEST, null,
+//						null);
+//			}
 
 			Response tAndCpUploadFile = Utility.uploadFile(tAndCPpermissionFile, "T_and_CP_FILE");
 			if (tAndCpUploadFile.getStatus() == 200) {
@@ -486,16 +486,16 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return reraUploadFile;
 			}
 
-			if (applyTypeId.equals(2L)) {
-
-				Response groupUploadFile = Utility.uploadFile(groupPermissionFile, "GROUP_FILE");
-				if (groupUploadFile.getStatus() == 200) {
-					FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) groupUploadFile.getObject();
-					consumerApplication.setGrouppermissionFilePath(fileUploadPathDto.getFilePath());
-				} else {
-					return groupUploadFile;
-				}
-			}
+//			if (applyTypeId.equals(2L)) {
+//
+//				Response groupUploadFile = Utility.uploadFile(groupPermissionFile, "GROUP_FILE");
+//				if (groupUploadFile.getStatus() == 200) {
+//					FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) groupUploadFile.getObject();
+//					consumerApplication.setGrouppermissionFilePath(fileUploadPathDto.getFilePath());
+//				} else {
+//					return groupUploadFile;
+//				}
+//			}
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
@@ -564,13 +564,10 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			}
 			Long applyTypeId = consumerApplicationDtoParse.getApplyTypeId();
 
-			if (applyTypeId == null) {
-				return Response.response("Apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
-						null);
-			}
+			
 			Long colonyType = consumerApplicationDtoParse.getColonyType();
 			if (colonyType == null) {
-				return Response.response("Building type should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
+				return Response.response("Colony type should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
 						null);
 			}
 			if (registryFile == null) {
@@ -582,9 +579,15 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return Response.response("NOC permission file should not be null", HttpStatus.BAD_REQUEST, null, null);
 
 			}
+			if(colonyType.equals(2L)) {
+				if (applyTypeId == null) {
+					return Response.response("you selected colony type undeclared so apply type id should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
+							null);
+				}
+			}
 
 			if (applyTypeId.equals(2L) && groupPermissionFile == null) {
-				return Response.response("Group permission file file should not be null", HttpStatus.BAD_REQUEST, null,
+				return Response.response("Group permission file should not be null", HttpStatus.BAD_REQUEST, null,
 						null);
 			}
 
