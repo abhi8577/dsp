@@ -29,7 +29,7 @@ public class ContractorServiceImpl implements ContractorService {
 	public Response contractorSelectionSave(ContractorDetailsDto contractorDetailsDto) {
 		RestTemplate restTemplate = new RestTemplate();
 		String url = "https://rooftop-uat.mpcz.in:8443/qcp/contractor_selection_save";
-	//	String url = "http://localhost:8081/qcp/contractor_selection_save";
+	// String url = "http://localhost:8081/qcp/contractor_selection_save";
 
         ContractorsDetails saveContractorsDetails=new ContractorsDetails();
 		ContractorsDetails contractorDetailsWithAppNo=new ContractorsDetails();

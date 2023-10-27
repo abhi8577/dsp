@@ -33,4 +33,6 @@ public interface ConsumerApplicationService {
 	Response consumerApplicationUpdateByMKMY(String consumerApplicationUpdateDto, MultipartFile khasraFile,
 			MultipartFile samagraFile);
 
+	Response consumerApplicationByApplicationNo(String applicationNo);
+
 }

@@ -9,4 +9,6 @@ import com.dsp.dsp.model.SubDivision;
 public interface SubDivisionRepository extends JpaRepository<SubDivision, Long> {
 
 	List<SubDivision> findByDivisionId(Long divisionId);
+	
+	SubDivision findBySubDivId(Long subDivId);
 }

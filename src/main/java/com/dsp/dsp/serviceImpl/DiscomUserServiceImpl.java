@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dsp.dsp.dto.ChangePasswordDto;
+import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
 import com.dsp.dsp.dto.CredentialsDto;
 import com.dsp.dsp.dto.DcAcceptOrDcChangeDto;
 import com.dsp.dsp.dto.DemandFeeCalculationResponseDto;
@@ -59,6 +60,9 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 
 	@Autowired
 	LoadUnitRepository loadUnitRepository;
+	
+	@Autowired
+	Utility utility;
 
 	@Override
 	public Response save(DiscomUserRegDto discomUserRegDto) {
@@ -234,16 +238,25 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 		List<ConsumerApplication> listOfConsumerApplication = new ArrayList<ConsumerApplication>();
 		try {
 			listOfConsumerApplication = consumerApplicationRepository.findByDcId(dcId);
-			if (!listOfConsumerApplication.isEmpty()) {
-				return Response.response("Data found successfully", HttpStatus.OK, listOfConsumerApplication, null);
+			if (listOfConsumerApplication.isEmpty()) {
+				return Response.response("Data not found", HttpStatus.OK, listOfConsumerApplication, null);
 			}
+			List<ConsumerApplicationsResponseDto> listOfConsumerApplicationsResponseDto =new ArrayList();
+			
+			for(ConsumerApplication ca :listOfConsumerApplication) {
+				if(ca!=null) {
+				ConsumerApplicationsResponseDto consumerApplicationSetDto = utility.consumerApplicationSetDto(ca);
+				listOfConsumerApplicationsResponseDto.add(consumerApplicationSetDto);
+			}
+			}
+			return Response.response("Data found successfully", HttpStatus.OK, listOfConsumerApplicationsResponseDto, null);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 		}
-		return Response.response("Data not found", HttpStatus.OK, listOfConsumerApplication, null);
 	}
-	
+
 	@Override
 	public Response acceptAppOrChangeDc(DcAcceptOrDcChangeDto dcAcceptOrDcChangeDto) {
 

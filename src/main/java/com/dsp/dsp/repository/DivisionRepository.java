@@ -11,5 +11,7 @@ import com.dsp.dsp.model.Division;
 public interface DivisionRepository extends JpaRepository<Division,Long> {
 
 	List<Division> findByCircleId(Long circleId);
+	
+	Division findByDivId(Long divId);
 
 }
