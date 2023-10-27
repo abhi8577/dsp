@@ -124,6 +124,10 @@ public class PaymentServiceImpl implements PaymentService {
 							dspPaymentHistory1.setTotalAmount(paymentRequestDto.getTotalAmount());
 							dspPaymentHistory1.setCgst(paymentRequestDto.getCgst());
 							dspPaymentHistory1.setSgst(paymentRequestDto.getSgst());
+							
+							
+							
+							
 							dspPaymentHistoryRepository.save(dspPaymentHistory1);
 							response.put(ResponseConstant.STATUS_CODE, HttpStatus.CREATED.value());
 							response.put(ResponseConstant.MESSAGE, HttpStatus.CREATED);
