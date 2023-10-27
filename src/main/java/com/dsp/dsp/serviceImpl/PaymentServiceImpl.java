@@ -120,6 +120,7 @@ public class PaymentServiceImpl implements PaymentService {
 									.findById(consumerApplication.getConsumerId()).get().getMobileNumber());
 							dspPaymentHistory1.setConsumerName(consumerRepository
 									.findById(consumerApplication.getConsumerId()).get().getConsumerName());
+							dspPaymentHistory1.setBaseAmount(paymentRequestDto.getRegistrationAmount());
 							dspPaymentHistory1.setTotalAmount(paymentRequestDto.getTotalAmount());
 							dspPaymentHistory1.setCgst(paymentRequestDto.getCgst());
 							dspPaymentHistory1.setSgst(paymentRequestDto.getSgst());

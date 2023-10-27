@@ -114,7 +114,7 @@ public class MasterController {
 
 	@Autowired
 	ColonyTypeRepository colonyTypeRepository;
-	
+
 	@Autowired
 	DesignationRepository designationRepository;
 
@@ -405,7 +405,6 @@ public class MasterController {
 	}
 
 	@GetMapping("/get_sub_station_by_dcid/{dcId}")
-
 	public Response getSubStationByDCId(@PathVariable(name = "dcId") Long dcId) {
 
 		try {
@@ -486,7 +485,7 @@ public class MasterController {
 			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 		}
 	}
-	
+
 	@GetMapping("/get_all_designation")
 	public Response getAllDesignation() {
 
