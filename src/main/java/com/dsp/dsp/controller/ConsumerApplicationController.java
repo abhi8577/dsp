@@ -68,7 +68,7 @@ public class ConsumerApplicationController {
 
 		return consumerApplicationService.addGeoLocation(geoLocationAddForm, startDocPath, endDocPath);
 	}
- 
+
 	@PostMapping("/get_registration_fee_payment_detail_by_application_number")
 	public Response getRegistrationFeePaymentDetailByConsumerApplicationNumber(
 			@RequestBody ConsumerApplicationIdDto consumerApplicationIdDto) {
@@ -98,5 +98,11 @@ public class ConsumerApplicationController {
 
 		return consumerApplicationService.consumerApplicationUpdateByMKMY(consumerApplicationUpdateDto, khasraFile,
 				samagraFile);
+	}
+	
+	@GetMapping("/consumerApplication_by_application_no/{applicationNo}")
+	public Response consumerApplicationByApplicationNo(String applicationNo) {
+		
+		return consumerApplicationService.consumerApplicationByApplicationNo(applicationNo);
 	}
 }

@@ -18,7 +18,7 @@ public class ConsumerApplicationsResponseDto {
 	private String workLocationAddr;
 	private Long pincode;
 	private String district;
-	private String dc;
+	private Long dcId;
 	private String descriptionOfWork;
 	private String administrativeFilePath;
 	private String gstNo;
@@ -27,7 +27,7 @@ public class ConsumerApplicationsResponseDto {
 	private Long loadRequested;
 	private String loadUnit;
 	private String landArea;
-	private String landAreaUnit;
+	private Long landAreaUnit;
 	private String noOfPlots;
 	private String applyType;
 	private String TAndCPpermissionFilePath;
@@ -41,7 +41,15 @@ public class ConsumerApplicationsResponseDto {
 	private String createdTime;
 	private Boolean isActive;
 	private String applicationStatus;
-	
+	private String consumerName;
+	private String discomName;
+	private String regionName;
+	private String circleName;
+	private String divisionName;
+	private String subdivisionName;
+	private String dcName;
+	private Long applicationStatusId;
+
 	public ConsumerApplicationsResponseDto() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -142,12 +150,7 @@ public class ConsumerApplicationsResponseDto {
 	public void setDistrict(String district) {
 		this.district = district;
 	}
-	public String getDc() {
-		return dc;
-	}
-	public void setDc(String dc) {
-		this.dc = dc;
-	}
+
 	public String getDescriptionOfWork() {
 		return descriptionOfWork;
 	}
@@ -196,10 +199,11 @@ public class ConsumerApplicationsResponseDto {
 	public void setLandArea(String landArea) {
 		this.landArea = landArea;
 	}
-	public String getLandAreaUnit() {
+	
+	public Long getLandAreaUnit() {
 		return landAreaUnit;
 	}
-	public void setLandAreaUnit(String landAreaUnit) {
+	public void setLandAreaUnit(Long landAreaUnit) {
 		this.landAreaUnit = landAreaUnit;
 	}
 	public String getNoOfPlots() {
@@ -280,4 +284,60 @@ public class ConsumerApplicationsResponseDto {
 	public void setApplicationStatus(String applicationStatus) {
 		this.applicationStatus = applicationStatus;
 	}
+	public String getConsumerName() {
+		return consumerName;
+	}
+	public void setConsumerName(String consumerName) {
+		this.consumerName = consumerName;
+	}
+	public Long getDcId() {
+		return dcId;
+	}
+	public void setDcId(Long dcId) {
+		this.dcId = dcId;
+	}
+	public String getDiscomName() {
+		return discomName;
+	}
+	public void setDiscomName(String discomName) {
+		this.discomName = discomName;
+	}
+	public String getRegionName() {
+		return regionName;
+	}
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
+	public String getCircleName() {
+		return circleName;
+	}
+	public void setCircleName(String circleName) {
+		this.circleName = circleName;
+	}
+	public String getDivisionName() {
+		return divisionName;
+	}
+	public void setDivisionName(String divisionName) {
+		this.divisionName = divisionName;
+	}
+	public String getSubdivisionName() {
+		return subdivisionName;
+	}
+	public void setSubdivisionName(String subdivisionName) {
+		this.subdivisionName = subdivisionName;
+	}
+	public String getDcName() {
+		return dcName;
+	}
+	public void setDcName(String dcName) {
+		this.dcName = dcName;
+	}
+	public Long getApplicationStatusId() {
+		return applicationStatusId;
+	}
+	public void setApplicationStatusId(Long applicationStatusId) {
+		this.applicationStatusId = applicationStatusId;
+	}
+	
+	
 }

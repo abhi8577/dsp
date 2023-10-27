@@ -8,4 +8,5 @@ import com.dsp.dsp.model.Region;
 @Repository
 public interface RegionRepository extends JpaRepository<Region, Long>{
 
+	Region findByRegionCode(Long regionCode);
 }

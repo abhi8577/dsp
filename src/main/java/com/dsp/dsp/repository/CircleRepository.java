@@ -12,4 +12,5 @@ public interface CircleRepository extends JpaRepository<Circle, Long> {
 	
 	List<Circle> findByRegionCode(Long regionCode);
 
+	Circle findByCircleId(Long circleId);
 }

@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,14 +19,29 @@ import com.dsp.dsp.dto.ConsumerApplicationDto;
 import com.dsp.dsp.dto.ConsumerApplicationIdDto;
 import com.dsp.dsp.dto.ConsumerApplicationUpdateDto;
 import com.dsp.dsp.dto.ConsumerApplicationsResponseDto;
+import com.dsp.dsp.dto.DiscomToDcDto;
 import com.dsp.dsp.dto.DtrPtrDto;
 import com.dsp.dsp.dto.FileUploadPathDto;
 import com.dsp.dsp.dto.PendingForGeoLocationApplicationDto;
 import com.dsp.dsp.dto.RegistrationFeePaymentDetailDto;
 import com.dsp.dsp.model.ApplicationRejectedDetails;
+import com.dsp.dsp.model.ApplicationStatus;
+import com.dsp.dsp.model.ApplyType;
+import com.dsp.dsp.model.Circle;
 import com.dsp.dsp.model.Consumer;
 import com.dsp.dsp.model.ConsumerApplication;
+import com.dsp.dsp.model.Dc;
+import com.dsp.dsp.model.Discom;
+import com.dsp.dsp.model.DiscomUser;
+import com.dsp.dsp.model.District;
+import com.dsp.dsp.model.Division;
 import com.dsp.dsp.model.GeoLocation;
+import com.dsp.dsp.model.LandAreaUnit;
+import com.dsp.dsp.model.LoadUnit;
+import com.dsp.dsp.model.NatureOfWork;
+import com.dsp.dsp.model.Region;
+import com.dsp.dsp.model.SchemeType;
+import com.dsp.dsp.model.SubDivision;
 import com.dsp.dsp.repository.ApplicationRejectRepository;
 import com.dsp.dsp.repository.ApplicationStatusRepository;
 import com.dsp.dsp.repository.ApplyTypeRepository;
@@ -32,6 +49,8 @@ import com.dsp.dsp.repository.CircleRepository;
 import com.dsp.dsp.repository.ConsumerApplicationRepository;
 import com.dsp.dsp.repository.ConsumerRepository;
 import com.dsp.dsp.repository.DcRepository;
+import com.dsp.dsp.repository.DiscomRepository;
+import com.dsp.dsp.repository.DiscomUserRepository;
 import com.dsp.dsp.repository.DistrictRepository;
 import com.dsp.dsp.repository.DivisionRepository;
 import com.dsp.dsp.repository.GeoLocationRepository;
@@ -46,6 +65,8 @@ import com.dsp.dsp.response.Response;
 import com.dsp.dsp.service.ConsumerApplicationService;
 import com.dsp.dsp.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 
 @Service
 public class ConsumerApplicationServiceImpl implements ConsumerApplicationService {
@@ -100,6 +121,12 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 	@Autowired
 	ApplicationRejectRepository applicationRejectRepository;
+	
+	@Autowired
+	DiscomRepository discomRepository;
+	
+	@Autowired
+	Utility utility;
 
 	@Override
 	@org.springframework.transaction.annotation.Transactional
@@ -152,7 +179,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			Long ptr = null;
 
 			List<Long> supplyVoltageIds = consumerApplicationDtoParse.getSupplyVoltageId();
-
+                System.out.println(supplyVoltageIds);
 			for (Long id : supplyVoltageIds) {
 				switch (id.intValue()) {
 
@@ -177,7 +204,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				// Add more cases for other IDs if needed
 				default:
 					// Handle unknown IDs
-					break;
+					return Response.response("Supply voltage id invalid", HttpStatus.BAD_REQUEST, null, null);
 				}
 			}
 
@@ -218,7 +245,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setAddress(consumerApplicationDtoParse.getAddress());
 			consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
 			consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-			consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
+			//consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
 			consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
 			consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
@@ -273,7 +300,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				// Add more cases for other IDs if needed
 				default:
 					// Handle unknown IDs
-					break;
+					return Response.response("Supply voltage id invalid", HttpStatus.BAD_REQUEST, null, null);
 				}
 			}
 
@@ -307,7 +334,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setAddress(consumerApplicationDtoParse.getAddress());
 			consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
 			consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-			consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
+		//	consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
 			consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
 			consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
@@ -367,7 +394,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setLandAreaUnitId(landAreaUnitId);
 			consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
 			consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-			consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
+		//	consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
 			consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
 			consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
@@ -488,7 +515,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setLandAreaUnitId(landAreaUnitId);
 			consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
 			consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-			consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
+			//consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
 			consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
 			consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
@@ -606,7 +633,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setLandAreaUnitId(landAreaUnitId);
 			consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
 			consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-			consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
+		//	consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
 			consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
 			consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
@@ -679,7 +706,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			consumerApplication.setLandAreaUnitId(landAreaUnitId);
 			consumerApplication.setPincode(consumerApplicationDtoParse.getPincode());
 			consumerApplication.setDistrictId(consumerApplicationDtoParse.getDistrictId());
-			consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
+		//	consumerApplication.setDcId(consumerApplicationDtoParse.getDcId());
 			consumerApplication.setWorkLocationAddr(consumerApplicationDtoParse.getWorkLocationAddr());
 			consumerApplication.setDescriptionOfWork(consumerApplicationDtoParse.getDescriptionOfWork());
 			consumerApplication.setGstNo(consumerApplicationDtoParse.getGstNo());
@@ -718,6 +745,10 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			throws Exception {
 
 		try {
+			Long dcId = consumerApplicationDtoParse.getDcId();
+			if (dcId == null) {
+				return Response.response("Dc id should not be null", HttpStatus.BAD_REQUEST, null, null);
+			}	
 			Long schemeTypeId = consumerApplicationDtoParse.getSchemeTypeId();
 			if (schemeTypeId == null) {
 				return Response.response("Scheme type id should not be null", HttpStatus.BAD_REQUEST, null, null);
@@ -859,8 +890,18 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			MultipartFile reraPermissionFile, MultipartFile groupPermissionFile, MultipartFile registryFile,
 			MultipartFile nOCfile, MultipartFile administrativeFile, MultipartFile gstFile,
 			MultipartFile khasraKhatoniFile) throws Exception {
-
-		if (natureOfWorkId.equals(1L)) {
+		DiscomToDcDto discomToDcDto = getDiscomAndRegionAndCircleAndDivisionByDcId(consumerApplicationDtoParse.getDcId());
+	      if(discomToDcDto==null) {
+				return Response.response("Dc id invalid", HttpStatus.NOT_FOUND, null, null);
+	         }
+	      consumerApplication.setDiscomId(discomToDcDto.getDiscomId());
+	      consumerApplication.setRegionId(discomToDcDto.getRegionId());
+	      consumerApplication.setCircleId(discomToDcDto.getCircleId());
+	      consumerApplication.setDivisionId(discomToDcDto.getDivisionId());
+	      consumerApplication.setSubdivisionId(discomToDcDto.getSubDivisionId());
+	      consumerApplication.setDcId(discomToDcDto.getDcId());
+		
+	      if (natureOfWorkId.equals(1L)) {
 			return setLineShiftingGov(consumerApplicationDtoParse, consumerApplication, consumerApplicationId,
 					administrativeFile, gstFile);
 		}
@@ -1052,80 +1093,31 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 	@Override
 	public Response getConsumerApplications(String mobileNo) {
 
-		Consumer consumer = consumerRepository.findByMobileNumber(mobileNo);
-		if (consumer == null) {
-			return Response.response("Consumer Not Found In This Mobile Number", HttpStatus.NOT_FOUND, null, null);
-		}
-		List<ConsumerApplication> list = consumerApplicationRepository.findByConsumerId(consumer.getConsumerId());
-		List<ConsumerApplicationsResponseDto> responseList = new ArrayList<>();
+		try {
+			Consumer consumer = consumerRepository.findByMobileNumber(mobileNo);
+			if (consumer == null) {
+				return Response.response("Consumer Not Found In This Mobile Number", HttpStatus.NOT_FOUND, null, null);
+			}
+			List<ConsumerApplication> list = consumerApplicationRepository.findByConsumerId(consumer.getConsumerId());
+			List<ConsumerApplicationsResponseDto> responseList = new ArrayList<>();
 
-		if (list.isEmpty()) {
-			return Response.response("No Application For This Consumer Number", HttpStatus.NOT_FOUND, null, null);
-		}
-		for (ConsumerApplication application : list) {
-			ConsumerApplicationsResponseDto responseDTO = new ConsumerApplicationsResponseDto();
+			if (list.isEmpty()) {
+				return Response.response("No Application For This Consumer Number", HttpStatus.NOT_FOUND, null, null);
+			}
+			for (ConsumerApplication application : list) {
+				if(application!=null) {
+				ConsumerApplicationsResponseDto consumerApplicationSetDto = utility.consumerApplicationSetDto(application);
+				responseList.add(consumerApplicationSetDto);
+				}
 
-			// Map values from ConsumerApplication to ResponseDTO
-			responseDTO.setSr_No(application.getSr_No());
-			responseDTO.setConsumerApplicationId(application.getConsumerApplicationId());
-			if (application.getNatureOfWorkId() != null)
-				responseDTO.setNatureOfWork(
-						natureOfWorkRepository.findById(application.getNatureOfWorkId()).get().getNatureOfWorkName());
-			responseDTO.setDtr(application.getDtr());
-			responseDTO.setHt11KV(application.getHt11KV());
-			responseDTO.setHt132KV(application.getHt132KV());
-			responseDTO.setHt33KV(application.getHt33KV());
-			responseDTO.setLt(application.getLt());
-			responseDTO.setPtr(application.getPtr());
-			if (application.getSchemeTypeId() != null)
-				responseDTO.setSchemeType(
-						schemeTypeRepository.findById(application.getSchemeTypeId()).get().getSchemeTypeName());
-			responseDTO.setConsumerId(application.getConsumerId());
-			responseDTO.setGuardianName(application.getGuardianName());
-			responseDTO.setAddress(application.getAddress());
-			responseDTO.setWorkLocationAddr(application.getWorkLocationAddr());
-			responseDTO.setPincode(application.getPincode());
-			if (application.getDistrictId() != null)
-				responseDTO
-						.setDistrict(districtRepository.findById(application.getDistrictId()).get().getDistrictName());
-			if (application.getDcId() != null)
-				responseDTO.setDc(dcRepository.findById(application.getDcId()).get().getDcName());
-			responseDTO.setDescriptionOfWork(application.getDescriptionOfWork());
-			responseDTO.setAdministrativeFilePath(application.getAdministrativeFilePath());
-			responseDTO.setGstNo(application.getGstNo());
-			responseDTO.setGstFilePath(application.getGstFilePath());
-			responseDTO.setIvrsNo(application.getIvrsNo());
-			responseDTO.setLoadRequested(application.getLoadRequested());
-			if (application.getLoadUnitId() != null)
-				responseDTO
-						.setLoadUnit(loadUnitRepository.findById(application.getLoadUnitId()).get().getLoadUnitName());
-			responseDTO.setLandArea(application.getLandArea());
-			if (application.getLandAreaUnitId() != null)
-				responseDTO.setLandAreaUnit(
-						LandAreaUnitRepository.findById(application.getLandAreaUnitId()).get().getLandAreaUnitName());
-			responseDTO.setNoOfPlots(application.getNoOfPlots());
-			if (application.getApplyTypeId() != null)
-				responseDTO.setApplyType(
-						applyTypeRepository.findById(application.getApplyTypeId()).get().getApplyTypeName());
-			responseDTO.setTAndCPpermissionFilePath(application.getTAndCPpermissionFilePath());
-			responseDTO.setReraPermissionFilePath(application.getReraPermissionFilePath());
-			responseDTO.setGrouppermissionFilePath(application.getGrouppermissionFilePath());
-			responseDTO.setRegistryFilePath(application.getRegistryFilePath());
-			responseDTO.setNOCfilePath(application.getNOCfilePath());
-			responseDTO.setKhasra(application.getKhasra());
-			responseDTO.setKhatoni(application.getKhatoni());
-			responseDTO.setKhasraKhatoniFilePath(application.getKhasraKhatoniFilePath());
-			responseDTO.setCreatedTime(application.getCreatedTime());
-			responseDTO.setIsActive(application.getIsActive());
-			if (application.getApplicationStatusId() != null)
-				responseDTO.setApplicationStatus(applicationStatusRepository
-						.findById(application.getApplicationStatusId()).get().getApplicationStatusName());
-
-			responseList.add(responseDTO);
+			}
+			return Response.response("Pending Application For GeoLocation in This Consumer Number", HttpStatus.OK,
+					responseList, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
 
 		}
-		return Response.response("Pending Application For GeoLocation in This Consumer Number", HttpStatus.OK,
-				responseList, null);
 	}
 
 	@Override
@@ -1247,7 +1239,8 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return samagraUploadFile;
 			}
 			
-			String ConsumerApplicationNumber = createApplicationIdBySchemeType(consumerApplicationDtoParse.getSchemeTypeId());		
+			String ConsumerApplicationNumber = createApplicationIdBySchemeType(consumerApplicationDtoParse.getSchemeTypeId());
+			
 			
 			return null;
 		} catch (Exception e) {
@@ -1256,5 +1249,62 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 
 		}
 
+	}
+
+	@Override
+	public Response consumerApplicationByApplicationNo(String applicationNo) {
+		ConsumerApplicationsResponseDto responseDTO = new ConsumerApplicationsResponseDto();
+		try {
+			ConsumerApplication findByConsumerApplicationId = consumerApplicationRepository.findByConsumerApplicationId(applicationNo);
+			if (findByConsumerApplicationId == null) {
+				return Response.response("Consumer application not found", HttpStatus.NOT_FOUND,
+						null, null);
+			}
+			
+			ConsumerApplicationsResponseDto consumerApplicationSetDto = utility.consumerApplicationSetDto(findByConsumerApplicationId);
+			return Response.response("Consumer application found", HttpStatus.OK,consumerApplicationSetDto, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+	return Response.response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+
+		}
+	}
+	
+	DiscomToDcDto getDiscomAndRegionAndCircleAndDivisionByDcId(Long dcId) {
+		DiscomToDcDto discomToDcDto =new DiscomToDcDto();
+		
+		Region region=null;
+		Circle circle=null;
+		SubDivision subDiv=null;	
+		Division div=null;	
+
+		Dc dc = dcRepository.findByDcId(dcId);
+		if(dc==null) {
+			return null;
+		}
+		 
+		if(dc!=null && dc.getSubDivId()!=null) {
+			discomToDcDto.setDcId(dc.getDcId());
+			discomToDcDto.setSubDivisionId(dc.getSubDivId());
+			subDiv= subDivisionRepository.findBySubDivId(dc.getSubDivId());
+			 
+		}
+         if(subDiv!=null && subDiv.getDivisionId()!=null) {
+        	 discomToDcDto.setDivisionId(subDiv.getDivisionId());
+        	 div= divisionRepository.findByDivId(subDiv.getDivisionId());
+		  }
+         if(div!=null && div.getCircleId()!=null) {
+        	 discomToDcDto.setCircleId(div.getCircleId());
+        	circle=circleRepository.findByCircleId(div.getCircleId());
+		  }
+         
+         if(circle!=null && circle.getRegionCode()!=null) {
+        	 discomToDcDto.setRegionId(circle.getRegionCode());
+        	 region=regionRepository.findByRegionCode(circle.getRegionCode());		
+        	 }
+         if(region!=null && region.getDiscomId()!=null) {
+        	 discomToDcDto.setDiscomId(region.getDiscomId());
+        	 }
+         return discomToDcDto;
 	}
 }

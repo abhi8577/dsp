@@ -164,6 +164,22 @@ public class ConsumerApplication {
     @Column(name = "SAMGRA_FILE_PATH")
     private String samagraFilePath;
     
+    @Column(name = "DISCOM_ID")
+    private Long discomId;
+    
+    @Column(name = "REGION_ID")
+    private Long regionId;
+    
+    @Column(name = "CIRCLE_ID")
+    private Long circleId;
+    
+    @Column(name = "DIVISION_ID")
+    private Long divisionId;
+    
+    @Column(name = "SUBDIVISION_ID")
+    private Long subdivisionId;
+   
+    
 	public ConsumerApplication() {
 		super();
 	}
@@ -647,4 +663,48 @@ public class ConsumerApplication {
 	public void setSamagraFilePath(String samagraFilePath) {
 		this.samagraFilePath = samagraFilePath;
 	}
+
+	public Long getDiscomId() {
+		return discomId;
+	}
+
+	public void setDiscomId(Long discomId) {
+		this.discomId = discomId;
+	}
+
+	public Long getRegionId() {
+		return regionId;
+	}
+
+	public void setRegionId(Long regionId) {
+		this.regionId = regionId;
+	}
+
+	
+
+	public Long getCircleId() {
+		return circleId;
+	}
+
+	public void setCircleId(Long circleId) {
+		this.circleId = circleId;
+	}
+
+	public Long getDivisionId() {
+		return divisionId;
+	}
+
+	public void setDivisionId(Long divisionId) {
+		this.divisionId = divisionId;
+	}
+
+	public Long getSubdivisionId() {
+		return subdivisionId;
+	}
+
+	public void setSubdivisionId(Long subdivisionId) {
+		this.subdivisionId = subdivisionId;
+	}
+	
+	
 }
