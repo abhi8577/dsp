@@ -127,12 +127,12 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 			DiscomUser findByUserId = discomUserRepository.findByUserId(userId);
 
 			if (findByUserId != null) {
-				return Response.response("User id already exist", HttpStatus.OK, findByUserId, null);
+				return Response.response("User id already exist", HttpStatus.BAD_REQUEST, findByUserId, null);
 
 			}
 			DiscomUser findByMobileNo = discomUserRepository.findByMobileNo(mobileNo);
 			if (findByMobileNo != null) {
-				return Response.response("Mobile number already exist this mobile number is assigned by this user id "+findByMobileNo.getUserId(), HttpStatus.OK, findByMobileNo, null);
+				return Response.response("Mobile number already exist this mobile number is assigned by this user id "+findByMobileNo.getUserId(), HttpStatus.BAD_REQUEST, findByMobileNo, null);
 
 			}
 			
