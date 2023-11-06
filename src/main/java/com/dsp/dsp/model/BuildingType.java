@@ -11,30 +11,27 @@ public class BuildingType {
 
 	@Id
 	@Column(name = "BUILDING_TYPE_ID")
-	private Long applyTypeId;
+	private Long buildingTypeId;
 
 	@Column(name = "BUILDING_TYPE_NAME")
-	private String applyTypeName;
+	private String buildingTypeName;
 
-	public Long getApplyTypeId() {
-		return applyTypeId;
+	public Long getBuildingTypeId() {
+		return buildingTypeId;
 	}
 
-	public void setApplyTypeId(Long applyTypeId) {
-		this.applyTypeId = applyTypeId;
+	public void setBuildingTypeId(Long buildingTypeId) {
+		this.buildingTypeId = buildingTypeId;
 	}
 
-	public String getApplyTypeName() {
-		return applyTypeName;
+	public String getBuildingTypeName() {
+		return buildingTypeName;
 	}
 
-	public void setApplyTypeName(String applyTypeName) {
-		this.applyTypeName = applyTypeName;
+	public void setBuildingTypeName(String buildingTypeName) {
+		this.buildingTypeName = buildingTypeName;
 	}
 
-	public BuildingType() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	
 
 }

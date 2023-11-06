@@ -11,30 +11,36 @@ public class ColonyType {
 
 	@Id
 	@Column(name = "COLONY_TYPE_ID")
-	private Long applyTypeId;
+	private Long colonyTypeId;
 
 	@Column(name = "COLONY_TYPE_NAME")
-	private String applyTypeName;
+	private String colonyTypeName;
 
 	public ColonyType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Long getApplyTypeId() {
-		return applyTypeId;
+	
+	public Long getColonyTypeId() {
+		return colonyTypeId;
 	}
 
-	public void setApplyTypeId(Long applyTypeId) {
-		this.applyTypeId = applyTypeId;
+
+	public void setColonyTypeId(Long colonyTypeId) {
+		this.colonyTypeId = colonyTypeId;
 	}
 
-	public String getApplyTypeName() {
-		return applyTypeName;
+
+	public String getColonyTypeName() {
+		return colonyTypeName;
 	}
 
-	public void setApplyTypeName(String applyTypeName) {
-		this.applyTypeName = applyTypeName;
+
+	public void setColonyTypeName(String colonyTypeName) {
+		this.colonyTypeName = colonyTypeName;
 	}
 
+
+	
 }

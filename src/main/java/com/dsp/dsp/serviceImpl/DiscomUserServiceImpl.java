@@ -130,6 +130,12 @@ public class DiscomUserServiceImpl implements DiscomUserService {
 				return Response.response("User id already exist", HttpStatus.OK, findByUserId, null);
 
 			}
+			DiscomUser findByMobileNo = discomUserRepository.findByMobileNo(mobileNo);
+			if (findByMobileNo != null) {
+				return Response.response("Mobile number already exist this mobile number is assigned by this user id "+findByMobileNo.getUserId(), HttpStatus.OK, findByMobileNo, null);
+
+			}
+			
 			Encoder encoder = Base64.getEncoder();
 			String encodePass = encoder.encodeToString(password.getBytes());
 			DiscomUser discomUser = new DiscomUser();
