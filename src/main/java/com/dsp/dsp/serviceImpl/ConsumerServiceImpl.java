@@ -44,8 +44,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 			if (mobileNumber == null || mobileNumber.isEmpty()) {
 				return Response.response("Mobile number should not be null", HttpStatus.BAD_REQUEST, null, null);
-
 			}
+			//isValidPhoneNumber(mobileNumber);
 
 			if (password == null || password.isEmpty()) {
 				return Response.response("Password should not be null", HttpStatus.BAD_REQUEST, null, null);
@@ -183,4 +183,17 @@ public class ConsumerServiceImpl implements ConsumerService {
 		}
 		return Response.response("Consumer Details", HttpStatus.OK, consumer, null);
 	}
+	
+	
+//	public static String isValidPhoneNumber(String phoneNumber) {
+//	        // Check if the phone number is exactly 10 digits and consists of only numeric characters
+//	      if(phoneNumber.length() != 10) {
+//	   	        return "Please enter 10 digit number";
+//	      }
+//	      if(!phoneNumber.matches("\\d+")) {
+//	   	        return "Please enter only number";
+//
+//	      }
+//		
+//	    }
 }

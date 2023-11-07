@@ -224,6 +224,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return administrativeUploadFile;
 			}
 
+			if(gstFile!=null) {
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
@@ -231,6 +232,7 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			} else {
 				return gstUploadFile;
 			}
+		}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
 			consumerApplication.setHt11KV(ht11kv);
@@ -312,12 +314,14 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return Response.response("Supply voltage should not be null", HttpStatus.BAD_REQUEST, null, null);
 			}
 
+			if(gstFile!=null) {
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
 				consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());
 			} else {
 				return gstUploadFile;
+			}
 			}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setIvrsNo(ivrsNo);
@@ -375,12 +379,14 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 				return Response.response("Land area unit should not be null", HttpStatus.BAD_REQUEST, landAreaUnitId,
 						null);
 			}
+			if(gstFile!=null) {
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
 				consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());
 			} else {
 				return gstUploadFile;
+			}
 			}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
@@ -496,12 +502,14 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 //					return groupUploadFile;
 //				}
 //			}
+			if(gstFile!=null) {
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
 				consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());
 			} else {
 				return gstUploadFile;
+			}
 			}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
@@ -616,13 +624,14 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 					return groupUploadFile;
 				}
 			}
-
+			if(gstFile!=null) {
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
 				consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());
 			} else {
 				return gstUploadFile;
+			}
 			}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
@@ -690,12 +699,14 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			} else {
 				return khasraKhatoniUploadFile;
 			}
+			if(gstFile!=null) {
 			Response gstUploadFile = Utility.uploadFile(gstFile, "GST_FILE");
 			if (gstUploadFile.getStatus() == 200) {
 				FileUploadPathDto fileUploadPathDto = (FileUploadPathDto) gstUploadFile.getObject();
 				consumerApplication.setGstFilePath(fileUploadPathDto.getFilePath());
 			} else {
 				return gstUploadFile;
+			}
 			}
 			consumerApplication.setConsumerApplicationId(createApplicationIdBySchemeType);
 			consumerApplication.setNatureOfWorkId(consumerApplicationDtoParse.getNatureOfWorkId());
@@ -784,18 +795,27 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			if (checkedWorkLocation == null) {
 				return Response.response("Checked box for work location is null", HttpStatus.BAD_REQUEST, null, null);
 			}
-
+			
 			String workLocationAddr = consumerApplicationDtoParse.getWorkLocationAddr();
-			if (checkedWorkLocation.equals(false) && workLocationAddr != null) {
-				return Response.response(
-						"You are doing wrong because you did not check the condition for work location address details and you are insert details",
-						HttpStatus.BAD_REQUEST, workLocationAddr, null);
-			}
 
-			if (checkedWorkLocation.equals(true) && workLocationAddr == null) {
-				return Response.response("Work location address should not be null", HttpStatus.BAD_REQUEST, null,
-						null);
-			}
+			if(checkedWorkLocation.equals(true)) {
+	        	  
+	        	   if(workLocationAddr == null || workLocationAddr.trim().isEmpty()) {
+	   				return Response.response("Work location address should not be null", HttpStatus.BAD_REQUEST, null, null);
+	        	   }
+	           }
+	           else if(checkedWorkLocation.equals(false)) {
+	        	  
+	        	   if(workLocationAddr==null) {
+	        		   workLocationAddr=null;  
+	        	   }
+	        	   else if(!workLocationAddr.isEmpty()){
+	        		   return Response.response(
+	      						"You are doing wrong because you did not check the condition for work location address details and you are inserting details",
+	      						HttpStatus.BAD_REQUEST, null, null);  
+	        	   }
+	        	   workLocationAddr=null;
+	           }		
 
 			String descriptionOfWork = consumerApplicationDtoParse.getDescriptionOfWork();
 			if (descriptionOfWork == null) {
@@ -811,22 +831,36 @@ public class ConsumerApplicationServiceImpl implements ConsumerApplicationServic
 			if (checkedGSTfile == null) {
 				return Response.response("Checked box for GST is null", HttpStatus.BAD_REQUEST, null, null);
 			}
+			
 			String gstNo = consumerApplicationDtoParse.getGstNo();
-
-			if (checkedGSTfile.equals(true) && gstFile == null) {
-				return Response.response("GST file should not be null", HttpStatus.BAD_REQUEST, null, null);
-			}
-
-			if (checkedGSTfile.equals(true) && gstNo == null || checkedGSTfile.equals(true) && gstNo.isEmpty()) {
-				return Response.response("GST number should not be null", HttpStatus.BAD_REQUEST, null, null);
-			}
-
-			if (checkedGSTfile.equals(false) && gstFile != null || checkedGSTfile.equals(false) && gstNo != null
-					|| checkedGSTfile.equals(false) && !gstNo.isEmpty()) {
-				return Response.response(
-						"You are doing wrong because you did not check the condition for GST details and you are insert details",
-						HttpStatus.BAD_REQUEST, null, null);
-			}
+          
+			if(checkedGSTfile.equals(true)) {
+        	   if(gstFile == null) {
+   				return Response.response("GST file should not be null", HttpStatus.BAD_REQUEST, null, null);
+        	   }
+        	   if(gstNo == null || gstNo.trim().isEmpty()) {
+   				return Response.response("GST number should not be null", HttpStatus.BAD_REQUEST, null, null);
+        	   }
+           }
+           else if(checkedGSTfile.equals(false)) {
+        	  
+        	   if(gstFile != null) {
+        		   return Response.response(
+   						"You are doing wrong because you did not check the condition for GST check box and you are sending gst file",
+   						HttpStatus.BAD_REQUEST, null, null);  
+        		   }
+        	   if(gstNo==null) {
+        		   gstNo=null;  
+        	   }
+        	   else if(!gstNo.isEmpty()){
+        		   return Response.response(
+      						"You are doing wrong because you did not check the condition for GST check box and you are inserting gst number",
+      						HttpStatus.BAD_REQUEST, null, null);  
+        	   }
+        	 
+        	   gstFile=null;
+           }
+			
 			String address = consumerApplicationDtoParse.getAddress();
 			if (address == null) {
 				return Response.response("Address should not be null", HttpStatus.BAD_REQUEST, address, null);

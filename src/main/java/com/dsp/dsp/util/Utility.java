@@ -116,8 +116,7 @@ public class Utility {
 		System.out.println("inside uploadFile method");
 		
 		try {
-			System.out.println(file.getContentType());
-			if(file.isEmpty()) {
+			if(file==null || file.isEmpty()) {
 	            return Response.response("Upload file was empty", HttpStatus.BAD_REQUEST, null, null);	
 			}
             // Get the file and save it somewhere
